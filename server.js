@@ -6,7 +6,7 @@
 const express = require('express');
 
 // константы
-const port = 8080;
+const port = 3000;
 const host = '0.0.0.0';
 const protocol = 'http';
 
