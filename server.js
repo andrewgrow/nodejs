@@ -13,7 +13,7 @@ const protocol = 'http';
 // приложение
 const app = express();
 app.get('/', (request, response) => {
-    response.send('Hello World!');
+    response.send('Node.js® test app');
 });
 
 app.listen(port, host);
