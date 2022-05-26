@@ -31,7 +31,9 @@ $ docker exec -it <container id> /bin/bash
 
 ```bash
 # Deploy changes to production
-ssh USER@IP_ADDRESS -p 2202 # connect to production
+ssh USER@IP_ADDRESS -p 2202 # connect to production on local desktop
+## next commands run on remote server!
 cd ~/divo-nodejs/ # open a folder with app
 git pull origin master # get updates from git
+pm2 restart server # run restart
 ```
