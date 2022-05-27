@@ -14,11 +14,13 @@ app.get('/', (request, response) => {
 
 app.listen(port, host);
 
-console.log(`running on ${protocol}://${host}:${port}`);
-
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const bot = new TelegramBot(token, {polling: true});
+
+bot.getMe().then((info) => {
+    console.log(`TelegramBot started: ${JSON.stringify(info)}`)
+})
 
 // Matches "/love [whatever]"
 bot.onText(/\/love (.+)/, (msg, match) => {
@@ -52,3 +54,5 @@ bot.on('message', (msg) => {
     // send a message to the chat acknowledging receipt of their message
     bot.sendMessage(chatId, 'Received your message');
 });
+
+console.log(`Server successful running on ${protocol}://${host}:${port}`);
