@@ -30,10 +30,22 @@ $ docker exec -it <container id> /bin/bash
 ```
 
 ```bash
+docker-compose build # build container with database
+docker-compose up # run container with database
+```
+
+```bash
+docker stop $(docker ps -a -q) # Stop all running containers
+docker rm $(docker ps -a -q) # Delete all stopped containers
+docker system prune -a # remove all containers and images
+```
+
+```bash
 # Deploy changes to production
 ssh USER@IP_ADDRESS -p 2202 # connect to production on local desktop
 ## next commands run on remote server!
 cd ~/divo-nodejs/ # open a folder with app
 git pull origin master # get updates from git
+npm install # rebuild dependencies
 pm2 restart server # run restart
 ```
