@@ -7,6 +7,8 @@ const host = process.env.APP_HOST || '0.0.0.0';
 const protocol = process.env.APP_PROTOCOL || 'http';
 const botApp = require('./telegram/botApp'); // make Telegram bot
 
+const db = require('./db/db_sequelize')
+
 // приложение
 const app = express();
 app.get('/', (request, response) => {
@@ -18,3 +20,7 @@ app.listen(port, host);
 botApp();
 
 console.log(`Server successful running on ${protocol}://${host}:${port}`);
+
+db.testConnection().then((result) => {
+    console.log(`DB connection ${result}`)
+})
