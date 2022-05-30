@@ -22,5 +22,5 @@ botApp();
 console.log(`Server successful running on ${protocol}://${host}:${port}`);
 
 db.testConnection().then((result) => {
-    console.log(`DB connection ${result}`)
+    console.log(`DB connection test.`)
 })

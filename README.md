@@ -49,3 +49,8 @@ git pull origin master # get updates from git
 npm install # rebuild dependencies
 pm2 restart server # run restart
 ```
+
+```bash
+npm run docker # run docker by JS script
+npm run server # run server by JS script
+```
