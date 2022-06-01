@@ -1,4 +1,5 @@
 'use strict';
+
 require('dotenv').config({ path: `${__dirname}/config/.env` });
 
 const express = require('express');
@@ -7,7 +8,8 @@ const host = process.env.APP_HOST || '0.0.0.0';
 const protocol = process.env.APP_PROTOCOL || 'http';
 const botApp = require('./telegram/botApp'); // make Telegram bot
 
-const db = require('./db/db_sequelize')
+// const db = require('./db/db_sequelize')
+const db = require('./db/db_mysql')
 
 // приложение
 const app = express();
@@ -21,6 +23,6 @@ botApp();
 
 console.log(`Server successful running on ${protocol}://${host}:${port}`);
 
-db.testConnection().then((result) => {
-    console.log(`DB connection test.`)
-})
+db.connect().then((successMessage) => {
+    console.log("DBConnection established successful");
+}).catch(error => {console.error("DBConnection error: " + error.message)});
