@@ -10,23 +10,21 @@ const connection = mysql.createConnection({
     database: config.name,
     password: config.password,
     port: config.port
-});
+    }).promise();
 
-async function connect() {
-    return new Promise((resolve, reject) => {
-        connection.connect(function(err){
-            if (err) {
-                // return console.error("DBConnection error: " + err.message);
-                isConnected = false;
-                reject(err);
-            }
-            else{
-                // console.log("DBConnection established successful");
-                isConnected = true;
-                resolve("DBConnection established successful");
-            }
+function connect() {
+    if (isConnected) {
+        return "DBConnection already established!";
+    }
+    connection
+        .connect()
+        .then((success) => {
+            isConnected = true;
+            console.log(`DBConnection established successful. DBObject : ${JSON.stringify(success)}`);
+        })
+        .catch(error => {
+            console.error("DBConnection error: " + error.message);
         });
-    })
 }
 
-module.exports = { connect };
+module.exports = { connect, connection };
