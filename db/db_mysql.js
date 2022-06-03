@@ -2,29 +2,33 @@
 
 const mysql = require("mysql2");
 const config = require('./db_config')
-let isConnected = false
 
-const connection = mysql.createConnection({
-    host: config.host,
-    user: config.user,
-    database: config.name,
-    password: config.password,
-    port: config.port
-    }).promise();
-
-function connect() {
-    if (isConnected) {
-        return "DBConnection already established!";
+const pool = mysql.createPool({
+        host: config.host,
+        user: config.user,
+        database: config.name,
+        password: config.password,
+        port: config.port
     }
-    connection
-        .connect()
-        .then((success) => {
-            isConnected = true;
-            console.log(`DBConnection established successful. DBObject : ${JSON.stringify(success)}`);
-        })
-        .catch(error => {
-            console.error("DBConnection error: " + error.message);
+);
+
+const query = function (sql, values) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                reject(err);
+            } else {
+                connection.query(sql, values, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                    connection.release();
+                })
+            }
         });
+    });
 }
 
-module.exports = { connect, connection };
+module.exports = { query };

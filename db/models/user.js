@@ -21,8 +21,7 @@ class User {
     updatedAt = null;
     deletedAt = null;
 
-    constructor(id = 0, phone, name, createdAt, updatedAt, deletedAt) {
-        this.id = id;
+    constructor(phone, name, createdAt, updatedAt, deletedAt) {
         this.phone = phone;
         this.name = name;
         this.createdAt = createdAt;
@@ -31,25 +30,21 @@ class User {
     }
 }
 
-function findById(id) {
+async function findById(id) {
     const request = "SELECT * FROM users WHERE _id = ?";
     const values = [ id ];
-    db.connection.query(request, values).then((result) => {
-        // such as:
-        // result = [{"_id":1,"phone":"+3800000001","name":"Dave",
-        // "created_at":"2022-06-01T19:15:54.000Z",
-        // "updated_at":null,"deleted_at":null}]
-        console.log(`result = ${JSON.stringify(result)}`);
-    }).catch((err) => {
-        console.error(err);
-    })
+    return await db.query(request, values);
 }
 
-function createUserRecord(user) {
+async function createUserRecord(user) {
     const request = "INSERT INTO users (phone, name) VALUES (?, ?);";
-    const values = [ user.phone, user.name ]
+    const values = [ user.phone, user.name, "aaa", "sss" ];
 
-    db.connection.query(request, values).then().catch();
+    const result = await db.query(request, values);
+    console.log(`createUserRecord! ${JSON.stringify(result)}`)
+    return result.insertId;
 }
 
-module.exports = { findById }
+
+
+module.exports = { User, findById, createUserRecord }
