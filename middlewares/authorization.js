@@ -4,6 +4,17 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 /**
+ * Except pages that no need to get an auth token.
+ * @param request
+ * @returns {boolean|*}
+ */
+function isExceptThisPage(request) {
+    return request.url === '/'
+        || request.url === '//'
+        || request.url.includes('/randomToken')
+}
+
+/**
  * see @url(https://github.com/auth0/node-jsonwebtoken#readme)
  * and see @url(https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs)
  * @param request
@@ -12,9 +23,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
  * @returns {*}
  */
 function authenticateToken(request, response, next) {
-    if (request.url === '/' || (request.url === '//') || (request.url ==='/randomToken')) {
-        next();
-        return;
+    if (isExceptThisPage(request)) {
+        return next();
     }
 
     const authHeaderToken = request.headerString('authorization');
@@ -31,7 +41,7 @@ function authenticateToken(request, response, next) {
             return response.status(200).send('Node.js® test app');
         }
         request.tokenData = tokenData;
-        next()
+        return next();
     })
 }
 

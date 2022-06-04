@@ -3,17 +3,6 @@
 const db = require('../db_mysql');
 
 class User {
-/*
-    CREATE TABLE IF NOT EXISTS `users` (
-    `_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `phone` TEXT,
-    `name` TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP,
-    deleted_at TIMESTAMP
-) ENGINE = InnoDB;
-*/
-
     id = 0;
     phone = null;
     name = null;
@@ -38,13 +27,9 @@ async function findById(id) {
 
 async function createUserRecord(user) {
     const request = "INSERT INTO users (phone, name) VALUES (?, ?);";
-    const values = [ user.phone, user.name, "aaa", "sss" ];
-
+    const values = [ user.phone, user.name ];
     const result = await db.query(request, values);
-    console.log(`createUserRecord! ${JSON.stringify(result)}`)
     return result.insertId;
 }
-
-
 
 module.exports = { User, findById, createUserRecord }

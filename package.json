@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "node server.js",
-    "docker": "docker-compose up"
+    "dbmigrate": "node -r dotenv/config ./scripts/dbmigrate.js dotenv_config_path=./config/.env"
   },
   "keywords": [],
   "author": "",

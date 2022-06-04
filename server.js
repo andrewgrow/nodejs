@@ -13,8 +13,6 @@ const botApp = require('./telegram/botApp'); // make Telegram bot
 const UserModel = require('./db/models/user');
 const User = require('./db/models/user').User;
 
-
-// приложение
 const app = express();
 app.use(require('sanitize').middleware);
 app.use(require('./middlewares/authorization'));
@@ -38,7 +36,8 @@ app.post('user/create', async (request, response) => {
 });
 
 app.get('/randomToken', async (req, res) => {
-    const randomToken = crypto.randomBytes(64).toString('hex');
+    const length = parseInt(req.queryInt('length')) || 64;
+    const randomToken = crypto.randomBytes(length).toString('hex');
     res.status(201).send(`randomToken: ${ randomToken }`);
 })
 
