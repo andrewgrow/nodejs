@@ -51,7 +51,6 @@ async function newMigration(filesList) {
     for (position = 0; position < filesList.length; position++) {
         filepath = filesList[position];
         sqlList = require(`${ path.normalize(migrationsPath + filepath) }`); // take object from file
-        console.log(`sqlList: ${ JSON.stringify(sqlList) }`);
         for (sql of sqlList) {
             console.log(`migration SQL from file ${filepath}: ${ sql }`);
             await mysql.query(sql, null);
