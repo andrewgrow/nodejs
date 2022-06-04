@@ -54,3 +54,8 @@ pm2 restart server # run restart
 npm run docker # run docker by JS script
 npm run server # run server by JS script
 ```
+
+```bash
+npm run dbmigrate # run migrations
+npm run dbseed # run seeds
+```

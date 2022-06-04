@@ -46,15 +46,18 @@ async function checkFiles() {
  * Run new migrations from each file.
  */
 async function newMigration(filesList) {
-    let filepath, migrationFilePath, sql;
+    let position, filepath, sql, sqlList;
     // take each file with new migration and run sql query
-    for (let i = 0; i < filesList.length; i++) {
-        filepath = filesList[i];
-        sql = require(`${ path.normalize(migrationsPath + filepath) }`); // take object from file
-        console.log(`migration SQL from file ${filepath}: ${ sql }`);
-        await mysql.query(sql, null);
+    for (position = 0; position < filesList.length; position++) {
+        filepath = filesList[position];
+        sqlList = require(`${ path.normalize(migrationsPath + filepath) }`); // take object from file
+        console.log(`sqlList: ${ JSON.stringify(sqlList) }`);
+        for (sql of sqlList) {
+            console.log(`migration SQL from file ${filepath}: ${ sql }`);
+            await mysql.query(sql, null);
+        }
         sql = "INSERT INTO `migrations` (filename) value (?);";
-        await mysql.query(sql, [filepath]); // store that migration was done!
+        await mysql.query(sql, [ filepath ]); // store that migration was done!
     }
 }
 
