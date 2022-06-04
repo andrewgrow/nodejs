@@ -4,6 +4,7 @@ require('dotenv').config({ path: `${__dirname}/config/.env` });
 
 const express = require('express');
 const crypto = require('crypto');
+const auth = require('./middlewares/authorization');
 
 const port = process.env.APP_PORT || 8090;
 const host = process.env.APP_HOST || '0.0.0.0';
@@ -15,7 +16,7 @@ const User = require('./db/models/user').User;
 
 const app = express();
 app.use(require('sanitize').middleware);
-app.use(require('./middlewares/authorization'));
+app.use(auth.authenticateToken);
 
 app.get('/user/:id', async (request, response) => {
     const id = request.paramInt('id');
@@ -37,8 +38,14 @@ app.post('user/create', async (request, response) => {
 
 app.get('/randomToken', async (req, res) => {
     const length = parseInt(req.queryInt('length')) || 64;
+    const userId = parseInt(req.queryInt('id')) || null;
     const randomToken = crypto.randomBytes(length).toString('hex');
-    res.status(201).send(`randomToken: ${ randomToken }`);
+    const userToken = auth.generateToken(userId) || null;
+    const result = {
+        "randomToken": randomToken,
+        "userToken": userToken
+    }
+    res.status(201).send(result);
 })
 
 app.get('/', async (request, response) => {

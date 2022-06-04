@@ -3,8 +3,10 @@
 const sqlList = [
     "CREATE TABLE IF NOT EXISTS `request_tokens` " +
     "(`_id` INT AUTO_INCREMENT PRIMARY KEY, `user_id` INT, `token` TEXT, " +
-    "`utc_expire_at` TIMESTAMP, `utc_created_at` " +
-    "TIMESTAMP DEFAULT CURRENT_TIMESTAMP, `utc_updated_at` TIMESTAMP, `utc_deleted_at` TIMESTAMP) " +
+    "`expire_at` INT, " +
+    "`created_at` INT DEFAULT (UNIX_TIMESTAMP()), " +
+    "`updated_at` INT, " +
+    "`deleted_at` INT) " +
     "ENGINE = InnoDB;",
 ];
 
