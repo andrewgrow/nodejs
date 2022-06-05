@@ -3,7 +3,7 @@
 const mysql = require("../db_mysql");
 
 class RequestTokenDAO {
-
+    expire_at
 }
 
 async function findByValue(value) {
@@ -15,5 +15,5 @@ async function findByValue(value) {
     return null;
 }
 
-module.exports = { findByValue }
+module.exports = { RequestTokenDAO, findByValue }
 
