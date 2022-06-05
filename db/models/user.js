@@ -2,7 +2,7 @@
 
 const db = require('../db_mysql');
 
-class User {
+class UserDAO {
     id = 0;
     phone = null;
     name = null;
@@ -25,11 +25,11 @@ async function findById(id) {
     return await db.query(request, values);
 }
 
-async function createUserRecord(user) {
+async function createRecord(userDao) {
     const request = "INSERT INTO users (phone, name) VALUES (?, ?);";
-    const values = [ user.phone, user.name ];
+    const values = [ userDao.phone, userDao.name ];
     const result = await db.query(request, values);
     return result.insertId;
 }
 
-module.exports = { User, findById, createUserRecord }
+module.exports = { UserDAO, findById, createRecord }
