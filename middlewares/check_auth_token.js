@@ -52,7 +52,7 @@ function isPageNoNeedAnyToken(request) {
  * @returns 'true' if page uses request token only.
  */
 function isPageOnlyRequestToken(request) {
-    // return request.url.includes('/randomToken');
+    return request.url.includes('/randomToken');
 }
 
 function isAuthTokenValid(request) {
