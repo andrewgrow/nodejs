@@ -1,7 +1,7 @@
 'use strict';
 
 const dateUtils = require('../utils/date_utils');
-const requestTokenDao = require('../db/models/requestToken');
+const requestTokenModel = require('../db/models/requestToken');
 
 async function requestToken(request, response, next) {
     if (isPageNoNeedAnyToken(request)) {
@@ -27,7 +27,7 @@ function isRequestTokenValid(request) {
             reject('Request Token does not exist.');
         }
         // try to find in database
-        const token = await requestTokenDao.findByValue(headerRequestToken);
+        const token = await requestTokenModel.findByValue(headerRequestToken);
         if (token === null || token === undefined) {
             // database does not contain this token
             return reject('Request Token not found.');

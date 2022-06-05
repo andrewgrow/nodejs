@@ -8,7 +8,7 @@ const sqlList = [
     "    `created_at` INT DEFAULT (UNIX_TIMESTAMP())," +
     "    `updated_at` INT," +
     "    `deleted_at` INT" +
-    ") ENGINE = InnoDB;",
+    "    ) ENGINE = InnoDB;",
 
     "CREATE TABLE IF NOT EXISTS `telegram_users` (" +
     "    `_id` INT AUTO_INCREMENT PRIMARY KEY," +
@@ -17,10 +17,10 @@ const sqlList = [
     "    `first_name` TEXT," +
     "    `last_name` TEXT," +
     "    `username` TEXT," +
-    "    utc_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
-    "    utc_updated_at TIMESTAMP," +
-    "    utc_deleted_at TIMESTAMP," +
-    "    FOREIGN KEY (`user_id`) REFERENCES `users` (`_id`)" +
+    "    `created_at` INT DEFAULT (UNIX_TIMESTAMP())," +
+    "    `updated_at` INT," +
+    "    `deleted_at` INT," +
+    "    FOREIGN KEY (`user_id`) REFERENCES `users` (`_id`) ON DELETE CASCADE" +
     "    ) ENGINE = InnoDB;"
 ];
 
