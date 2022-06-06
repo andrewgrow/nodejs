@@ -20,13 +20,8 @@ class UserDAO {
     }
 }
 
-async function findById(id) {
-    const request = "SELECT * FROM users WHERE _id = ?";
-    const values = [ id ];
-    const resultArray = await db.query(request, values);
-    if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-        return resultArray[0];
-    }
+async function findUserById(id) {
+    return await mysql.getById(mysql.tables.USERS_TABLE, id);
 }
 
 async function findByPhone(value) {
@@ -39,9 +34,9 @@ async function findByPhone(value) {
     return null;
 }
 
-async function createRecord(userDao) {
+async function createRecord(user) {
     const request = "INSERT INTO users (`phone`, `name`) VALUES (?, ?);";
-    const values = [ userDao.phone, userDao.name ];
+    const values = [ user.phone, user.name ];
     const result = await db.query(request, values);
     return result.insertId;
 }
@@ -56,11 +51,11 @@ async function createRecordIfNotExists(userDao) {
 }
 
 async function forceDeleteUser(id) {
-    const user = await findById(id)
+    const user = await mysql.getById(mysql.tables.USERS_TABLE, id);
     if (user) {
         return await mysql.query('DELETE FROM `users` AS `user` WHERE `user`.`_id` = ?;', [ id ]);
     }
     return null;
 }
 
-module.exports = { UserDAO, findById, forceDeleteUser, createRecordIfNotExists }
+module.exports = { UserDAO, findUserById, forceDeleteUser, createRecordIfNotExists }

@@ -22,12 +22,15 @@ app.use(require('./middlewares/check_request_token').requestToken);
 
 app.get('/user/:id', async (request, response) => {
     const id = request.paramInt('id');
-    if (id && typeof id === 'number') {
-        const user = await User.findById(id);
-        response.json(user);
+    if (id === null || id === undefined || isNaN(id)) {
+        return response.status(400).send('Bad Request');
+    }
+
+    const user = await User.findUserById(id);
+    if (user) {
+        response.status(200).json(user);
     } else {
-        response.status(400);
-        response.json({ error: 'Bad Request' });
+        response.status(404).send('User not found');
     }
 });
 
@@ -51,7 +54,7 @@ app.post('/user', async (request, response) => {
 
 app.delete('/user/:id', async (req, res) => {
     const id = req.paramInt('id');
-    if (id === null || id === undefined || id < 1) {
+    if (id === null || id === undefined || isNaN(id) || id < 1) {
         return res.status(304).send('User with this id does not exist.');
     }
     const result = await User.forceDeleteUser(id);

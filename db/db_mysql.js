@@ -3,6 +3,10 @@
 const mysql = require("mysql2");
 const config = require('./db_config')
 
+const tables = {
+    USERS_TABLE: 'users'
+}
+
 const pool = mysql.createPool({
         host: config.host,
         user: config.user,
@@ -12,7 +16,7 @@ const pool = mysql.createPool({
     }
 );
 
-const query = function (sql, values) {
+function query (sql, values) {
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
@@ -31,4 +35,20 @@ const query = function (sql, values) {
     });
 }
 
-module.exports = { query };
+async function getById (table, value) {
+    return await new Promise(async (resolve, reject) => {
+        const request = `SELECT * FROM ${ table } WHERE _id = ?`;
+        const resultArray = await query(request, [ value ]);
+        if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+            resolve(resultArray[0]);
+        } else {
+            reject(new Error('Not found'));
+        }
+    }).then((result) => {
+        return result
+    }).catch(() => {
+        return null;
+    });
+}
+
+module.exports = { query, getById, tables };
