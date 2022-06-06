@@ -14,6 +14,7 @@ const express = require('express');
 const app = express();
 app.use(express.json())
 app.use(require('sanitize').middleware);
+app.use(require('./middlewares/logger'));
 app.use(require('./middlewares/check_auth_token').authenticateToken);
 app.use(require('./middlewares/check_request_token').requestToken);
 
