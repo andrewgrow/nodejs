@@ -7,14 +7,27 @@ const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
 
 async function sendMessageToAll(senderChatId, message) {
+    const ok_hand_sign = "\u{1F44C}";
     if (utils.isEmpty(message) || message.trim() === '0') {
-        const ok_hand_sign = "\u{1F44C}";
         return bot.sendMessage(senderChatId, `Охрана, отмена! ${ ok_hand_sign } `);
     }
+    const telegramUser = await model.getChatBy(senderChatId);
+    console.log(`telegramUser! ${ JSON.stringify(telegramUser) }`);
     const chatsList = await model.getChatsList();
+
     for (let chat of chatsList) {
-        await utils.sleep(5000);
-        console.log(new Date());
+        await utils.sleep(1000);
+        console.log(`chat! ${ JSON.stringify(chat) }`);
+
+        if (chat.chat_id === telegramUser.chat_id) {
+            console.log(`telegramUser! ${ JSON.stringify(telegramUser) } send next message : ${ message }`);
+            bot.sendMessage(chat.chat_id, `Отправлено всем ${ok_hand_sign}`);
+        } else {
+            bot.sendMessage(chat.chat_id, `Всем от ${ telegramUser.first_name } @${telegramUser.username}: ${ message }`);
+        }
+
+
+        // bot.telegram.sendMessage(-4..5, `<a href="tg://user?id=${ senderChatId }">${ctx.from.first_name}</a> sent : ${ctx.message.text}`, {parse_mode: 'HTML'})
     }
 
     // bot.sendMessage(235679972, `to: ALL, from: Will, msg: ${ message }`);
