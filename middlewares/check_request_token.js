@@ -22,7 +22,7 @@ async function requestToken(request, response, next) {
 function isRequestTokenValid(request) {
     return new Promise(async (resolve, reject) => {
         // try to find in headers
-        const headerRequestToken = request.headerString('request_token');
+        const headerRequestToken = request.headerString('request-token');
         if (headerRequestToken === null || headerRequestToken === undefined) {
             reject('Request Token does not exist.');
         }
