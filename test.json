@@ -1,0 +1,38 @@
+{
+  "message_id": 100,
+  "from": {
+    "id": 1389991755,
+    "is_bot": false,
+    "first_name": "Will",
+    "last_name": "Spring",
+    "username": "Willspring",
+    "language_code": "ru"
+  },
+  "chat": {
+    "id": 1389991755,
+    "first_name": "Will",
+    "last_name": "Spring",
+    "username": "Willspring",
+    "type": "private"
+  },
+  "date": 1654512265,
+  "reply_to_message": {
+    "message_id": 99,
+    "from": {
+      "id": 5300621455,
+      "is_bot": true,
+      "first_name": "StagingDivo",
+      "username": "StagingDivoBot"
+    },
+    "chat": {
+      "id": 1389991755,
+      "first_name": "Will",
+      "last_name": "Spring",
+      "username": "Willspring",
+      "type": "private"
+    },
+    "date": 1654512263,
+    "text": "Окей, что отправляем всем? Введите текст для отправки или цифру 0 для отмены."
+  },
+  "text": "test"
+}

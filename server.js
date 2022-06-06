@@ -6,9 +6,11 @@ const port = process.env.APP_PORT || 8090;
 const host = process.env.APP_HOST || '0.0.0.0';
 const protocol = process.env.APP_PROTOCOL || 'http';
 
-const express = require('express');
-const telegramBot = require('./telegram/botApp');
+// Telegram
+require('./telegram/telegramBotApp').startTelegramBot();
 
+// Server
+const express = require('express');
 const app = express();
 app.use(express.json())
 app.use(require('sanitize').middleware);
@@ -27,7 +29,5 @@ app.get('*', async (request, response) => {
 });
 
 app.listen(port, host);
-
-telegramBot(); // start polling Telegram bot
 
 console.log(`Server successful running on ${protocol}://${host}:${port}`);
