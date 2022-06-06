@@ -3,6 +3,9 @@
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const bot = new TelegramBot(token, {polling: true});
+const utils = require('../utils/utils');
+const model = require('../db/models/telegram');
+const tgUtils = require('./telegramUtils');
 
 let isRunning = false;
 
@@ -19,33 +22,38 @@ function startTelegramBot() {
     // Matches /all [whatever]
     bot.onText(/\/all/, async function (msg, match) {
         const chatId = msg.chat.id;
+        console.log("---------------------------------------");
+        console.log("Command /all: from: " + JSON.stringify(msg));
 
-        if (msg.text) {
-            const command = msg.text.slice(4).trim(); // remove from 0 to 4 characters
+        if (utils.isEmpty(msg.text)) {
+            return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
+        }
 
-            if (!command || command.length === 0) {
-                // bot.sendMessage(chatId, `Что-бы отправить сообщение, после комады /all должен идти какой-нибудь текст. Сделайте лонг-клик на команде, чтобы вставить её в поле для набора текста.`);
-                const question = await bot.sendMessage(chatId,
-                    'Окей, что отправляем всем? Введите текст для отправки или цифру 0 для отмены.',
-                    {
-                        reply_markup: {
-                                force_reply: true,
-                            }
-                        },
-                    );
-                bot.onReplyToMessage(chatId, question.message_id, (message) => {
-                    // bot.sendMessage(msg.chat.id, `Ok, your text is ${message.text}!`);
-                    require('./telegramUtils').sendMessageToAll(message.text);
-                });
+        const isRestricted = await isRestrictedToWrite(chatId)
+        if (isRestricted) {
+            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        }
 
-            } else {
-                bot.sendMessage(chatId, `Received your command: ${ command } `);
-            }
-            console.log(`Received Command: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
+        const messageToAll = msg.text.slice(4).trim(); // remove from 0 to 4 characters
+
+        if (utils.isEmpty(messageToAll)) {
+            const question = await bot.sendMessage(chatId,
+                'Окей, что отправляем всем? Введите текст для отправки или цифру 0 для отмены.',
+                {
+                    reply_markup: {
+                        force_reply: true,
+                    }
+                },
+            );
+            bot.onReplyToMessage(chatId, question.message_id, (message) => {
+                console.log('reply: ' + JSON.stringify(chatId) + " " + JSON.stringify(message));
+                tgUtils.sendMessageToAll(chatId, message.text);
+            });
 
         } else {
-            bot.sendMessage(chatId, `Received your command, but not recognized it.`);
+            tgUtils.sendMessageToAll(chatId, messageToAll);
         }
+        console.log(`Received Command: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
     });
 
 // Listen for any kind of message. There are different kinds of
@@ -65,8 +73,17 @@ function startTelegramBot() {
         console.log('-------------------------------------------------------------')
         console.log(`Received 2: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
         // send a message to the chat acknowledging receipt of their message
-        bot.sendMessage(chatId, 'Received your message');
+        bot.sendMessage(chatId, 'Введите команду для выполнения действия. Список доступных команд смотрите в меню чата/');
     });
+}
+
+async function isRestrictedToWrite(id) {
+    if (utils.isWrongInt(id)) {
+        return true;
+    }
+    // try find telegram_chat in database
+    const chatInDb = await model.getChatBy(id);
+    return chatInDb === null;
 }
 
 module.exports = { startTelegramBot }

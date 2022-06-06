@@ -1,23 +1,11 @@
 'use strict';
 
-const db = require('../db_mysql');
 const mysql = require("../db_mysql");
 
 class UserDAO {
     id = 0;
     phone = null;
     name = null;
-    createdAt = null;
-    updatedAt = null;
-    deletedAt = null;
-
-    constructor(phone, name, createdAt, updatedAt, deletedAt) {
-        this.phone = phone;
-        this.name = name;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt;
-    }
 }
 
 async function findUserById(id) {
@@ -27,7 +15,7 @@ async function findUserById(id) {
 async function findByPhone(value) {
     const request = "SELECT * FROM `users` AS `u` WHERE `u`.`phone` = ? ";
     const values = [ value ];
-    const resultArray = await db.query(request, values);
+    const resultArray = await mysql.query(request, values);
     if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
         return resultArray[0];
     }
@@ -37,7 +25,7 @@ async function findByPhone(value) {
 async function createRecord(user) {
     const request = "INSERT INTO users (`phone`, `name`) VALUES (?, ?);";
     const values = [ user.phone, user.name ];
-    const result = await db.query(request, values);
+    const result = await mysql.query(request, values);
     return result.insertId;
 }
 

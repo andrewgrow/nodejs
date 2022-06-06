@@ -4,7 +4,8 @@ const mysql = require("mysql2");
 const config = require('./db_config')
 
 const tables = {
-    USERS_TABLE: 'users'
+    USERS_TABLE: 'users',
+    TELEGRAM_USERS_TABLE: 'telegram_users'
 }
 
 const pool = mysql.createPool({
@@ -51,4 +52,20 @@ async function getById (table, value) {
     });
 }
 
-module.exports = { query, getById, tables };
+async function getBy(table, field, value) {
+    const request = `SELECT * FROM ${ table } WHERE ${ field } = ?`
+    return await new Promise(async (resolve, reject) => {
+        const resultArray = await query(request, [ value ]);
+        if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+            resolve(resultArray[0]);
+        } else {
+            reject(new Error('Not found'));
+        }
+    }).then((result) => {
+        return result
+    }).catch(() => {
+        return null;
+    });
+}
+
+module.exports = { query, getById, tables, getBy };

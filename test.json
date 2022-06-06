@@ -1,38 +1,24 @@
-{
-  "message_id": 100,
-  "from": {
-    "id": 1389991755,
-    "is_bot": false,
+[
+  {
+    "_id": 1,
+    "user_id": 1,
+    "chat_id": "235679972",
+    "first_name": "Andrew",
+    "last_name": "Gahov",
+    "username": "agahov",
+    "created_at": 1654539833,
+    "updated_at": null,
+    "deleted_at": null
+  },
+  {
+    "_id": 2,
+    "user_id": 1,
+    "chat_id": "1389991755",
     "first_name": "Will",
     "last_name": "Spring",
     "username": "Willspring",
-    "language_code": "ru"
-  },
-  "chat": {
-    "id": 1389991755,
-    "first_name": "Will",
-    "last_name": "Spring",
-    "username": "Willspring",
-    "type": "private"
-  },
-  "date": 1654512265,
-  "reply_to_message": {
-    "message_id": 99,
-    "from": {
-      "id": 5300621455,
-      "is_bot": true,
-      "first_name": "StagingDivo",
-      "username": "StagingDivoBot"
-    },
-    "chat": {
-      "id": 1389991755,
-      "first_name": "Will",
-      "last_name": "Spring",
-      "username": "Willspring",
-      "type": "private"
-    },
-    "date": 1654512263,
-    "text": "Окей, что отправляем всем? Введите текст для отправки или цифру 0 для отмены."
-  },
-  "text": "test"
-}
+    "created_at": 1654540021,
+    "updated_at": null,
+    "deleted_at": null
+  }
+]
