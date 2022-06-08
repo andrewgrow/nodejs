@@ -20,4 +20,14 @@ async function sleep(millis) {
     return new Promise(resolve => setTimeout(resolve, millis));
 }
 
-module.exports = { isEmpty, isWrongInt, sleep }
+function getNumberFromTextWithoutComma(text) {
+    if (isEmpty(text)) {
+        return NaN;
+    }
+    if (text.includes(",")) {
+        text = text.replace(",", ".");
+    }
+    return text;
+}
+
+module.exports = { isEmpty, isWrongInt, sleep, getNumberFromTextWithoutComma }

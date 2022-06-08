@@ -54,6 +54,40 @@ function startTelegramBot() {
         }
     });
 
+    bot.onText(/\/refill/, async function (msg, match) {
+        const chatId = msg.chat.id;
+        console.log("-/refill --------------------------------------------------------");
+
+        if (utils.isEmpty(msg.text)) {
+            return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
+        }
+
+        const isRestricted = await isRestrictedToWrite(chatId)
+        if (isRestricted) {
+            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        }
+
+        const message = tgUtils.getMessageWithoutCommand(msg, '/refill');
+
+        if (utils.isEmpty(message)) {
+            const question = await bot.sendMessage(chatId,
+                'Введите сумму заправки в гривнах, например 123,44. Или введите ноль для отмены.',
+                {
+                    reply_markup: {
+                        force_reply: true,
+                    }
+                },
+            );
+            bot.onReplyToMessage(chatId, question.message_id, (msg) => {
+                console.log('reply REFILL: ' + JSON.stringify(chatId) + " " + JSON.stringify(msg));
+                tgUtils.addRefill(chatId, msg.text);
+            });
+
+        } else {
+            tgUtils.addRefill(chatId, message);
+        }
+    });
+
 // Listen for any kind of message. There are different kinds of
 // messages.
     bot.on('message', async (msg) => {

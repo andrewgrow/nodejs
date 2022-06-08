@@ -5,11 +5,12 @@ const token = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const bot = new TelegramBot(token);
 const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
+const ok_hand_sign = "\u{1F44C}";
+const fuel_pump = "\u{26FD}";
 
 async function sendMessageToAll(senderChatId, message) {
-    const ok_hand_sign = "\u{1F44C}";
     if (utils.isEmpty(message) || message.trim() === '0') {
-        return bot.sendMessage(senderChatId, `Охрана, отмена! ${ ok_hand_sign } `);
+        return sendCancel(senderChatId);
     }
     const telegramUser = await model.getChatBy(senderChatId);
     const chatsList = await model.getChatsList();
@@ -55,5 +56,36 @@ function getMessageWithoutCommand(incoming, commandAsString) {
     return incoming.text.slice(length).trim();
 }
 
-module.exports = { sendMessageToAll, isCommand, isCommandEquals, getMessageWithoutCommand  }
+function addRefill(senderChatId, text) {
+    text = utils.getNumberFromTextWithoutComma(text);
+
+    // parse Int
+    let sum = 0;
+    try {
+        sum = Number.parseFloat(text.replace( /^\D|,+/g, '')).toFixed(2);
+    } catch (err) {
+        console.error(err);
+    }
+
+    // processing
+    if (utils.isWrongInt(sum)) {
+        bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при разборе введённого числа.`);
+        return;
+    }
+
+    if (sum < 0.001) {
+        return sendCancel(senderChatId);
+    }
+
+    console.log("Add Refill! " + text);
+    bot.sendMessage(senderChatId, `В ваш список транзакций добавлена заправка ${ fuel_pump } на сумму ${ sum } грн. `)
+}
+
+function sendCancel(senderChatId) {
+    bot.sendMessage(senderChatId, `Охрана, отмена! ${ ok_hand_sign } `);
+}
+
+module.exports = {
+    isNotCommand, sendMessageToAll, isCommand, addRefill, getMessageWithoutCommand, isCommandEquals
+}
 
