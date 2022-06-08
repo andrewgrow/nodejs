@@ -22,7 +22,7 @@ function startTelegramBot() {
     // Matches /all [whatever]
     bot.onText(/\/all/, async function (msg, match) {
         const chatId = msg.chat.id;
-        console.log("---------------------------------------");
+        console.log("-/all --------------------------------------------------------");
 
         if (utils.isEmpty(msg.text)) {
             return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
@@ -56,18 +56,27 @@ function startTelegramBot() {
 
 // Listen for any kind of message. There are different kinds of
 // messages.
-    bot.on('message', (msg) => {
+    bot.on('message', async (msg) => {
         // ignore replies;
         if (msg.reply_to_message) {
             return;
         }
 
         const chatId = msg.chat.id;
+
+        const isRestricted = await isRestrictedToWrite(chatId)
+        if (isRestricted) {
+            console.log('-------------------------------------------------------------')
+            console.log(`MESSAGE listener (RESTRICTED AREA): chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
+            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        }
+
         if (tgUtils.isCommand(msg)) {
             if (tgUtils.isCommandEquals(msg, '/start')) {
                 console.log(`command /START`) ;
             } else {
                 // ignore all commands exclude /START;
+                console.log('-------------------------------------------------------------')
                 console.log(`RECEIVED COMMAND: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
                 return;
             }
