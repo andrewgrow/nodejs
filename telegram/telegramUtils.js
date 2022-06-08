@@ -25,5 +25,35 @@ async function sendMessageToAll(senderChatId, message) {
     }
 }
 
-module.exports = { sendMessageToAll }
+function isCommand(incoming) {
+    if (incoming === null || incoming === undefined) {
+        return false;
+    }
+    return incoming.entities &&
+        incoming.entities.length > 0 &&
+        incoming.entities[0].type === 'bot_command'
+}
+
+function isNotCommand(incoming) {
+    return !isCommand(incoming);
+}
+
+function isCommandEquals(incoming, commandAsText) {
+    if (isNotCommand(incoming) || utils.isEmpty(commandAsText)) {
+        return false;
+    }
+
+    return incoming.text.includes(commandAsText, 0);
+}
+
+function getMessageWithoutCommand(incoming, commandAsString) {
+    if (utils.isEmpty(commandAsString) || isNotCommand(incoming)) {
+        return '';
+    }
+    const length = commandAsString.length;
+     // remove command from a line
+    return incoming.text.slice(length).trim();
+}
+
+module.exports = { sendMessageToAll, isCommand, isCommandEquals, getMessageWithoutCommand  }
 

@@ -23,7 +23,6 @@ function startTelegramBot() {
     bot.onText(/\/all/, async function (msg, match) {
         const chatId = msg.chat.id;
         console.log("---------------------------------------");
-        console.log("Command /all: from: " + JSON.stringify(msg));
 
         if (utils.isEmpty(msg.text)) {
             return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
@@ -34,7 +33,7 @@ function startTelegramBot() {
             return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
         }
 
-        const messageToAll = msg.text.slice(4).trim(); // remove from 0 to 4 characters
+        const messageToAll = tgUtils.getMessageWithoutCommand(msg, '/all');
 
         if (utils.isEmpty(messageToAll)) {
             const question = await bot.sendMessage(chatId,
@@ -53,25 +52,29 @@ function startTelegramBot() {
         } else {
             tgUtils.sendMessageToAll(chatId, messageToAll);
         }
-        console.log(`Received Command: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
     });
 
 // Listen for any kind of message. There are different kinds of
 // messages.
     bot.on('message', (msg) => {
-        if (msg.entities && msg.entities.length > 0 && msg.entities[0].type === 'bot_command') {
-            // ignore command;
-            return;
-        }
-
+        // ignore replies;
         if (msg.reply_to_message) {
-            // ignore replies;
             return;
         }
 
         const chatId = msg.chat.id;
+        if (tgUtils.isCommand(msg)) {
+            if (tgUtils.isCommandEquals(msg, '/start')) {
+                console.log(`command /START`) ;
+            } else {
+                // ignore all commands exclude /START;
+                console.log(`RECEIVED COMMAND: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
+                return;
+            }
+        }
+
         console.log('-------------------------------------------------------------')
-        console.log(`Received 2: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
+        console.log(`MESSAGE listener: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
         // send a message to the chat acknowledging receipt of their message
         bot.sendMessage(chatId, 'Введите команду для выполнения действия. Список доступных команд смотрите в меню чата/');
     });
