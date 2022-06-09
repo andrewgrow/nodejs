@@ -20,6 +20,7 @@ app.use(require('./middlewares/check_request_token').requestToken);
 
 app.use('/user', require('./routes/userRouter'));
 app.use('/token', require('./routes/requestTokenRouter'));
+app.use('/transaction', require('./routes/transactionRouter'));
 
 app.get('/', async (request, response) => {
     response.status(200).send('Node.js® test app');
