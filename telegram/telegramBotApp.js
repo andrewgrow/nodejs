@@ -50,7 +50,7 @@ function startTelegramBot() {
             });
 
         } else {
-            tgUtils.sendMessageToAll(chatId, messageToAll);
+            await tgUtils.sendMessageToAll(chatId, messageToAll);
         }
     });
 
@@ -78,13 +78,13 @@ function startTelegramBot() {
                     }
                 },
             );
-            bot.onReplyToMessage(chatId, question.message_id, (msg) => {
+            bot.onReplyToMessage(chatId, question.message_id, async (msg) => {
                 console.log('reply REFILL: ' + JSON.stringify(chatId) + " " + JSON.stringify(msg));
-                tgUtils.addRefill(chatId, msg.text);
+                await tgUtils.addRefill(chatId, msg.text);
             });
 
         } else {
-            tgUtils.addRefill(chatId, message);
+            await tgUtils.addRefill(chatId, message);
         }
     });
 

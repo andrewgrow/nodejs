@@ -6,4 +6,10 @@ const password = process.env.DB_PASSWORD;
 const host = process.env.DB_HOST;
 const port = process.env.DB_PORT;
 
-module.exports = { name, user, password, host, port };
+const tables = {
+    USERS_TABLE: 'users',
+    TELEGRAM_USERS_TABLE: 'telegram_users',
+    ACCOUNT_TRANSACTIONS_TABLE: 'account_transactions'
+}
+
+module.exports = { name, user, password, host, port, tables };

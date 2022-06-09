@@ -5,6 +5,8 @@ const token = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const bot = new TelegramBot(token);
 const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
+const userModel = require('../db/models/user');
+const transactionModel = require('../db/models/tranzaction');
 const ok_hand_sign = "\u{1F44C}";
 const fuel_pump = "\u{26FD}";
 
@@ -19,9 +21,9 @@ async function sendMessageToAll(senderChatId, message) {
         await utils.sleep(1000);
         if (chat.chat_id === telegramUser.chat_id) {
             console.log(`telegramUser! ${ JSON.stringify(telegramUser) } send next message : ${ message }`);
-            bot.sendMessage(chat.chat_id, `Отправлено всем ${ok_hand_sign}`);
+            await bot.sendMessage(chat.chat_id, `Отправлено всем ${ok_hand_sign}`);
         } else {
-            bot.sendMessage(chat.chat_id, `Всем от ${ telegramUser.first_name } @${telegramUser.username}: ${ message }`);
+            await bot.sendMessage(chat.chat_id, `Всем от ${ telegramUser.first_name } @${telegramUser.username}: ${ message }`);
         }
     }
 }
@@ -56,7 +58,7 @@ function getMessageWithoutCommand(incoming, commandAsString) {
     return incoming.text.slice(length).trim();
 }
 
-function addRefill(senderChatId, text) {
+async function addRefill(senderChatId, text) {
     text = utils.getNumberFromTextWithoutComma(text);
 
     // parse Int
@@ -69,20 +71,28 @@ function addRefill(senderChatId, text) {
 
     // processing
     if (utils.isWrongInt(sum)) {
-        bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при разборе введённого числа.`);
+        await bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при разборе введённого числа.`);
         return;
     }
 
     if (sum < 0.001) {
-        return sendCancel(senderChatId);
+        await sendCancel(senderChatId);
+        return;
     }
 
-    console.log("Add Refill! " + text);
-    bot.sendMessage(senderChatId, `В ваш список транзакций добавлена заправка ${ fuel_pump } на сумму ${ sum } грн. `)
+    const contractorUser = await userModel.findUserByTelegramId(senderChatId);
+    if (contractorUser) {
+        const transactionId = await transactionModel.addRefill(contractorUser._id, contractorUser._id, sum).then();
+        const result = `В ваш список транзакций добавлена заправка ${ fuel_pump } ` +
+            `c id ${ transactionId } на сумму ${ sum } грн. `;
+        await bot.sendMessage(senderChatId, result);
+    } else {
+        await bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при определении пользователя.`);
+    }
 }
 
 function sendCancel(senderChatId) {
-    bot.sendMessage(senderChatId, `Охрана, отмена! ${ ok_hand_sign } `);
+    return bot.sendMessage(senderChatId, `Охрана, отмена! ${ ok_hand_sign } `);
 }
 
 module.exports = {

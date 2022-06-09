@@ -1,11 +1,10 @@
 'use strict';
 
-const mysql = require("../db_mysql");
+const mysql = require('../db_mysql');
+const telegramModel = require('./telegram');
 
 class UserDAO {
-    id = 0;
-    phone = null;
-    name = null;
+    _id; phone; name;
 }
 
 async function findUserById(id) {
@@ -46,4 +45,18 @@ async function forceDeleteUser(id) {
     return null;
 }
 
-module.exports = { UserDAO, findUserById, forceDeleteUser, createRecordIfNotExists }
+async function findUserByTelegramId(chatId) {
+    const chat = await telegramModel.getChatBy(chatId);
+    if (chat == null) {
+        return null;
+    }
+
+    const user = await findUserById(chat.user_id);
+    if (user == null) {
+        return null;
+    }
+
+    return user;
+}
+
+module.exports = { findUserById, forceDeleteUser, createRecordIfNotExists, findUserByTelegramId }

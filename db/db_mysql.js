@@ -1,12 +1,8 @@
 'use strict';
 
 const mysql = require("mysql2");
-const config = require('./db_config')
-
-const tables = {
-    USERS_TABLE: 'users',
-    TELEGRAM_USERS_TABLE: 'telegram_users'
-}
+const config = require('./db_config');
+const tables = config.tables;
 
 const pool = mysql.createPool({
         host: config.host,
