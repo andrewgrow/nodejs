@@ -11,4 +11,9 @@ function getChatsList() {
     return mysql.query(query, null);
 }
 
-module.exports = { getChatBy, getChatsList }
+function getChatsListByUser(userId) {
+    const query = 'SELECT * FROM `telegram_users` WHERE `user_id` = ? LIMIT 1000;'
+    return mysql.query(query, [userId]);
+}
+
+module.exports = { getChatBy, getChatsList, getChatsListByUser }

@@ -7,6 +7,7 @@ const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
 const userModel = require('../db/models/user');
 const transactionModel = require('../db/models/tranzaction');
+const tgModel = require('../db/models/telegram');
 const ok_hand_sign = "\u{1F44C}";
 const fuel_pump = "\u{26FD}";
 
@@ -83,11 +84,21 @@ async function addRefill(senderChatId, text) {
     const contractorUser = await userModel.findUserByTelegramId(senderChatId);
     if (contractorUser) {
         const transactionId = await transactionModel.addRefill(contractorUser._id, contractorUser._id, sum).then();
-        const result = `В ваш список транзакций добавлена заправка ${ fuel_pump } ` +
-            `c id ${ transactionId } на сумму ${ sum } грн. `;
-        await bot.sendMessage(senderChatId, result);
+        await sendMessageSuccessRefill(transactionId, sum, contractorUser._id);
     } else {
         await bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при определении пользователя.`);
+    }
+}
+
+async function sendMessageSuccessRefill(transactionId, sum, contractorUserId) {
+    const result = `В ваш список транзакций добавлена заправка ${ fuel_pump } ` +
+        `c id ${ transactionId } на сумму ${ sum } грн. `;
+
+    const chatsList = await tgModel.getChatsListByUser(contractorUserId);
+
+    for (let chat of chatsList) {
+        await utils.sleep(1000);
+        await bot.sendMessage(chat.chat_id, result);
     }
 }
 
@@ -96,6 +107,6 @@ function sendCancel(senderChatId) {
 }
 
 module.exports = {
-    isNotCommand, sendMessageToAll, isCommand, addRefill, getMessageWithoutCommand, isCommandEquals
+    isNotCommand, sendMessageToAll, isCommand, addRefill, getMessageWithoutCommand, isCommandEquals, sendMessageSuccessRefill
 }
 

@@ -3,6 +3,7 @@
 const express = require('express');
 const transactionModel = require("../db/models/tranzaction");
 const utils = require('../utils/utils');
+const tgUtils = require('../telegram/telegramUtils');
 const router = express.Router();
 
 router.use(express.json());
@@ -51,8 +52,9 @@ router.post('/', async (request, response) => {
         break;
     }
     if (resultId === undefined || resultId <= 0) {
-        return response.status(400).send('Bad request. Transaction has errors.');
+        return response.status(400).send('Bad request. Transaction has errors. Check contractorId and other fields.');
     } else {
+        await tgUtils.sendMessageSuccessRefill(resultId, transaction.amount, transaction.contractorId);
         response.status(201).send(`TRANSACTION was CREATED successful with id = ${ resultId }`);
     }
 });
