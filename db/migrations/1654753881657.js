@@ -7,6 +7,7 @@ const sqlList = [
     "    `author_id` INT," +
     "    `sum` INT," +
     "    `currency` TINYTEXT," +
+    "    `type` TINYTEXT," +
     "    `created_at` INT DEFAULT (UNIX_TIMESTAMP())," +
     "    `updated_at` INT," +
     "    `deleted_at` INT," +

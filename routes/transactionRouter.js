@@ -25,7 +25,7 @@ router.post('/', async (request, response) => {
         type: request.bodyString('type'),
         amount: request.bodyString('amount'),
         contractorId: request.bodyString('contractorId'),
-        authorId: request.userIdFromTokenData
+        authorId: request.userIdFromTokenData,
     };
     if (utils.isEmpty(transaction.type)) {
         return response.status(400).send('Bad request. Transaction must have type.');
@@ -42,19 +42,30 @@ router.post('/', async (request, response) => {
 
     let resultId = 0;
     switch (transaction.type) {
-        case 'refill': resultId = await transactionModel.addRefill(
-            transaction.contractorId,
-            transaction.authorId,
+        case 'refill': resultId = await transactionModel.addRefill(transaction.contractorId, transaction.authorId,
             transaction.amount
             ).catch((err) => {
             console.error(err);
         });
         break;
+
+        case 'deposit': resultId = await transactionModel.addDeposit(transaction.contractorId, transaction.authorId,
+            transaction.amount
+        ).catch((err) => {
+            console.error(err);
+        });
+        break;
     }
+
+
+
     if (resultId === undefined || resultId <= 0) {
         return response.status(400).send('Bad request. Transaction has errors. Check contractorId and other fields.');
     } else {
-        await tgUtils.sendMessageSuccessRefill(resultId, transaction.amount, transaction.contractorId);
+        switch (transaction.type) {
+            case 'refill': await tgUtils.sendMessageSuccessRefill(resultId, transaction.amount, transaction.contractorId); break;
+            case 'deposit': await tgUtils.sendMessageSuccessDeposit(resultId, transaction.amount, transaction.contractorId); break;
+        }
         response.status(201).send(`TRANSACTION was CREATED successful with id = ${ resultId }`);
     }
 });

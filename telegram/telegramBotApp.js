@@ -80,11 +80,45 @@ function startTelegramBot() {
             );
             bot.onReplyToMessage(chatId, question.message_id, async (msg) => {
                 console.log('reply REFILL: ' + JSON.stringify(chatId) + " " + JSON.stringify(msg));
-                await tgUtils.addRefill(chatId, msg.text);
+                await tgUtils.addTransaction(chatId, msg.text, 'refill');
             });
 
         } else {
-            await tgUtils.addRefill(chatId, message);
+            await tgUtils.addTransaction(chatId, message, 'refill');
+        }
+    });
+
+    bot.onText(/\/deposit/, async function (msg, match) {
+        const chatId = msg.chat.id;
+        console.log("-/deposit --------------------------------------------------------");
+
+        if (utils.isEmpty(msg.text)) {
+            return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
+        }
+
+        const isRestricted = await isRestrictedToWrite(chatId)
+        if (isRestricted) {
+            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        }
+
+        const message = tgUtils.getMessageWithoutCommand(msg, '/deposit');
+
+        if (utils.isEmpty(message)) {
+            const question = await bot.sendMessage(chatId,
+                'Введите сумму пополнения в гривнах, например 123,44. Или введите ноль для отмены.',
+                {
+                    reply_markup: {
+                        force_reply: true,
+                    }
+                },
+            );
+            bot.onReplyToMessage(chatId, question.message_id, async (msg) => {
+                console.log('reply DEPOSIT: ' + JSON.stringify(chatId) + " " + JSON.stringify(msg));
+                await tgUtils.addTransaction(chatId, msg.text, 'deposit');
+            });
+
+        } else {
+            await tgUtils.addTransaction(chatId, message, 'deposit');
         }
     });
 
@@ -119,7 +153,7 @@ function startTelegramBot() {
         console.log('-------------------------------------------------------------')
         console.log(`MESSAGE listener: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
         // send a message to the chat acknowledging receipt of their message
-        bot.sendMessage(chatId, 'Введите команду для выполнения действия. Список доступных команд смотрите в меню чата/');
+        await bot.sendMessage(chatId, 'Введите команду для выполнения действия. Список доступных команд смотрите в меню чата/');
     });
 }
 
@@ -127,7 +161,7 @@ async function isRestrictedToWrite(id) {
     if (utils.isWrongInt(id)) {
         return true;
     }
-    // try find telegram_chat in database
+    // try to find telegram_chat in database
     const chatInDb = await model.getChatBy(id);
     return chatInDb === null;
 }

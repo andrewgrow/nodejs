@@ -8,8 +8,9 @@ const model = require('../db/models/telegram');
 const userModel = require('../db/models/user');
 const transactionModel = require('../db/models/tranzaction');
 const tgModel = require('../db/models/telegram');
-const ok_hand_sign = "\u{1F44C}";
-const fuel_pump = "\u{26FD}";
+const emoji_ok_hand_sign = "\u{1F44C}";
+const emoji_fuel_pump = "\u{26FD}";
+const emoji_dollar_banknote = "\u{1F4B5}";
 
 async function sendMessageToAll(senderChatId, message) {
     if (utils.isEmpty(message) || message.trim() === '0') {
@@ -22,7 +23,7 @@ async function sendMessageToAll(senderChatId, message) {
         await utils.sleep(1000);
         if (chat.chat_id === telegramUser.chat_id) {
             console.log(`telegramUser! ${ JSON.stringify(telegramUser) } send next message : ${ message }`);
-            await bot.sendMessage(chat.chat_id, `Отправлено всем ${ok_hand_sign}`);
+            await bot.sendMessage(chat.chat_id, `Отправлено всем ${emoji_ok_hand_sign}`);
         } else {
             await bot.sendMessage(chat.chat_id, `Всем от ${ telegramUser.first_name } @${telegramUser.username}: ${ message }`);
         }
@@ -59,7 +60,32 @@ function getMessageWithoutCommand(incoming, commandAsString) {
     return incoming.text.slice(length).trim();
 }
 
-async function addRefill(senderChatId, text) {
+async function addTransaction(senderChatId, text, type) {
+    const sum = parseSum(text);
+    if (await checkIfSumIsWrongAndNotifySender(senderChatId, sum)) {
+        return;
+    }
+
+    const contractorUser = await userModel.findUserByTelegramId(senderChatId);
+    if (contractorUser) {
+        switch (type) {
+            case 'refill' : {
+                const transactionId = await transactionModel.addRefill(contractorUser._id, contractorUser._id, sum).then();
+                await sendMessageSuccessRefill(transactionId, sum, contractorUser._id);
+                break;
+            }
+            case 'deposit' : {
+                const transactionId = await transactionModel.addDeposit(contractorUser._id, contractorUser._id, sum).then();
+                await sendMessageSuccessDeposit(transactionId, sum, contractorUser._id);
+                break;
+            }
+        }
+    } else {
+        await bot.sendMessage(senderChatId, `Не удалось добавить сумму транзакции. Произошла ошибка при определении пользователя.`);
+    }
+}
+
+function parseSum(text) {
     text = utils.getNumberFromTextWithoutComma(text);
 
     // parse Int
@@ -68,45 +94,51 @@ async function addRefill(senderChatId, text) {
         sum = Number.parseFloat(text.replace( /^\D|,+/g, '')).toFixed(2);
     } catch (err) {
         console.error(err);
+        return NaN;
     }
+    return sum;
+}
 
-    // processing
+async function checkIfSumIsWrongAndNotifySender(senderChatId, sum) {
+    // checking sum
     if (utils.isWrongInt(sum)) {
-        await bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при разборе введённого числа.`);
-        return;
+        await bot.sendMessage(senderChatId, `Не удалось понять сумму транзакции. Произошла ошибка при разборе введённого числа.`);
+        return true;
     }
 
+    // if 0 we will cancel the operation
     if (sum < 0.001) {
         await sendCancel(senderChatId);
-        return;
+        return true;
     }
 
-    const contractorUser = await userModel.findUserByTelegramId(senderChatId);
-    if (contractorUser) {
-        const transactionId = await transactionModel.addRefill(contractorUser._id, contractorUser._id, sum).then();
-        await sendMessageSuccessRefill(transactionId, sum, contractorUser._id);
-    } else {
-        await bot.sendMessage(senderChatId, `Не удалось добавить сумму заправки. Произошла ошибка при определении пользователя.`);
-    }
+    return false;
 }
 
 async function sendMessageSuccessRefill(transactionId, sum, contractorUserId) {
-    const result = `В ваш список транзакций добавлена заправка ${ fuel_pump } ` +
+    const text = `В ваш список транзакций добавлена заправка ${ emoji_fuel_pump } ` +
         `c id ${ transactionId } на сумму ${ sum } грн. `;
+    return send(contractorUserId, text);
+}
 
+function sendMessageSuccessDeposit(transactionId, sum, contractorUserId) {
+    const text = `В ваш список транзакций добавлен депозит ${ emoji_dollar_banknote } ` +
+        `c id ${ transactionId } на сумму ${ sum } грн. `;
+    return send(contractorUserId, text);
+}
+
+async function send(contractorUserId, text) {
     const chatsList = await tgModel.getChatsListByUser(contractorUserId);
-
     for (let chat of chatsList) {
         await utils.sleep(1000);
-        await bot.sendMessage(chat.chat_id, result);
+        await bot.sendMessage(chat.chat_id, text);
     }
 }
 
 function sendCancel(senderChatId) {
-    return bot.sendMessage(senderChatId, `Охрана, отмена! ${ ok_hand_sign } `);
+    return bot.sendMessage(senderChatId, `Охрана, отмена! ${ emoji_ok_hand_sign } `);
 }
 
-module.exports = {
-    isNotCommand, sendMessageToAll, isCommand, addRefill, getMessageWithoutCommand, isCommandEquals, sendMessageSuccessRefill
-}
+module.exports = { sendMessageToAll, isCommand, addTransaction, getMessageWithoutCommand, isCommandEquals,
+    sendMessageSuccessRefill, sendMessageSuccessDeposit }
 

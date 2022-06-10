@@ -2,6 +2,10 @@
 
 const mysql = require("../db_mysql");
 
+class TelegramMessage {
+    chat; reply_to_message;
+}
+
 async function getChatBy(id) {
     return await mysql.getBy(mysql.tables.TELEGRAM_USERS_TABLE, 'chat_id', id);
 }
