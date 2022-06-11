@@ -80,7 +80,7 @@ async function getCommonAccountResult() {
 }
 
 async function getUserName(userId) {
-    const user = await getById(userId);
+    const user = await findUserById(userId);
     if (user == null) {
         return null;
     }
