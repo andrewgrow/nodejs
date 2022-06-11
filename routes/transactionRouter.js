@@ -63,8 +63,8 @@ router.post('/', async (request, response) => {
         return response.status(400).send('Bad request. Transaction has errors. Check contractorId and other fields.');
     } else {
         switch (transaction.type) {
-            case 'refill': tgUtils.sendMessageSuccessRefill(resultId, transaction.amount, transaction.contractorId).then(); break;
-            case 'deposit': tgUtils.sendMessageSuccessDeposit(resultId, transaction.amount, transaction.contractorId).then(); break;
+            case 'refill': await tgUtils.sendMessageSuccessRefill(resultId, transaction.amount, transaction.contractorId).then(); break;
+            case 'deposit': await tgUtils.sendMessageSuccessDeposit(resultId, transaction.amount, transaction.contractorId).then(); break;
         }
         return response.status(201).send(`TRANSACTION was CREATED successful with id = ${ resultId }`);
     }
