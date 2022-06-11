@@ -2,6 +2,7 @@
 
 const mysql = require('../db_mysql');
 const telegramModel = require('./telegram');
+const {getById} = require("../db_mysql");
 
 class UserDAO {
     _id; phone; name;
@@ -78,6 +79,14 @@ async function getCommonAccountResult() {
     return null;
 }
 
+async function getUserName(userId) {
+    const user = await getById(userId);
+    if (user == null) {
+        return null;
+    }
+    return user.name;
+}
+
 module.exports = { findUserById, forceDeleteUser, createRecordIfNotExists, findUserByTelegramId,
-    getUserAccountResult, getCommonAccountResult
+    getUserAccountResult, getCommonAccountResult, getUserName
 }

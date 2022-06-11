@@ -128,6 +128,10 @@ function sendMessageSuccessDeposit(transactionId, sum, contractorUserId) {
 }
 
 async function sendTransaction(contractorUserId, text) {
+    const name = await userModel.getUserName(contractorUserId);
+    if (name) {
+        text = `Hi ${name}! ${text}`;
+    }
     const chatsList = await tgModel.getChatsListByUser(contractorUserId);
     const userAccountResult = await userModel.getUserAccountResult(contractorUserId);
     const commonAccountResult = await userModel.getCommonAccountResult();
