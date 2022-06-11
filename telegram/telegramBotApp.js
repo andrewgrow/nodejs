@@ -119,6 +119,21 @@ function startTelegramBot() {
         }
     });
 
+    bot.onText(/\/start/, async function (msg, match) {
+        const chatId = msg.chat.id;
+        console.log("-/start --------------------------------------------------------");
+
+        if (utils.isEmpty(msg.text)) {
+            return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
+        }
+
+        if (await isRestrictedToWrite(chatId)) {
+            return;
+        }
+
+        await tgUtils.showUserAccountResult(chatId);
+    });
+
 // Listen for any kind of message. There are different kinds of
 // messages.
     bot.on('message', async (msg) => {
@@ -137,14 +152,10 @@ function startTelegramBot() {
         }
 
         if (tgUtils.isCommand(msg)) {
-            if (tgUtils.isCommandEquals(msg, '/start')) {
-                console.log(`command /START`) ;
-            } else {
-                // ignore all commands exclude /START;
-                console.log('-------------------------------------------------------------')
-                console.log(`RECEIVED COMMAND: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
-                return;
-            }
+            // ignore all commands
+            console.log('-------------------------------------------------------------')
+            console.log(`RECEIVED COMMAND: chatId ${chatId}; message: ${JSON.stringify(msg)}; `)
+            return;
         }
 
         console.log('-------------------------------------------------------------')

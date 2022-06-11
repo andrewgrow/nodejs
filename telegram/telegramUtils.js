@@ -147,10 +147,18 @@ async function sendTransaction(contractorUserId, text) {
     }
 }
 
+async function showUserAccountResult(senderChatId) {
+    const user = await userModel.findUserByTelegramId(senderChatId);
+    if (user == null) {
+        return null;
+    }
+    return await sendTransaction(user._id, "");
+}
+
 function sendCancel(senderChatId) {
     return bot.sendMessage(senderChatId, `Охрана, отмена! ${ emoji_ok_hand_sign } `);
 }
 
 module.exports = { sendMessageToAll, isCommand, addTransaction, getMessageWithoutCommand, isCommandEquals,
-    sendMessageSuccessRefill, sendMessageSuccessDeposit }
+    sendMessageSuccessRefill, sendMessageSuccessDeposit, showUserAccountResult }
 
