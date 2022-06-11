@@ -22,11 +22,11 @@ async function addDeposit(contractorUserId, authorUserId, sum) {
 }
 
 async function createRecord(values = {
-    contractorUserId: null, authorUserId: null, amount: 0, currency: 'UAH', type: null }) {
+    contractorUserId: null, authorUserId: null, amount: 0, type: null }) {
     const request = "INSERT INTO " +
         "`account_transactions` (`contractor_id`, `author_id`, `sum`, `currency`, `type`) " +
         "VALUES (?, ?, ?, ?, ?);";
-    const valuesList = [ values.contractorUserId, values.authorUserId, values.amount, values.currency, values.type ];
+    const valuesList = [ values.contractorUserId, values.authorUserId, values.amount, 'UAH', values.type ];
     const result = await mysql.query(request, valuesList);
     if (result) {
         return result.insertId;

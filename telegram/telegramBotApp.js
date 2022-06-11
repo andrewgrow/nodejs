@@ -28,9 +28,8 @@ function startTelegramBot() {
             return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
         }
 
-        const isRestricted = await isRestrictedToWrite(chatId)
-        if (isRestricted) {
-            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        if (await isRestrictedToWrite(chatId)) {
+            return;
         }
 
         const messageToAll = tgUtils.getMessageWithoutCommand(msg, '/all');
@@ -62,9 +61,8 @@ function startTelegramBot() {
             return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
         }
 
-        const isRestricted = await isRestrictedToWrite(chatId)
-        if (isRestricted) {
-            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        if (await isRestrictedToWrite(chatId)) {
+            return;
         }
 
         const message = tgUtils.getMessageWithoutCommand(msg, '/refill');
@@ -96,9 +94,8 @@ function startTelegramBot() {
             return bot.sendMessage(chatId, `Received your command, but not recognized it.`);
         }
 
-        const isRestricted = await isRestrictedToWrite(chatId)
-        if (isRestricted) {
-            return bot.sendMessage(chatId, `Вам нельзя отправлять команды в этот бот.`);
+        if (await isRestrictedToWrite(chatId)) {
+            return;
         }
 
         const message = tgUtils.getMessageWithoutCommand(msg, '/deposit');
