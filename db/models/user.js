@@ -65,7 +65,7 @@ async function getUserAccountResult(userId) {
     const values = [ userId ];
     const resultArray = await mysql.query(request, values);
     if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-        return resultArray[0].user_account_result * 0.01;
+        return (resultArray[0].user_account_result * 0.01).toFixed(2) ;
     }
     return null;
 }
@@ -74,7 +74,7 @@ async function getCommonAccountResult() {
     const request = 'SELECT SUM(t.sum) AS "common_account_result" FROM account_transactions t';
     const resultArray = await mysql.query(request, null);
     if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-        return resultArray[0].common_account_result * 0.01;
+        return (resultArray[0].common_account_result * 0.01).toFixed(2);
     }
     return null;
 }
