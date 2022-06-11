@@ -59,4 +59,25 @@ async function findUserByTelegramId(chatId) {
     return user;
 }
 
-module.exports = { findUserById, forceDeleteUser, createRecordIfNotExists, findUserByTelegramId }
+async function getUserAccountResult(userId) {
+    const request = 'SELECT SUM(t.sum) AS "user_account_result" FROM account_transactions t WHERE contractor_id = ?';
+    const values = [ userId ];
+    const resultArray = await mysql.query(request, values);
+    if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+        return resultArray[0].user_account_result * 0.01;
+    }
+    return null;
+}
+
+async function getCommonAccountResult() {
+    const request = 'SELECT SUM(t.sum) AS "common_account_result" FROM account_transactions t';
+    const resultArray = await mysql.query(request, null);
+    if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+        return resultArray[0].common_account_result * 0.01;
+    }
+    return null;
+}
+
+module.exports = { findUserById, forceDeleteUser, createRecordIfNotExists, findUserByTelegramId,
+    getUserAccountResult, getCommonAccountResult
+}

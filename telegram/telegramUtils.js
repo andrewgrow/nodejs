@@ -118,17 +118,25 @@ async function checkIfSumIsWrongAndNotifySender(senderChatId, sum) {
 async function sendMessageSuccessRefill(transactionId, sum, contractorUserId) {
     const text = `В ваш список транзакций добавлена заправка ${ emoji_fuel_pump } ` +
         `c id ${ transactionId } на сумму ${ sum } грн. `;
-    return send(contractorUserId, text);
+    return sendTransaction(contractorUserId, text);
 }
 
 function sendMessageSuccessDeposit(transactionId, sum, contractorUserId) {
     const text = `В ваш список транзакций добавлен депозит ${ emoji_dollar_banknote } ` +
         `c id ${ transactionId } на сумму ${ sum } грн. `;
-    return send(contractorUserId, text);
+    return sendTransaction(contractorUserId, text);
 }
 
-async function send(contractorUserId, text) {
+async function sendTransaction(contractorUserId, text) {
     const chatsList = await tgModel.getChatsListByUser(contractorUserId);
+    const userAccountResult = await userModel.getUserAccountResult(contractorUserId);
+    const commonAccountResult = await userModel.getCommonAccountResult();
+    if (userAccountResult) {
+        text = `${text} Личный счёт ${userAccountResult} грн.`
+    }
+    if (commonAccountResult) {
+        text = `${text} Общий счёт ${commonAccountResult} грн.`
+    }
     for (let chat of chatsList) {
         await utils.sleep(1000);
         await bot.sendMessage(chat.chat_id, text);
