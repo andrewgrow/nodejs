@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dbmigrate": "node -r dotenv/config ./scripts/dbmigrate.js dotenv_config_path=./config/.env"
+    "dbmigrate": "node -r dotenv/config ./scripts/dbmigrate.js dotenv_config_path=./config/.env",
+    "test": "mocha --recursive"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,9 @@
     "node-telegram-bot-api": "^0.57.0",
     "sanitize": "^2.1.0",
     "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0"
   }
 }
