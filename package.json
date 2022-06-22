@@ -2,7 +2,7 @@
   "name": "nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dbmigrate": "node -r dotenv/config ./scripts/dbmigrate.js dotenv_config_path=./config/.env",
     "test": "DOTENV_CONFIG_PATH=./././config/.env.test mocha"

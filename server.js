@@ -1,13 +1,15 @@
 'use strict';
 
-require('dotenv').config({ path: `${__dirname}/config/.env` });
+// enable default dotenv variables if it is not a TEST
+const isTest = process.env.TEST || false;
+if (!isTest) {
+    require('dotenv').config({ path: `${__dirname}/config/.env` });
+    require('./telegram/telegramBotApp').startTelegramBot();
+}
 
 const port = process.env.APP_PORT || 8090;
 const host = process.env.APP_HOST || '0.0.0.0';
 const protocol = process.env.APP_PROTOCOL || 'http';
-
-// Telegram
-require('./telegram/telegramBotApp').startTelegramBot();
 
 // Server
 const express = require('express');
