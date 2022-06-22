@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 function generateToken(data) {
-    if (data === null) return null;
+    if (data === null || data === undefined) return null;
     return jwt.sign(data, JWT_SECRET);
 }
 

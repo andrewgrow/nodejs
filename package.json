@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dbmigrate": "node -r dotenv/config ./scripts/dbmigrate.js dotenv_config_path=./config/.env",
-    "test": "mocha --recursive"
+    "test": "DOTENV_CONFIG_PATH=./././config/.env.test mocha"
+  },
+  "mocha": {
+    "recursive": true,
+    "require": "dotenv/config"
   },
   "keywords": [],
   "author": "",

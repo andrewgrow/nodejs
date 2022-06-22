@@ -1,13 +1,13 @@
 'use strict';
 
-const assert = require('chai').assert
+const assert = require('chai').assert;
 const dateUtils = require('../../utils/date_utils');
 
-describe("test file dateUtils", function () {
+describe("test ./utils/date_utils.js", function () {
     // maybe it looks like folly but if method will change we can get notify about it
     it('currentDateAsUnixTimestamp should return data as unix timestamp', function () {
-        const expected = Math.floor(Date.now() / 1000); // manual counting to UNIX timestamp
-        assert.equal(dateUtils.currentDateAsUnixTimestamp(), expected, 'currentDate in Unix format');
+        const expectedTimestamp = Math.floor(Date.now() / 1000); // manual counting to UNIX timestamp
+        assert.equal(dateUtils.currentDateAsUnixTimestamp(), expectedTimestamp, 'currentDate in Unix format');
     });
 
     it('isDateBeforeNow should return true/false when some date is validating', function () {
