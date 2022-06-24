@@ -5,17 +5,16 @@ const fs = require('fs');
 const path = require('path');
 const migrationsPath = path.normalize(__dirname + "/../db/migrations/");
 
-const createMigrationsSQL = "CREATE TABLE IF NOT EXISTS `migrations` (`_id` INT AUTO_INCREMENT PRIMARY KEY, `filename` TEXT, `created_at` INT DEFAULT (UNIX_TIMESTAMP())) ENGINE = InnoDB;";
-
-console.log(`Start dbMigrate! Current timestamp: ${ new Date().getTime() }`);
-
-mysql
-    .query(createMigrationsSQL, null)
-    .then(checkFiles)
-    .then(newMigration)
-    .then(() => console.log("Migrations was successful!"))
-    .catch((err) => {console.error(err) })
-    .then(exit);
+async function runMigration() {
+    console.log(`Start dbMigrate! Current timestamp: ${ new Date().getTime() }`);
+    const createMigrationsSQL = "CREATE TABLE IF NOT EXISTS `migrations` (`_id` INT AUTO_INCREMENT PRIMARY KEY, `filename` TEXT, `created_at` INT DEFAULT (UNIX_TIMESTAMP())) ENGINE = InnoDB;";
+    await mysql
+        .query(createMigrationsSQL, null)
+        .then(checkFiles)
+        .then(newMigration)
+        .then(() => console.log("Migrations was successful!"))
+        .catch((err) => {console.error(err) });
+}
 
 /**
  * Take each file from the migration folder and compare with the migration table records.
@@ -60,4 +59,11 @@ async function newMigration(filesList) {
     }
 }
 
-function exit() { process.exit(1); }
+for (let i=0; i < process.argv.length; i++) {
+    console.log(`dbmigrate!!! process.argv ${ JSON.stringify(process.argv[i]) }`);
+    switch (process.argv[i]) {
+        case 'runMigration': runMigration().then(mysql.end); break;
+    }
+}
+
+module.exports = { runMigration }

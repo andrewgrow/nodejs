@@ -64,4 +64,24 @@ async function getBy(table, field, value) {
     });
 }
 
-module.exports = { query, getById, tables, getBy };
+async function getTablesList() {
+    const request = `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`
+    return await new Promise(async (resolve, reject) => {
+        const resultArray = await query(request, [ config.name ]);
+        if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+            resolve(resultArray);
+        } else {
+            reject(new Error('No tables found'));
+        }
+    }).then((result) => {
+        return result
+    }).catch(() => {
+        return null;
+    });
+}
+
+function end() {
+    return pool.end();
+}
+
+module.exports = { query, getById, tables, getBy, getTablesList, end };
