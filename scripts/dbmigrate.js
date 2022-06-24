@@ -3,7 +3,7 @@
 const mysql = require('../db/db_mysql');
 const fs = require('fs');
 const path = require('path');
-const migrationsPath = path.normalize(__dirname + "/../db/migrations/")
+const migrationsPath = path.normalize(__dirname + "/../db/migrations/");
 
 const createMigrationsSQL = "CREATE TABLE IF NOT EXISTS `migrations` (`_id` INT AUTO_INCREMENT PRIMARY KEY, `filename` TEXT, `created_at` INT DEFAULT (UNIX_TIMESTAMP())) ENGINE = InnoDB;";
 
