@@ -1,7 +1,9 @@
 'use strict';
 
 function isEmpty(text) {
-    return text === null || text === undefined || text.length === 0 || text.trim().length === 0;
+    return text === null || text === undefined || Number.isNaN(text) ||
+        text.length === 0 || text.toString().trim().length === 0 ||
+        typeof text !== 'string';
 }
 
 function isWrongInt(number) {
@@ -9,7 +11,6 @@ function isWrongInt(number) {
     try {
         Number.parseInt(number.toString());
     } catch (err) {
-        console.error(err);
         errorWhenParsed = true;
     }
     return errorWhenParsed || isNaN(number) || number === null || number === undefined;
@@ -20,14 +21,24 @@ async function sleep(millis) {
     return new Promise(resolve => setTimeout(resolve, millis));
 }
 
-function getNumberFromTextWithoutComma(text) {
+function replaceCommaToDot(text) {
     if (isEmpty(text)) {
-        return NaN;
+        if (typeof text === 'number') {
+            text = text.toString();
+        } else {
+            return NaN;
+        }
     }
+
     if (text.includes(",")) {
         text = text.replace(",", ".");
     }
+
+    if (isWrongInt(text)) {
+        return NaN;
+    }
+
     return text;
 }
 
-module.exports = { isEmpty, isWrongInt, sleep, getNumberFromTextWithoutComma }
+module.exports = { isEmpty, isWrongInt, sleep, replaceCommaToDot }

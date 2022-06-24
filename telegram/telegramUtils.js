@@ -86,7 +86,7 @@ async function addTransaction(senderChatId, text, type) {
 }
 
 function parseSum(text) {
-    text = utils.getNumberFromTextWithoutComma(text);
+    text = utils.replaceCommaToDot(text);
 
     // parse Int
     let sum = 0;
