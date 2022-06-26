@@ -7,7 +7,7 @@ const assert = require('chai').assert;
 
 const mysql = require('../../db/db_mysql');
 
-describe.only('test ../scripts/dbmigrate.js', function () {
+describe('test ../scripts/dbmigrate.js', function () {
     before('run all migrations', async function () {
         console.log('start test dbmigrate!');
         const dbMigrate = require('../../scripts/dbmigrate');
@@ -24,14 +24,51 @@ describe.only('test ../scripts/dbmigrate.js', function () {
         mysql.end();
     });
 
-    describe('', function () {
-        it('', function () {
-            console.log('run test dbmigrate! block 1');
-
+    describe('Test all tables migrations', function () {
+        describe('Test the Migrations table', function () {
+            let tableFields;
+            before(async () => {
+                tableFields = await mysql.query('DESCRIBE migrations;', null);
+            })
+            it('should exists "_id" field', () => {
+                assert.isTrue(tableContainsField(tableFields, '_id'));
+            });
+            it('should exists "created_at" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'created_at'));
+            });
+            it('should exists "filename" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'filename'));
+            });
         });
-
-        it('', function () {
-            console.log('run test dbmigrate! block 2');
-        });
+        describe('Test the Users table', function () {
+            let tableFields;
+            before(async () => {
+                tableFields = await mysql.query('DESCRIBE users;', null);
+            });
+            it('should exists "_id" field', () => {
+                assert.isTrue(tableContainsField(tableFields, '_id'));
+            });
+            it('should exists "created_at" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'created_at'));
+            });
+            it('should exists "updated_at" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'updated_at'));
+            });
+            it('should exists "deleted_at" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'deleted_at'));
+            });
+            it('should exists "phone" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'phone'));
+            });
+            it('should exists "name" field', () => {
+                assert.isTrue(tableContainsField(tableFields, 'name'));
+            });
+        })
     });
 });
+
+function tableContainsField(tableFields, fieldName) {
+    return tableFields.some(iterationObject => {
+        return iterationObject.Field === fieldName;
+    });
+}
