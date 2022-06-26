@@ -22,106 +22,34 @@ describe.only('test ../scripts/dbmigrate.js', function () {
     });
 
     describe('Test all tables migrations', function () {
-        describe('Test the Migrations table', function () {
-            let tableFields;
-            before(async () => {
-                tableFields = await mysql.query('DESCRIBE migrations;', null);
-            })
-            it('should exists "_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, '_id'));
-            });
-            it('should exists "created_at" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'created_at'));
-            });
-            it('should exists "filename" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'filename'));
-            });
-        });
-        describe('Test the Users table', function () {
-            let tableFields;
-            before(async () => {
-                tableFields = await mysql.query('DESCRIBE users;', null);
-            });
-            it('should exists "_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, '_id'));
-            });
-            it('should exists "phone" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'phone'));
-            });
-            it('should exists "name" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'name'));
-            });
-            it('should exists timestamps', () => assert.isTrue(tableContainsTimestamps(tableFields)));
-        });
-        describe('Test the Request Tokens table', function () {
-            let tableFields;
-            before(async () => {
-                tableFields = await mysql.query('DESCRIBE request_tokens;', null);
-            });
-            it('should exists "_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, '_id'));
-            });
-            it('should exists "user_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'user_id'));
-            });
-            it('should exists "value" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'value'));
-            });
-            it('should exists "expire_at" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'expire_at'));
-            });
-            it('should exists timestamps', () => assert.isTrue(tableContainsTimestamps(tableFields)));
-        });
-        describe('Test the Telegram Users table', function () {
-            let tableFields;
-            before(async () => {
-                tableFields = await mysql.query('DESCRIBE telegram_users;', null);
-            });
-            it('should exists "_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, '_id'));
-            });
-            it('should exists "user_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'user_id'));
-            });
-            it('should exists "chat_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'chat_id'));
-            });
-            it('should exists "first_name" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'first_name'));
-            });
-            it('should exists "last_name" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'last_name'));
-            });
-            it('should exists "username" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'username'));
-            });
-            it('should exists timestamps', () => assert.isTrue(tableContainsTimestamps(tableFields)));
-        });
-        describe('Test the Account Transactions table', function () {
-            let tableFields;
-            before(async () => {
-                tableFields = await mysql.query('DESCRIBE account_transactions;', null);
-            });
-            it('should exists "_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, '_id'));
-            });
-            it('should exists "contractor_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'contractor_id'));
-            });
-            it('should exists "author_id" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'author_id'));
-            });
-            it('should exists "sum" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'sum'));
-            });
-            it('should exists "currency" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'currency'));
-            });
-            it('should exists "type" field', () => {
-                assert.isTrue(tableContainsField(tableFields, 'type'));
-            });
-            it('should exists timestamps', () => assert.isTrue(tableContainsTimestamps(tableFields)));
-        });
+        const tables = [
+            {
+                name: 'Migrations',
+                sqlTableName: 'migrations',
+                fields: ['_id', 'filename', 'created_at']
+            },
+            {
+                name: 'Users',
+                sqlTableName: 'users',
+                fields: ['_id', 'phone', 'name', 'timestamps']
+            },
+            {
+                name: "Request Tokens",
+                sqlTableName: "request_tokens",
+                fields: ['_id', 'user_id', 'value', 'expire_at', 'timestamps']
+            },
+            {
+                name: "Telegram Users",
+                sqlTableName: "telegram_users",
+                fields: ['_id', 'user_id', 'chat_id', 'first_name', 'last_name', 'username', 'timestamps']
+            },
+            {
+                name: 'Account Transactions',
+                sqlTableName: 'account_transactions',
+                fields: ['_id', 'contractor_id', 'author_id', 'sum', 'currency', 'type', 'timestamps']
+            }
+        ];
+        tables.forEach(table => testTable(table));
     });
 });
 
@@ -135,4 +63,22 @@ function tableContainsTimestamps(tableFields) {
     return tableContainsField(tableFields, 'created_at') &&
         tableContainsField(tableFields, 'updated_at') &&
         tableContainsField(tableFields, 'deleted_at');
+}
+
+function testTable(table) {
+    describe(`Test the ${table.name} table`, function () {
+        let tableFields;
+        before(async () => {
+            tableFields = await mysql.query(`DESCRIBE ${table.sqlTableName};`, null);
+        });
+        table.fields.forEach(field => {
+            if (field === 'timestamps') {
+                it('should exists timestamps', () => assert.isTrue(tableContainsTimestamps(tableFields)));
+            } else {
+                it(`should exists "${field}" field`, () => {
+                    assert.isTrue(tableContainsField(tableFields, field));
+                });
+            }
+        });
+    });
 }
