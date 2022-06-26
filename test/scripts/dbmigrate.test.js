@@ -1,23 +1,22 @@
 'use strict';
 
-const chai = require("chai");
-const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
-const assert = require('chai').assert;
-
+require("chai").use(require('chai-as-promised'));
+const assert = require("chai").assert;
 const mysql = require('../../db/db_mysql');
+const dbMigrate = require('../../scripts/dbmigrate');
 
-describe.only('test ../scripts/dbmigrate.js', function () {
+describe('test ../scripts/dbmigrate.js', function () {
     before('run all migrations', async function () {
-        const dbMigrate = require('../../scripts/dbmigrate');
-        await dbMigrate.runMigration();
-    });
-
-    after('drop all test tables and close connection', async function () {
+        // drop all tables if exists
         const tables = await mysql.getTablesList();
         for (let table of tables) {
             await mysql.query(`DROP TABLE IF EXISTS ${table.TABLE_NAME};`, null);
         }
+        // start
+        await dbMigrate.runMigration();
+    });
+
+    after('close connection', async function () {
         mysql.end();
     });
 
