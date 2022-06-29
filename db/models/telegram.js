@@ -20,4 +20,8 @@ function getChatsListByUser(userId) {
     return mysql.query(query, [userId]);
 }
 
-module.exports = { getChatBy, getChatsList, getChatsListByUser }
+async function isDbDisconnected() {
+    return await mysql.isDbDisconnected();
+}
+
+module.exports = { getChatBy, getChatsList, getChatsListByUser, isDbDisconnected }

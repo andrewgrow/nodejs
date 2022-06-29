@@ -1,8 +1,10 @@
 'use strict';
 
-const TelegramBot = require('node-telegram-bot-api');
-const token = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
-const bot = new TelegramBot(token);
+/**
+ * Telegram Utils do actions with telegram bot. The Bot is represents as wrapper.
+ */
+
+const tgWrapper = require('../telegram/telegramBotWrapper');
 const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
 const userModel = require('../db/models/user');
@@ -11,6 +13,10 @@ const tgModel = require('../db/models/telegram');
 const emoji_ok_hand_sign = "\u{1F44C}";
 const emoji_fuel_pump = "\u{26FD}";
 const emoji_dollar_banknote = "\u{1F4B5}";
+
+function getBotInfo() {
+    return tgWrapper.getBotInfo();
+}
 
 async function sendMessageToAll(senderChatId, message) {
     if (utils.isEmpty(message) || message.trim() === '0') {
@@ -23,9 +29,9 @@ async function sendMessageToAll(senderChatId, message) {
         await utils.sleep(1000);
         if (chat.chat_id === telegramUser.chat_id) {
             console.log(`telegramUser! ${ JSON.stringify(telegramUser) } send next message : ${ message }`);
-            await bot.sendMessage(chat.chat_id, `Отправлено всем ${emoji_ok_hand_sign}`);
+            await tgWrapper.sendMessage(chat.chat_id, `Отправлено всем ${emoji_ok_hand_sign}`);
         } else {
-            await bot.sendMessage(chat.chat_id, `Всем от ${ telegramUser.first_name } @${telegramUser.username}: ${ message }`);
+            await tgWrapper.sendMessage(chat.chat_id, `Всем от ${ telegramUser.first_name } @${telegramUser.username}: ${ message }`);
         }
     }
 }
@@ -81,7 +87,7 @@ async function addTransaction(senderChatId, text, type) {
             }
         }
     } else {
-        await bot.sendMessage(senderChatId, `Не удалось добавить сумму транзакции. Произошла ошибка при определении пользователя.`);
+        await tgWrapper.sendMessage(senderChatId, `Не удалось добавить сумму транзакции. Произошла ошибка при определении пользователя.`);
     }
 }
 
@@ -102,7 +108,7 @@ function parseSum(text) {
 async function checkIfSumIsWrongAndNotifySender(senderChatId, sum) {
     // checking sum
     if (utils.isWrongInt(sum)) {
-        await bot.sendMessage(senderChatId, `Не удалось понять сумму транзакции. Произошла ошибка при разборе введённого числа.`);
+        await tgWrapper.sendMessage(senderChatId, `Не удалось понять сумму транзакции. Произошла ошибка при разборе введённого числа.`);
         return true;
     }
 
@@ -143,7 +149,7 @@ async function sendTransaction(contractorUserId, text) {
     }
     for (let chat of chatsList) {
         await utils.sleep(1000);
-        await bot.sendMessage(chat.chat_id, text);
+        await tgWrapper.sendMessage(chat.chat_id, text);
     }
 }
 
@@ -156,9 +162,27 @@ async function showUserAccountResult(senderChatId) {
 }
 
 function sendCancel(senderChatId) {
-    return bot.sendMessage(senderChatId, `Охрана, отмена! ${ emoji_ok_hand_sign } `);
+    return tgWrapper.sendMessage(senderChatId, `Охрана, отмена! ${ emoji_ok_hand_sign } `);
 }
 
-module.exports = { sendMessageToAll, isCommand, addTransaction, getMessageWithoutCommand, isCommandEquals,
-    sendMessageSuccessRefill, sendMessageSuccessDeposit, showUserAccountResult }
+function addMessageListener(event, listener) {
+    tgWrapper.addMessageListener(event, listener);
+}
+
+function addTextListener(regexp, listener) {
+    tgWrapper.addTextListener(regexp, listener);
+}
+
+function sendMessage(chatId, message, form) {
+    return tgWrapper.sendMessage(chatId, message, form);
+}
+
+function addReplyListener(chatId, messageId, listener) {
+    tgWrapper.addReplyListener(chatId, messageId, listener);
+}
+
+module.exports = { sendMessageToAll, isCommand, addTransaction, getMessageWithoutCommand, addMessageListener,
+    sendMessageSuccessRefill, sendMessageSuccessDeposit, showUserAccountResult, getBotInfo, addTextListener, sendMessage,
+    addReplyListener
+}
 

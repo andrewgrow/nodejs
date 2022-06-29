@@ -4,7 +4,7 @@
 const isTest = process.env.TEST || false;
 if (!isTest) {
     require('dotenv').config({ path: `${__dirname}/config/.env` });
-    require('./telegram/telegramBotApp').startTelegramBot();
+    require('./telegram/telegramController').startTelegramBot().then();
 }
 
 const port = process.env.APP_PORT || 8090;

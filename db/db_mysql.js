@@ -84,4 +84,13 @@ function end() {
     return pool.end();
 }
 
-module.exports = { query, getById, tables, getBy, getTablesList, end };
+async function isDbConnected() {
+    console.log('check if Database is connected');
+    return await query('SELECT 1;', null).then(true).catch((err) => { return false });
+}
+
+async function isDbDisconnected() {
+    return !await isDbConnected(); // opposite value
+}
+
+module.exports = { query, getById, tables, getBy, getTablesList, end, isDbDisconnected };
