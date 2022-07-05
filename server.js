@@ -1,11 +1,6 @@
 'use strict';
 
-// enable default dotenv variables if it is not a TEST
-const isTest = process.env.TEST || false;
-if (!isTest) {
-    require('dotenv').config({ path: `${__dirname}/config/.env` });
-    require('./telegram/telegramController').startTelegramBot().then();
-}
+initDotEnvConfigIfExists();
 
 const port = process.env.APP_PORT || 8090;
 const host = process.env.APP_HOST || '0.0.0.0';
@@ -33,5 +28,21 @@ app.get('*', async (request, response) => {
 });
 
 app.listen(port, host);
+
+/**
+ * In normal case we have .env file in the config folder
+ */
+function initDotEnvConfigIfExists() {
+    const filePath = `${__dirname}/config/.env`;
+    if (require('fs').existsSync(filePath)) {
+        //file exists
+        require('dotenv').config({ path: filePath });
+    }
+}
+
+/**
+ * Init Telegram after start this application
+ */
+require('./telegram/telegramController').startTelegramBot().then();
 
 console.log(`Server successful running on ${protocol}://${host}:${port}`);

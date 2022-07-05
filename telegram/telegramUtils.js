@@ -181,8 +181,12 @@ function addReplyListener(chatId, messageId, listener) {
     tgWrapper.addReplyListener(chatId, messageId, listener);
 }
 
+async function startTelegramBot() {
+    return await tgWrapper.startTelegramBot();
+}
+
 module.exports = { sendMessageToAll, isCommand, addTransaction, getMessageWithoutCommand, addMessageListener,
     sendMessageSuccessRefill, sendMessageSuccessDeposit, showUserAccountResult, getBotInfo, addTextListener, sendMessage,
-    addReplyListener
+    addReplyListener, startTelegramBot
 }
 

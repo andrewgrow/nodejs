@@ -25,16 +25,7 @@ async function startTelegramBot() {
         throw new Error('DB is disconnected. Cannot start working.')
     }
 
-    tgUtils.getBotInfo()
-        .then((info) => {
-            isRunning = true;
-            console.log(`TelegramBot started: ${JSON.stringify(info)}`)
-            addListenersToTelegramBot();
-        })
-        .catch((err) => {
-            isRunning = false;
-            console.error(err);
-        });
+    tgUtils.startTelegramBot().then(addListenersToTelegramBot);
 }
 
 function addListenersToTelegramBot() {
