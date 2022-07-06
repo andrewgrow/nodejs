@@ -8,11 +8,16 @@ const dbMigrate = require('../../scripts/dbmigrate');
 describe('test ../scripts/dbmigrate.js', function () {
     before('run all migrations', async function () {
         // drop all tables if exists
-        const tables = await mysql.getTablesList();
-        for (let table of tables) {
-            await mysql.query(`DROP TABLE IF EXISTS ${table.TABLE_NAME};`, null);
+        try {
+            const tables = await mysql.getTablesList();
+            for (let table of tables) {
+                await mysql.query(`DROP TABLE IF EXISTS ${table.TABLE_NAME};`, null);
+            }
+        } catch (err) {
+            // already cleared
         }
         // start
+        await mysql.query('USE divotest;')
         await dbMigrate.runMigration();
     });
 

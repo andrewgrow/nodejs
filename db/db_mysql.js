@@ -64,19 +64,16 @@ async function getBy(table, field, value) {
     });
 }
 
-async function getTablesList() {
-    const request = `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`
-    return await new Promise(async (resolve, reject) => {
-        const resultArray = await query(request, [ config.name ]);
-        if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-            resolve(resultArray);
-        } else {
-            reject(new Error('No tables found'));
-        }
-    }).then((result) => {
-        return result
-    }).catch(() => {
-        return null;
+function getTablesList() {
+    return new Promise((resolve, reject) => {
+        const request = `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`;
+        query(request, [ config.name ]).then((resultArray) => {
+            if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+                resolve(resultArray);
+            } else {
+                reject(new Error('No tables found'));
+            }
+        });
     });
 }
 
