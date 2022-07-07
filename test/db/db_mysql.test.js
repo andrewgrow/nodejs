@@ -53,20 +53,23 @@ describe('test ../db/db_mysql.js', function () {
 });
 
 function createTestUserIfDoesNotExist() {
-    return mysql.getBy('users', 'name', testUser.name)
-        .then((result) => {
-            if (result === null) {
-                const request = "INSERT INTO users (`phone`, `name`) VALUES (?, ?);";
-                const values = [ testUser.phone, testUser.name ];
-                mysql.query(request, values)
-                    .then((result) => {
-                        console.log(`result2: ${JSON.stringify(result)}`)
-                       return result;
-                    });
-            }
-        }).catch((err) => {
-            console.error(err);
-            return null;
+    return new Promise((resolve, reject) => {
+        mysql.getBy('users', 'name', testUser.name)
+            .then((result) => {
+                if (result === null) {
+                    const request = "INSERT INTO users (`phone`, `name`) VALUES (?, ?);";
+                    const values = [ testUser.phone, testUser.name ];
+                    mysql.query(request, values)
+                        .then((result) => {
+                            console.log(`result2: ${JSON.stringify(result)}`)
+                            resolve(result);
+                        });
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                reject(err);
         })
+    });
 }
 

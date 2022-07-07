@@ -50,16 +50,18 @@ async function getById (table, value) {
 
 function getBy(table, field, value) {
     const request = `SELECT * FROM ${ table } WHERE ${ field } = ?`;
-    return query(request, [ value ])
-        .then((resultArray) => {
-            if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-                return (resultArray[0]);
-            } else {
-                return null;
-            }
-        }).catch((err) => {
-            return null;
-        });
+    return new Promise((resolve, _) => {
+        query(request, [ value ])
+            .then((resultArray) => {
+                if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
+                    resolve(resultArray[0]);
+                } else {
+                    resolve(null);
+                }
+            }).catch((_) => {
+                resolve(null);
+            });
+    });
 }
 
 function getTablesList() {
@@ -81,7 +83,7 @@ function end() {
 
 async function isDbConnected() {
     console.log('check if Database is connected');
-    return await query('SELECT 1;', null).then(true).catch((err) => { return false });
+    return await query('SELECT 1;', null).then(true).catch((_) => { return false });
 }
 
 async function isDbDisconnected() {
