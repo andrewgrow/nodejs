@@ -37,11 +37,8 @@ describe('test ../db/db_mysql.js', function () {
 
         describe('test function getBy()', function () {
             it('should return a normal result if a query is correct', async function () {
-                const dbUser = await mysql.getBy('users', 'name', testUser.name);
-                assert.equal(dbUser.name, testUser.name);
-                assert.equal(dbUser.phone, testUser.phone);
-                assert.equal(dbUser._id, 1);
-                assert.isTrue(dbUser.created_at > 0);
+                mysql.getBy('users', 'name', testUser.name)
+                    .then((dbUser) => assertUser(dbUser))
             });
 
             it('should be null if the table does not exist', function () {
@@ -58,12 +55,9 @@ describe('test ../db/db_mysql.js', function () {
         });
 
         describe('test function getById()', function () {
-           it('shoul return a user record', async function () {
-               const dbUser = await mysql.getById('users', 1);
-               assert.equal(dbUser.name, testUser.name);
-               assert.equal(dbUser.phone, testUser.phone);
-               assert.equal(dbUser._id, 1);
-               assert.isTrue(dbUser.created_at > 0);
+           it('should return a user record', async function () {
+               mysql.getBy('users', 'name', testUser.name)
+                   .then((dbUser) => assertUser(dbUser))
            });
         });
     });
@@ -72,16 +66,16 @@ describe('test ../db/db_mysql.js', function () {
 function createTestUserIfDoesNotExist() {
     return new Promise((resolve, reject) => {
         mysql.getBy('users', 'name', testUser.name)
-            .then((result) => {
-                if (result === null) {
+            .then((dbUser) => {
+                if (dbUser === null) {
                     const request = "INSERT INTO users (`phone`, `name`) VALUES (?, ?);";
                     const values = [ testUser.phone, testUser.name ];
                     mysql.query(request, values)
-                        .then((result) => {
-                            resolve(result);
+                        .then((creatingResult) => {
+                            resolve(creatingResult);
                         });
                 } else {
-                    resolve(null);
+                    resolve(dbUser);
                 }
             })
             .catch((err) => {
@@ -89,5 +83,13 @@ function createTestUserIfDoesNotExist() {
                 reject(err);
         })
     });
+}
+
+function assertUser(dbUser) {
+    assert.isNotNull(dbUser);
+    assert.equal(dbUser.name, testUser.name);
+    assert.equal(dbUser.phone, testUser.phone);
+    assert.equal(dbUser._id, 1);
+    assert.isTrue(dbUser.created_at > 0);
 }
 
