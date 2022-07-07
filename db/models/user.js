@@ -2,7 +2,6 @@
 
 const mysql = require('../db_mysql');
 const telegramModel = require('./telegram');
-const {getById} = require("../db_mysql");
 
 class UserDAO {
     _id; phone; name;

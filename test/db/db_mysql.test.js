@@ -29,25 +29,42 @@ describe('test ../db/db_mysql.js', function () {
         });
     });
 
-    describe('test function getBy()', function () {
+    describe('test functions with testUser', function () {
         before('create a test record', async function () {
             const result = await createTestUserIfDoesNotExist();
             console.log(`result1: ${JSON.stringify(result)}`)
         });
 
-        it('should return a normal result if a query is correct', async function () {
-            const dbUser = await mysql.getBy('users', 'name', testUser.name);
-            assert.equal(dbUser.name, testUser.name);
-            assert.equal(dbUser.phone, testUser.phone);
-            assert.isTrue(dbUser.created_at > 0);
+        describe('test function getBy()', function () {
+            it('should return a normal result if a query is correct', async function () {
+                const dbUser = await mysql.getBy('users', 'name', testUser.name);
+                assert.equal(dbUser.name, testUser.name);
+                assert.equal(dbUser.phone, testUser.phone);
+                assert.equal(dbUser._id, 1);
+                assert.isTrue(dbUser.created_at > 0);
+            });
+
+            it('should be null if the table does not exist', function () {
+                return assert.eventually.isNull(mysql.getBy('someTable', '_id', 1));
+            });
+
+            it('should be null if the field does not exist', function () {
+                return assert.eventually.isNull(mysql.getBy('users', 'id', 1));
+            });
+
+            it('should be null if the value does not exist', function () {
+                return assert.eventually.isNull(mysql.getBy('users', '_id', null));
+            });
         });
 
-        it('should throw an error if table does not exist', function () {
-            return assert.eventually.isNull(mysql.getBy('someTable', '_id', 1));
-        });
-
-        it('should throw an error if field does not exist', function () {
-            return assert.eventually.isNull(mysql.getBy('users', 'id', 1));
+        describe('test function getById()', function () {
+           it('shoul return a user record', async function () {
+               const dbUser = await mysql.getById('users', 1);
+               assert.equal(dbUser.name, testUser.name);
+               assert.equal(dbUser.phone, testUser.phone);
+               assert.equal(dbUser._id, 1);
+               assert.isTrue(dbUser.created_at > 0);
+           });
         });
     });
 });
@@ -61,9 +78,10 @@ function createTestUserIfDoesNotExist() {
                     const values = [ testUser.phone, testUser.name ];
                     mysql.query(request, values)
                         .then((result) => {
-                            console.log(`result2: ${JSON.stringify(result)}`)
                             resolve(result);
                         });
+                } else {
+                    resolve(null);
                 }
             })
             .catch((err) => {

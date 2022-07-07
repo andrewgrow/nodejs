@@ -32,20 +32,8 @@ function query (sql, values) {
     });
 }
 
-async function getById (table, value) {
-    return await new Promise(async (resolve, reject) => {
-        const request = `SELECT * FROM ${ table } WHERE _id = ?`;
-        const resultArray = await query(request, [ value ]);
-        if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-            resolve(resultArray[0]);
-        } else {
-            reject(new Error('Not found'));
-        }
-    }).then((result) => {
-        return result
-    }).catch(() => {
-        return null;
-    });
+function getById (table, value) {
+    return getBy(table, '_id', value);
 }
 
 function getBy(table, field, value) {
