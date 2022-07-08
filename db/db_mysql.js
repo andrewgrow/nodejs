@@ -10,8 +10,7 @@ const pool = mysql.createPool({
         database: config.name,
         password: config.password,
         port: config.port
-    }
-);
+    });
 
 function query (sql, values) {
     return new Promise((resolve, reject) => {
@@ -59,23 +58,31 @@ function getTablesList() {
             if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
                 resolve(resultArray);
             } else {
-                reject(new Error('No tables found'));
+                reject(new Error('No tables found. Did you run migrations before?'));
             }
         });
     });
 }
 
 function end() {
-    return pool.end();
+    return pool !== null && pool !== undefined && pool.end();
 }
 
-async function isDbConnected() {
+function isDbConnected() {
     console.log('check if Database is connected');
-    return await query('SELECT 1;', null).then(true).catch((_) => { return false });
+    return new Promise((resolve, _) => {
+        query('SELECT 1;', null)
+            .then((_) => {
+                resolve(true);
+            })
+            .catch((_) => {
+                resolve(false);
+            })
+    });
 }
 
 async function isDbDisconnected() {
     return !await isDbConnected(); // opposite value
 }
 
-module.exports = { query, getById, tables, getBy, getTablesList, end, isDbDisconnected };
+module.exports = { query, getById, tables, getBy, getTablesList, end, isDbConnected, isDbDisconnected };

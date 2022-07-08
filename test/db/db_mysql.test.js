@@ -61,6 +61,23 @@ describe('test ../db/db_mysql.js', function () {
            });
         });
     });
+
+    describe('test function getTablesList()', function () {
+        it('should contains 5 or more tables', function () {
+            const listLength = mysql.getTablesList().then((list => { return list.length; }));
+            return assert.eventually.isAbove(listLength, 4 );
+        });
+    });
+
+    describe('test functions isDbConnected & isDbDisconnected() when docker-compose is up', function () {
+        it('should be true', function () {
+            return assert.eventually.equal(mysql.isDbConnected(), true);
+        });
+
+        it('should be false', function () {
+            return assert.eventually.equal(mysql.isDbDisconnected(), false);
+        });
+    });
 });
 
 function createTestUserIfDoesNotExist() {
