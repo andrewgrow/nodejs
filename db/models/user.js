@@ -28,13 +28,17 @@ async function createRecord(user) {
     return result.insertId;
 }
 
-async function createRecordIfNotExists(userDao) {
+async function createRecordIfPhoneDoesNotExist(userDao) {
+    const result = {};
     const user = await findByPhone(userDao.phone);
     if (user) {
-        return null;
+        result.isNewUser = false;
+        result.user_id = user._id;
     } else {
-        return createRecord(userDao);
+        result.isNewUser = true;
+        result.user_id = await createRecord(userDao);
     }
+    return result;
 }
 
 async function forceDeleteUser(id) {
@@ -86,6 +90,6 @@ async function getUserName(userId) {
     return user.name;
 }
 
-module.exports = { findUserById, forceDeleteUser, createRecordIfNotExists, findUserByTelegramId,
-    getUserAccountResult, getCommonAccountResult, getUserName
+module.exports = { findUserById, forceDeleteUser, createRecordIfPhoneDoesNotExist, findUserByTelegramId,
+    getUserAccountResult, getCommonAccountResult, getUserName, createRecord
 }

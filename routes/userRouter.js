@@ -39,11 +39,12 @@ router.post('/', async (request, response) => {
     if (user.phone === null || user.phone === undefined || user.name === null || user.name === undefined) {
         return response.status(400).send('Bad request. User cannot be created.');
     }
-    const id = await userModel.createRecordIfNotExists(user);
-    if ( id === null) {
+    const userCreatingResult = await userModel.createRecordIfPhoneDoesNotExist(user);
+    if (userCreatingResult.isNewUser) {
+        response.status(201).send(`USER was CREATED successful with id = ${ userCreatingResult.user_id }`);
+    } else {
         return response.status(200).send('User with this phone already exists.');
     }
-    response.status(201).send(`USER was CREATED successful with id = ${ id }`);
 });
 
 router.delete('/:id', async (request, response) => {
