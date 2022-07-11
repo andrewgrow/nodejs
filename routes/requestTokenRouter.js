@@ -8,20 +8,27 @@ const router = express.Router();
 
 router.use(express.json());
 
-router.delete('/', async (request, response) => {
+router.delete('/:value', async (request, response) => {
     const value = request.paramString('value');
-    const result = await tokenModel.forceDeleteToken(value);
-    if (result != null) {
+    const affectedRows= await tokenModel.forceDeleteToken(value);
+    if (affectedRows > 0) {
+        response.setHeader('system-message', 'Token deleted successfully.');
         response.status(204).send('Token deleted successfully.');
     } else {
-        response.status(400).send('Bad. request. Token does not deleted.');
+        response.status(404).send('Token is not found.');
     }
 });
 
 router.get('/generate', async (request, response) => {
     // const length = parseInt(request.queryInt('length')) || 64;
     const userId = parseInt(request.queryInt('id')) || null;
-    const randomToken = await tokenModel.createRecord(userId);
+    const randomToken = await tokenModel.createRecord(userId)
+        .then((tokenId) => {
+            return tokenModel.getById(tokenId)
+                .then((token) => {
+                    return token.value;
+                });
+        });
     const userToken = jwtUtils.generateToken(userId) || null;
     const result = {
         "randomToken": randomToken,

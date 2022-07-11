@@ -42,5 +42,9 @@ async function forceDeleteToken(value) {
     return result.affectedRows;
 }
 
-module.exports = { findByValue, forceDeleteToken, createRecord }
+function getById(id) {
+    return mysql.getById(mysql.tables.REQUEST_TOKENS_TABLE, id);
+}
+
+module.exports = { findByValue, forceDeleteToken, createRecord, getById }
 
