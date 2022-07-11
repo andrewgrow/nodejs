@@ -19,9 +19,9 @@ router.delete('/', async (request, response) => {
 });
 
 router.get('/generate', async (request, response) => {
-    const length = parseInt(request.queryInt('length')) || 64;
+    // const length = parseInt(request.queryInt('length')) || 64;
     const userId = parseInt(request.queryInt('id')) || null;
-    const randomToken = crypto.randomBytes(length).toString('hex');
+    const randomToken = await tokenModel.createRecord(userId);
     const userToken = jwtUtils.generateToken(userId) || null;
     const result = {
         "randomToken": randomToken,
