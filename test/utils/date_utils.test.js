@@ -1,6 +1,5 @@
 'use strict';
 
-const assert = require('chai').assert;
 const dateUtils = require('../../utils/date_utils');
 
 describe("test ./utils/date_utils.js", function () {

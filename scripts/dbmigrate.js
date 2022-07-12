@@ -10,17 +10,17 @@ async function runMigration() {
     const createMigrationsSQL = "CREATE TABLE IF NOT EXISTS `migrations` (`_id` INT AUTO_INCREMENT PRIMARY KEY, `filename` TEXT, `created_at` INT DEFAULT (UNIX_TIMESTAMP())) ENGINE = InnoDB;";
     await mysql
         .query(createMigrationsSQL, null)
-        .then(checkFiles)
+        .then(getListWithNewMigrations)
         .then(newMigration)
-        .then(() => console.log("Migrations was successful!"))
-        .catch((err) => {console.error(err) });
+        .then(() => { console.log("Migrations was successful!"); })
+        .catch((err) => { console.error(err); });
 }
 
 /**
  * Take each file from the migration folder and compare with the migration table records.
  * If file does not include to the table it will be run as new migration.
  */
-async function checkFiles() {
+async function getListWithNewMigrations() {
     const fsList = await fs.promises.readdir(migrationsPath, { withFileTypes: true });
     fsList.sort(); // get a sorted files list in the Migration folder
     const filesList = fsList.map((item) => { return item.name })
@@ -33,6 +33,8 @@ async function checkFiles() {
     const doneMigrations = dbMigrations.map((item) => {
         return item.filename;
     });
+    // each file that was migrated will be filtered
+    // at the end we will get a list with migrations that was not run yet
     return filesList.filter((file) => {
         if (doneMigrations && doneMigrations.length > 0) {
             return !doneMigrations.includes(file);

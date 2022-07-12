@@ -1,10 +1,5 @@
 'use strict';
 
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
-const assert = chai.assert;
-
 const jsonWebTokenUtils = require('../../utils/jsonwebtoken_utils');
 
 // this token was generated from JWT with environment key:value JWT_SECRET='JWTSecretOrPrivateKey' for `dataDefault`;

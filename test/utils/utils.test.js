@@ -1,12 +1,6 @@
 'use strict';
 
-const chai = require("chai");
-const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
-const assert = require('chai').assert;
 const utils = require('../../utils/utils');
-const jsonWebTokenUtils = require("../../utils/jsonwebtoken_utils");
-const {sleep} = require("../../utils/utils");
 
 describe('test ./utils/utils.js', function () {
     describe('isEmpty() check if the text does not contain any data', function () {

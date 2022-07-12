@@ -1,12 +1,8 @@
 'use strict';
 
-require("chai").use(require('chai-as-promised'));
-const assert = require("chai").assert;
 const mysql = require('../../db/db_mysql');
-
 const dbMigrate = require('../../scripts/dbmigrate');
-
-const testUser = { phone: '1234567890', name: 'TestUserName' }
+const testUser = { phone: '01234567890', name: 'Test Name' }
 
 describe('test ../db/db_mysql.js', function () {
 

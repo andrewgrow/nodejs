@@ -1,7 +1,5 @@
 'use strict';
 
-require("chai").use(require('chai-as-promised'));
-const assert = require("chai").assert;
 const mysql = require('../../db/db_mysql');
 const config = require('../../db/db_config');
 

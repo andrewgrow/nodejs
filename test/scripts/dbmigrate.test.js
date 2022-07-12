@@ -1,30 +1,9 @@
 'use strict';
 
-require("chai").use(require('chai-as-promised'));
-const assert = require("chai").assert;
 const mysql = require('../../db/db_mysql');
 const dbMigrate = require('../../scripts/dbmigrate');
 
 describe('test ../scripts/dbmigrate.js', function () {
-    before('run all migrations', async function () {
-        // drop all tables if exists
-        try {
-            const tables = await mysql.getTablesList();
-            for (let table of tables) {
-                await mysql.query(`DROP TABLE IF EXISTS ${table.TABLE_NAME};`, null);
-            }
-        } catch (err) {
-            // already cleared
-        }
-        // start
-        await mysql.query('USE divotest;')
-        await dbMigrate.runMigration();
-    });
-
-    after('close connection', async function () {
-        mysql.end();
-    });
-
     describe('Test all tables migrations', function () {
         const tables = [
             {
