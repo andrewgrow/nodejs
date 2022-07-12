@@ -14,4 +14,10 @@ const tables = {
     REQUEST_TOKENS_TABLE: 'request_tokens'
 }
 
-module.exports = { name, user, password, host, port, tables };
+function isTableExists(table) {
+    if (table === null || table === undefined) return false;
+    const tableTitle = `${table.toUpperCase()}_TABLE`;
+    return tables[tableTitle] !== null && tables[tableTitle] !== undefined;
+}
+
+module.exports = { name, user, password, host, port, tables, isTableExists };

@@ -4,7 +4,7 @@ const mysql = require('../../../db/db_mysql');
 const tokenModel = require('../../../db/models/requestToken');
 const userModel = require('../../../db/models/user');
 
-const userDao = { name: 'Test Name', phone: '01234567890' };
+const userDao = require('../../factories/UserFabric').makeTestUser();
 
 describe('test ../db/models/requestToken.js', function () {
     let testToken = null;
@@ -18,11 +18,19 @@ describe('test ../db/models/requestToken.js', function () {
             return assert.isRejected(tokenModel.createRecord(1234567890));
         });
 
-        it('should be created when user is correct', function () {
-            return userModel.createRecordIfPhoneDoesNotExist(userDao)
+        it('should be created when user phone is correct', function () {
+            return userModel.createRecordIfPhoneNotExist(userDao)
                 .then((userCreatingResult) => {
                     const userId = userCreatingResult.user_id;
                     return assert.eventually.equal(tokenModel.createRecord(userId), 1);
+                });
+        });
+
+        it('should be created when user name is correct', function () {
+            return userModel.createRecordIfNameNotExist(userDao)
+                .then((userCreatingResult) => {
+                    const userId = userCreatingResult.user_id;
+                    return assert.eventually.equal(tokenModel.createRecord(userId), 2);
                 });
         });
     });

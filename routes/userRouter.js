@@ -39,7 +39,7 @@ router.post('/', async (request, response) => {
     if (user.phone === null || user.phone === undefined || user.name === null || user.name === undefined) {
         return response.status(400).send('Bad request. User cannot be created.');
     }
-    const userCreatingResult = await userModel.createRecordIfPhoneDoesNotExist(user);
+    const userCreatingResult = await userModel.createRecordIfPhoneNotExist(user);
     if (userCreatingResult.isNewUser) {
         response.status(201).send(`USER was CREATED successful with id = ${ userCreatingResult.user_id }`);
     } else {

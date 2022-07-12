@@ -29,15 +29,6 @@ async function dropAllTables() {
     } catch (err) {
         // already cleared
     }
-
-    // return Promise.resolve(mysql.getTablesList())
-    //     .then(async function (tablesList) {
-    //         for (let table of tablesList) {
-    //            await mysql.query(`DROP TABLE IF EXISTS ${table.TABLE_NAME};`, null);
-    //         }
-    //     }).catch((err) => {
-    //         console.log(`${err} : No tables found? It's ok, all dropped.`)
-    //     });
 }
 
 async function runMigrations() {

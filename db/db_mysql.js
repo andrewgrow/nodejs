@@ -64,6 +64,17 @@ function getTablesList() {
     });
 }
 
+function getAll(table) {
+    return new Promise((resolve, reject) => {
+        if (config.isTableExists(table)) {
+            const sql = `SELECT * FROM ${ table } LIMIT 1000;`
+            resolve(query(sql, null));
+        } else {
+            reject(new Error(`table ${table} does not exist.`))
+        }
+    });
+}
+
 function end() {
     return pool !== null && pool !== undefined && pool.end();
 }
@@ -85,4 +96,6 @@ async function isDbDisconnected() {
     return !await isDbConnected(); // opposite value
 }
 
-module.exports = { query, getById, tables, getBy, getTablesList, end, isDbConnected, isDbDisconnected };
+module.exports = { query, getById, tables, getBy, getTablesList, end, isDbConnected, isDbDisconnected,
+    getAll
+};

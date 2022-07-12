@@ -33,4 +33,20 @@ describe('test ./db/db_config.js', function () {
             })
         });
     });
+
+    describe('test function isTableExist()', function () {
+        it('should exist a real table', function () {
+            const realTable = config.tables.MIGRATIONS_TABLE;
+            assert.isTrue(config.isTableExists(realTable));
+        });
+
+        it('should does not exist a fake table', function () {
+            const fakeTable = 'test';
+            assert.isFalse(config.isTableExists(fakeTable));
+        });
+
+        it('should does not exist a null table', function () {
+            assert.isFalse(config.isTableExists(null));
+        });
+    });
 });

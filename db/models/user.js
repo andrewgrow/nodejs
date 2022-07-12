@@ -12,13 +12,17 @@ async function findUserById(id) {
 }
 
 async function findByPhone(value) {
-    const request = "SELECT * FROM `users` AS `u` WHERE `u`.`phone` = ? ";
+    const request = "SELECT * FROM `users` WHERE `phone` = ? ";
     const values = [ value ];
     const resultArray = await mysql.query(request, values);
     if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
         return resultArray[0];
     }
     return null;
+}
+
+function findByName(value) {
+    return mysql.getBy(mysql.tables.USERS_TABLE, 'name', value);
 }
 
 async function createRecord(user) {
@@ -28,7 +32,7 @@ async function createRecord(user) {
     return result.insertId;
 }
 
-async function createRecordIfPhoneDoesNotExist(userDao) {
+async function createRecordIfPhoneNotExist(userDao) {
     const result = {};
     const user = await findByPhone(userDao.phone);
     if (user) {
@@ -39,6 +43,28 @@ async function createRecordIfPhoneDoesNotExist(userDao) {
         result.user_id = await createRecord(userDao);
     }
     return result;
+}
+
+function createRecordIfNameNotExist(userDao) {
+    const result = {};
+    return new Promise((resolve, reject) => {
+        Promise
+            .resolve(mysql.getBy(mysql.tables.USERS_TABLE, 'name', userDao.name))
+            .then(async (dbUser) => {
+                if (dbUser) {
+                    result.isNewUser = false;
+                    result.user_id = dbUser._id;
+                } else {
+                    result.isNewUser = true;
+                    result.user_id = await createRecord(userDao);
+                }
+                resolve(result);
+            })
+            .catch((err) => {
+                console.error(err);
+                reject(err);
+            });
+    });
 }
 
 async function forceDeleteUser(id) {
@@ -90,6 +116,7 @@ async function getUserName(userId) {
     return user.name;
 }
 
-module.exports = { findUserById, forceDeleteUser, createRecordIfPhoneDoesNotExist, findUserByTelegramId,
-    getUserAccountResult, getCommonAccountResult, getUserName, createRecord
+module.exports = { findUserById, forceDeleteUser, createRecordIfPhoneNotExist, findUserByTelegramId,
+    getUserAccountResult, getCommonAccountResult, getUserName, createRecord,
+    createRecordIfNameNotExist,
 }

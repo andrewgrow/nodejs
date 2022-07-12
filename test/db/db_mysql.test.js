@@ -1,15 +1,10 @@
 'use strict';
 
 const mysql = require('../../db/db_mysql');
-const dbMigrate = require('../../scripts/dbmigrate');
-const testUser = { phone: '01234567890', name: 'Test Name' }
+const userFabric = require('../factories/UserFabric');
+const testUser = userFabric.makeTestUser();
 
 describe('test ../db/db_mysql.js', function () {
-
-    before('Check if migrations exists', async function () {
-        await dbMigrate.runMigration();
-    });
-
     describe('test function query())', function () {
         it('should return a normal array when a query is correct', function () {
             const sqlQuery = 'SELECT 1;';
@@ -27,7 +22,7 @@ describe('test ../db/db_mysql.js', function () {
 
     describe('test functions with testUser', function () {
         before('create a test record', async function () {
-            const result = await createTestUserIfDoesNotExist();
+            const result = await userFabric.createUserRecord();
             console.log(`result1: ${JSON.stringify(result)}`)
         });
 
@@ -56,12 +51,26 @@ describe('test ../db/db_mysql.js', function () {
                    .then((dbUser) => assertUser(dbUser))
            });
         });
+
+        describe('test function getAll()', function () {
+            it('should return all records from users table', function () {
+                const allUsersCount = mysql.getAll(mysql.tables.USERS_TABLE)
+                    .then((usersList) => { return usersList.length });
+                return assert.eventually.equal(allUsersCount, 1);
+            });
+
+            it('should return 2 or more records from migrations table', function () {
+                const allMigrationsCount = mysql.getAll(mysql.tables.MIGRATIONS_TABLE)
+                    .then((migrationsList) => { return migrationsList.length });
+                return assert.eventually.isAtLeast(allMigrationsCount, 2);
+            });
+        });
     });
 
     describe('test function getTablesList()', function () {
         it('should contains 5 or more tables', function () {
             const listLength = mysql.getTablesList().then((list => { return list.length; }));
-            return assert.eventually.isAbove(listLength, 4 );
+            return assert.eventually.isAtLeast(listLength, 5);
         });
     });
 
@@ -75,28 +84,6 @@ describe('test ../db/db_mysql.js', function () {
         });
     });
 });
-
-function createTestUserIfDoesNotExist() {
-    return new Promise((resolve, reject) => {
-        mysql.getBy('users', 'name', testUser.name)
-            .then((dbUser) => {
-                if (dbUser === null) {
-                    const request = "INSERT INTO users (`phone`, `name`) VALUES (?, ?);";
-                    const values = [ testUser.phone, testUser.name ];
-                    mysql.query(request, values)
-                        .then((creatingResult) => {
-                            resolve(creatingResult);
-                        });
-                } else {
-                    resolve(dbUser);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                reject(err);
-        })
-    });
-}
 
 function assertUser(dbUser) {
     assert.isNotNull(dbUser);
