@@ -1,21 +1,26 @@
 'use strict';
 
 const userModel = require('../../db/models/user');
-const mysql = require('../../db/db_mysql');
-
-class User {
-    constructor(name = 'Test Name', phone = '01234567890') {
-        this.name = name;
-        this.phone = phone;
-    }
-}
+const telegramModel = require('../../db/models/telegram');
+const { UserDAO } = require('../../db/models/user');
+const defaultPhone = '01234567890';
+const defaultName = 'Test Name';
 
 function makeTestUser() {
-    return new User();
+    return new UserDAO(defaultPhone, defaultName);
 }
 
-function createUserRecord(user = new User()) {
+function createUserRecord(user = makeTestUser()) {
     return userModel.createRecordIfNameNotExist(user);
 }
 
-module.exports = { makeTestUser, createUserRecord }
+function createTelegramChatForUser(user, chat) {
+    return new Promise((resolve, _) => {
+       telegramModel.createTelegramUser(user, chat)
+           .then((telegramUserId) => {
+               resolve(telegramModel.getChatByLocalId(telegramUserId));
+           });
+    });
+}
+
+module.exports = { makeTestUser, createUserRecord, createTelegramChatForUser }

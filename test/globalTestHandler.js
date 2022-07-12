@@ -2,8 +2,7 @@
 
 const mysql = require('../db/db_mysql');
 const dbMigrate = require('../scripts/dbmigrate');
-global.chai = require("chai");
-global.chai.use(require('chai-as-promised'));
+require("chai").use(require('chai-as-promised'));
 global.assert = require("chai").assert;
 
 // global handlers

@@ -5,6 +5,11 @@ const telegramModel = require('./telegram');
 
 class UserDAO {
     _id; phone; name;
+
+    constructor(phoneArg, nameArg) {
+        this.phone = phoneArg;
+        this.name = nameArg;
+    }
 }
 
 async function findUserById(id) {
@@ -118,5 +123,5 @@ async function getUserName(userId) {
 
 module.exports = { findUserById, forceDeleteUser, createRecordIfPhoneNotExist, findUserByTelegramId,
     getUserAccountResult, getCommonAccountResult, getUserName, createRecord,
-    createRecordIfNameNotExist,
+    createRecordIfNameNotExist, UserDAO
 }
