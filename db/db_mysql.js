@@ -31,8 +31,8 @@ function query (sql, values) {
     });
 }
 
-function getById (table, value) {
-    return getBy(table, '_id', value);
+function getById (table, id) {
+    return getBy(table, '_id', id);
 }
 
 function getBy(table, field, value) {

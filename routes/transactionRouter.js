@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const transactionModel = require("../db/models/tranzaction");
+const transactionModel = require("../db/models/transaction");
 const utils = require('../utils/utils');
 const tgUtils = require('../telegram/telegramUtils');
 const router = express.Router();
