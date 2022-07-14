@@ -75,6 +75,22 @@ function getAll(table) {
     });
 }
 
+function getLastRecord(table) {
+    return new Promise((resolve, _) => {
+        const sql = `SELECT * FROM ${table} ORDER BY _id DESC LIMIT 1`;
+        query(sql, [table]).then((result) => {
+            if (result !== null && result.length !== 0) {
+                resolve(result[0]);
+            } else {
+                resolve(null);
+            }
+        }).catch((err) => {
+            console.error(err);
+            resolve(null);
+        })
+    });
+}
+
 function end() {
     return pool !== null && pool !== undefined && pool.end();
 }
@@ -97,5 +113,5 @@ async function isDbDisconnected() {
 }
 
 module.exports = { query, getById, tables, getBy, getTablesList, end, isDbConnected, isDbDisconnected,
-    getAll
+    getAll, getLastRecord
 };

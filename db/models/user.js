@@ -4,7 +4,7 @@ const mysql = require('../db_mysql');
 const telegramModel = require('./telegram');
 
 class UserDAO {
-    _id; phone; name;
+    _id; phone; name; created_at;
 
     constructor(phoneArg, nameArg) {
         this.phone = phoneArg;
@@ -12,22 +12,16 @@ class UserDAO {
     }
 }
 
-async function findUserById(id) {
-    return await mysql.getById(mysql.tables.USERS_TABLE, id);
+function findUserById(id) {
+    return mysql.getById(mysql.tables.USERS_TABLE, id);
 }
 
-async function findByPhone(value) {
-    const request = "SELECT * FROM `users` WHERE `phone` = ? ";
-    const values = [ value ];
-    const resultArray = await mysql.query(request, values);
-    if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
-        return resultArray[0];
-    }
-    return null;
+async function findByPhone(phone) {
+    return mysql.getBy(mysql.tables.USERS_TABLE, 'phone', phone);
 }
 
-function findByName(value) {
-    return mysql.getBy(mysql.tables.USERS_TABLE, 'name', value);
+function findByName(name) {
+    return mysql.getBy(mysql.tables.USERS_TABLE, 'name', name);
 }
 
 async function createRecord(user) {
@@ -53,8 +47,7 @@ async function createRecordIfPhoneNotExist(userDao) {
 function createRecordIfNameNotExist(userDao) {
     const result = {};
     return new Promise((resolve, reject) => {
-        Promise
-            .resolve(mysql.getBy(mysql.tables.USERS_TABLE, 'name', userDao.name))
+        findByName(userDao.name)
             .then(async (dbUser) => {
                 if (dbUser) {
                     result.isNewUser = false;
@@ -122,6 +115,6 @@ async function getUserName(userId) {
 }
 
 module.exports = { findUserById, forceDeleteUser, createRecordIfPhoneNotExist, findUserByTelegramId,
-    getUserAccountResult, getCommonAccountResult, getUserName, createRecord,
+    getUserAccountResult, getCommonAccountResult, getUserName, createRecord, findByPhone,
     createRecordIfNameNotExist, UserDAO
 }

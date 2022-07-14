@@ -83,6 +83,28 @@ describe('test ../db/db_mysql.js', function () {
             return assert.eventually.equal(mysql.isDbDisconnected(), false);
         });
     });
+
+    describe('test function getLastRecord()', function () {
+        let expectedElement;
+        before('prepare list with known values and ids', async function () {
+            expectedElement = await mysql.getAll(mysql.tables.MIGRATIONS_TABLE)
+                .then((list) => {
+                    return list.slice(-1)[0]; // get last element of the array
+                }).then((obj) => {
+                    return JSON.stringify(obj); // transform to json
+                });
+        });
+        it ('should be equal', function () {
+            const actualElement = mysql.getLastRecord(mysql.tables.MIGRATIONS_TABLE)
+                .then((obj) => {
+                    return JSON.stringify(obj); // transform to json
+                });
+            return assert.eventually.equal(actualElement, expectedElement);
+        });
+        it ('should be null if table is wrong', function () {
+            return assert.eventually.isNull(mysql.getLastRecord('test'));
+        });
+    });
 });
 
 function assertUser(dbUser) {
