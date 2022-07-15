@@ -3,6 +3,7 @@
 const mysql = require('../../../db/db_mysql');
 const userFabric = require('../../factories/UserFabric');
 const userModel = require('../../../db/models/user');
+const utils = require('../../../utils/utils');
 let testUser;
 
 describe('test ../db/models/user.js', function () {
@@ -61,4 +62,24 @@ describe('test ../db/models/user.js', function () {
             return assert.eventually.isNull(userModel.forceDeleteUser(lastTestUserId + 1));
         });
     });
+    describe('test function createRecordIfPhoneNotExist()', function () {
+        const randomPhone = utils.getRandomInt(380000000000, 380999999999);
+
+        it('should be created and more then last user', async function () {
+            const lastTestUserId = await mysql.getLastRecord(mysql.tables.USERS_TABLE)
+                .then((user) => { return user._id });
+            const newUserId = userModel.createRecordIfPhoneNotExist({ phone: randomPhone, name: 'Test Name' })
+                .then((result) => { return result.user_id; })
+            return assert.eventually.isAbove(newUserId, lastTestUserId);
+        });
+        it('should cannot be created if phone already exists', async function () {
+            const lastTestUserId = await mysql.getLastRecord(mysql.tables.USERS_TABLE)
+                .then((user) => { return user._id });
+            const newUserId = userModel.createRecordIfPhoneNotExist({ phone: randomPhone, name: 'Test Name' })
+                .then((result) => { return result.user_id; })
+            return assert.eventually.equal(newUserId, lastTestUserId);
+        });
+    });
+
+    describe('test function ')
 });

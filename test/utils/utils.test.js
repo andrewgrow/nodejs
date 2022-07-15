@@ -96,4 +96,33 @@ describe('test ./utils/utils.js', function () {
             assert.equal(utils.replaceCommaToDot(123.45), "123.45");
         });
     });
+
+    describe('test function getRandomArbitrary()', function () {
+
+    });
+
+    describe('test functions getRandomInt() & getRandomArbitrary()', function () {
+        const ranges = [[0, 1], [0, 10], [0, 100], [0, 1000], [0, 10000], [0, 100000], [0, 1000000],
+            [0, 10000000], [0, 100000000], [0, 1000000000], [0, 10000000000], [0, 100000000000], [0, 1000000000000]];
+        it('should be in range when call getRandomInt()', function () {
+            let minValue, maxValue, result;
+            for (let range of ranges) {
+                minValue = range[0];
+                maxValue = range[1];
+                result = utils.getRandomInt(range[0], range[1]);
+                assert.isAtLeast(result, minValue);
+                assert.isAtMost(result, maxValue);
+            }
+        });
+        it('should be in range when call getRandomArbitrary()', function () {
+            let minValue, maxValue, result;
+            for (let range of ranges) {
+                minValue = range[0];
+                maxValue = range[1] + 1;
+                result = utils.getRandomArbitrary(range[0], range[1]);
+                assert.isAtLeast(result, minValue);
+                assert.isAtMost(result, maxValue);
+            }
+        });
+    });
 });

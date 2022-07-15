@@ -41,4 +41,26 @@ function replaceCommaToDot(text) {
     return text;
 }
 
-module.exports = { isEmpty, isWrongInt, sleep, replaceCommaToDot }
+/**
+ * Returns a random number between min (inclusive) and max (exclusive).
+ * For example, in range [0 - 10001], result 2359.43363306518
+ */
+function getRandomArbitrary(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * The value is no lower than min (or the next integer greater than min
+ * if min isn't an integer) and no greater than max (or the next integer
+ * lower than max if max isn't an integer).
+ * Using Math.round() will give you a non-uniform distribution!
+ * For example, in range [0 - 10001], result 2359
+ */
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+module.exports = { isEmpty, isWrongInt, sleep, replaceCommaToDot, getRandomArbitrary, getRandomInt }
