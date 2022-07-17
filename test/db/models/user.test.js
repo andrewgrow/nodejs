@@ -81,5 +81,22 @@ describe('test ../db/models/user.js', function () {
         });
     });
 
-    describe('test function ')
+    describe('test function findUserByTelegramId()', function () {
+        before('make tgChat for testUser if it did not create', async function() {
+            await userFabric.createTelegramChatForUser(testUser._id, userFabric.defaultChatUid);
+        });
+        it ('should be the same user as testUser from the chat', function () {
+            const foundUser = userModel.findUserByTelegramId(userFabric.defaultChatUid)
+                .then((user) => {
+                    return JSON.stringify(user);
+                });
+            return assert.eventually.equal(foundUser, JSON.stringify(testUser));
+        });
+        it('should be null if chatUid does not exist', function () {
+            return assert.eventually.isNull(userModel.findUserByTelegramId('test'));
+        });
+        it('should be null if chatUid is null', function () {
+            return assert.eventually.isNull(userModel.findUserByTelegramId(null));
+        });
+    });
 });

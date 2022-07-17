@@ -44,6 +44,7 @@ async function createRecordIfPhoneNotExist(userDao) {
     return result;
 }
 
+/* use this function for tests only */
 function createRecordIfNameNotExist(userDao) {
     const result = {};
     return new Promise((resolve, reject) => {
@@ -73,8 +74,8 @@ async function forceDeleteUser(id) {
     return null;
 }
 
-async function findUserByTelegramId(chatId) {
-    const chat = await telegramModel.getChatBy(chatId);
+async function findUserByTelegramId(chatUid) {
+    const chat = await telegramModel.getChatBy(chatUid);
     if (chat == null) {
         return null;
     }

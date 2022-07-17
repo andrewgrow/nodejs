@@ -6,8 +6,8 @@ class TelegramMessage {
     chat; reply_to_message;
 }
 
-function getChatByLocalId(localId) {
-    return mysql.getById(mysql.tables.TELEGRAM_USERS_TABLE, localId);
+function getChatByLocalId(_id) {
+    return mysql.getById(mysql.tables.TELEGRAM_USERS_TABLE, _id);
 }
 
 function getChatBy(chatUid) {

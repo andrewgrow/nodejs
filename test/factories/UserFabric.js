@@ -5,22 +5,23 @@ const telegramModel = require('../../db/models/telegram');
 const { UserDAO } = require('../../db/models/user');
 const defaultPhone = '01234567890';
 const defaultName = 'Test Name';
+const defaultChatUid = '123456789AA';
 
 function makeTestUser() {
     return new UserDAO(defaultPhone, defaultName);
 }
 
 function createUserRecord(user = makeTestUser()) {
-    return userModel.createRecordIfNameNotExist(user);
+    return userModel.createRecordIfPhoneNotExist(user);
 }
 
-function createTelegramChatForUser(user, chat) {
+function createTelegramChatForUser(userId, chatUid) {
     return new Promise((resolve, _) => {
-       telegramModel.createTelegramUser(user, chat)
+       telegramModel.createTelegramUser(userId, chatUid)
            .then((telegramUserId) => {
                resolve(telegramModel.getChatByLocalId(telegramUserId));
            });
     });
 }
 
-module.exports = { makeTestUser, createUserRecord, createTelegramChatForUser }
+module.exports = { makeTestUser, createUserRecord, createTelegramChatForUser, defaultChatUid }

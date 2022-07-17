@@ -2,7 +2,7 @@
 
 const telegramModel = require('../../../db/models/telegram');
 const userFabric = require('../../factories/UserFabric');
-const chatUid = '123456789AA';
+const chatUid = userFabric.defaultChatUid;
 let testUser, testTgChat;
 
 describe('test ../db/models/telegram.js', function () {
