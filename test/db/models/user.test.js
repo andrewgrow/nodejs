@@ -99,4 +99,31 @@ describe('test ../db/models/user.js', function () {
             return assert.eventually.isNull(userModel.findUserByTelegramId(null));
         });
     });
+
+    describe('test function getUserAccountResult() and getCommonAccountResult', function () {
+        before('create some transactions for user and get sum result it tests', async function () {
+            const sql = `INSERT INTO account_transactions (contractor_id, author_id, 
+                                  sum, currency, type) VALUES (?, ?, ?, ?, ?);`;
+            await mysql.query(sql, [1, 1, -12345, 'UAH', 'refill']);
+            await mysql.query(sql, [1, 1, 12345, 'UAH', 'deposit']);
+        });
+        it('should be 0 because + and - ACCOUNT operations is equivalent', function () {
+            return assert.eventually.equal(userModel.getUserAccountResult(1), '0.00');
+        });
+        it('should be 0 because + and - COMMON operations is equivalent', function () {
+            return assert.eventually.equal(userModel.getCommonAccountResult(), '0.00');
+        });
+    });
+
+    describe('test function getUserName()', function () {
+        it('should be the same as test User Name', function () {
+           return assert.eventually.equal(userModel.getUserName(testUser._id), testUser.name);
+        });
+        it('should be null if user does not exist', function () {
+            return assert.eventually.isNull(userModel.getUserName(12345));
+        });
+        it('should be null if user id is null', function () {
+            return assert.eventually.isNull(userModel.getUserName(null));
+        });
+    });
 });
