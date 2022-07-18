@@ -95,7 +95,7 @@ async function getUserAccountResult(userId) {
     if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
         return (resultArray[0].user_account_result * 0.01).toFixed(2) ;
     }
-    return null;
+    return '0.00';
 }
 
 async function getCommonAccountResult() {
@@ -104,7 +104,7 @@ async function getCommonAccountResult() {
     if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
         return (resultArray[0].common_account_result * 0.01).toFixed(2);
     }
-    return null;
+    return '0.00';
 }
 
 async function getUserName(userId) {

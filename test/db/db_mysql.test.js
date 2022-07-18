@@ -102,7 +102,7 @@ describe('test ../db/db_mysql.js', function () {
             return assert.eventually.equal(actualElement, expectedElement);
         });
         it ('should be null if table is wrong', function () {
-            return assert.eventually.isNull(mysql.getLastRecord('test'));
+            return assert.eventually.isNull(mysql.getLastRecord('check_wrong_table'));
         });
     });
 });
