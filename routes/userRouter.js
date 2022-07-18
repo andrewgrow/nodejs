@@ -15,7 +15,7 @@ router.use((request, response, next) => {
 });
 
 router.get('/:id', async (request, response) => {
-    const id = request.paramInt('id');
+    const id = request.params['id'];
     if (id === null || id === undefined || isNaN(id)) {
         return response.status(400).send('Bad Request');
     }
@@ -33,8 +33,8 @@ router.post('/', async (request, response) => {
         return response.status(400).send('Bad request. User cannot be created.');
     }
     const user = {
-        phone: request.bodyString('phone'),
-        name: request.bodyString('name')
+        phone: request.body['phone'],
+        name: request.body['name']
     };
     if (user.phone === null || user.phone === undefined || user.name === null || user.name === undefined) {
         return response.status(400).send('Bad request. User cannot be created.');
@@ -48,7 +48,7 @@ router.post('/', async (request, response) => {
 });
 
 router.delete('/:id', async (request, response) => {
-    const id = request.paramInt('id');
+    const id = request.params['id'];
     if (id === null || id === undefined || isNaN(id) || id < 1) {
         return response.status(304).send('User with this id does not exist.');
     }

@@ -21,7 +21,6 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "node-telegram-bot-api": "^0.57.0",
-    "sanitize": "^2.1.0",
     "zlib": "^1.0.5"
   },
   "devDependencies": {

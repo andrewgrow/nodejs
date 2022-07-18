@@ -57,7 +57,7 @@ function isPageOnlyRequestToken(request) {
 
 function isAuthTokenValid(request) {
     return new Promise(async (resolve, reject) => {
-        const authHeaderToken = request.headerString('authorization');
+        const authHeaderToken = request.headers['authorization'];
         if (authHeaderToken == null || !authHeaderToken) {
             return reject('401');
         }
