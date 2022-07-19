@@ -1,14 +1,14 @@
 'use strict';
 
 const mysql = require('../../../db/db_mysql');
-const userFabric = require('../../factories/UserFabric');
+const userMock = require('../../factories/user_mock');
 const userModel = require('../../../db/models/user');
 const utils = require('../../../utils/utils');
 let testUser;
 
 describe('test ../db/models/user.js', function () {
     before('create test user', async function () {
-        const record = await userFabric.createUserRecord();
+        const record = await userMock.createUserRecordWithTestData();
         testUser = await mysql.getById(mysql.tables.USERS_TABLE, record.user_id);
     });
     describe('test function findUserById()', function () {
@@ -83,10 +83,10 @@ describe('test ../db/models/user.js', function () {
 
     describe('test function findUserByTelegramId()', function () {
         before('make tgChat for testUser if it did not create', async function() {
-            await userFabric.createTelegramChatForUser(testUser._id, userFabric.defaultChatUid);
+            await userMock.createTestTelegramUser(testUser._id, userMock.defaultChatUid);
         });
         it ('should be the same user as testUser from the chat', function () {
-            const foundUser = userModel.findUserByTelegramId(userFabric.defaultChatUid)
+            const foundUser = userModel.findUserByTelegramId(userMock.defaultChatUid)
                 .then((user) => {
                     return JSON.stringify(user);
                 });

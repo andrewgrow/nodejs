@@ -1,14 +1,14 @@
 'use strict';
 
 const telegramModel = require('../../../db/models/telegram');
-const userFabric = require('../../factories/UserFabric');
-const chatUid = userFabric.defaultChatUid;
+const userMock = require('../../factories/user_mock');
+const chatUid = userMock.defaultChatUid;
 let testUser, testTgChat;
 
 describe('test ../db/models/telegram.js', function () {
     before('create test user', async function () {
-        testUser = await userFabric.createUserRecord();
-        testTgChat = await userFabric.createTelegramChatForUser(testUser.user_id, chatUid);
+        testUser = await userMock.createUserRecordWithTestData();
+        testTgChat = await userMock.createTestTelegramUser(testUser.user_id, chatUid);
     });
 
     describe('test function getChatBy()', function () {

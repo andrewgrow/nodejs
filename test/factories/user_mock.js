@@ -7,15 +7,15 @@ const defaultPhone = '01234567890';
 const defaultName = 'Test Name';
 const defaultChatUid = '123456789AA';
 
-function makeTestUser() {
+function getSimpleTestUser() {
     return new UserDAO(defaultPhone, defaultName);
 }
 
-function createUserRecord(user = makeTestUser()) {
+function createUserRecordWithTestData(user = getSimpleTestUser()) {
     return userModel.createRecordIfPhoneNotExist(user);
 }
 
-function createTelegramChatForUser(userId, chatUid) {
+function createTestTelegramUser(userId, chatUid) {
     return new Promise((resolve, _) => {
        telegramModel.createTelegramUser(userId, chatUid)
            .then((telegramUserId) => {
@@ -24,4 +24,4 @@ function createTelegramChatForUser(userId, chatUid) {
     });
 }
 
-module.exports = { makeTestUser, createUserRecord, createTelegramChatForUser, defaultChatUid }
+module.exports = { getSimpleTestUser, createUserRecordWithTestData, createTestTelegramUser, defaultChatUid }

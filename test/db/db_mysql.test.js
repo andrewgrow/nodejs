@@ -1,8 +1,8 @@
 'use strict';
 
 const mysql = require('../../db/db_mysql');
-const userFabric = require('../factories/UserFabric');
-const testUser = userFabric.makeTestUser();
+const userMock = require('../factories/user_mock');
+const testUser = userMock.getSimpleTestUser();
 
 describe('test ../db/db_mysql.js', function () {
     describe('test function query())', function () {
@@ -21,15 +21,15 @@ describe('test ../db/db_mysql.js', function () {
     });
 
     describe('test functions with testUser', function () {
+        let expectedUserId;
         before('create a test record', async function () {
-            const result = await userFabric.createUserRecord();
-            console.log(`result1: ${JSON.stringify(result)}`)
+            expectedUserId = await userMock.createUserRecordWithTestData().then((result) => { return result.user_id });
         });
 
         describe('test function getBy()', function () {
             it('should return a normal result if a query is correct', async function () {
                 mysql.getBy('users', 'name', testUser.name)
-                    .then((dbUser) => assertUser(dbUser))
+                    .then((dbUser) => assertUser(dbUser, expectedUserId))
             });
 
             it('should be null if the table does not exist', function () {
@@ -107,11 +107,11 @@ describe('test ../db/db_mysql.js', function () {
     });
 });
 
-function assertUser(dbUser) {
+function assertUser(dbUser, expectedUserId) {
     assert.isNotNull(dbUser);
     assert.equal(dbUser.name, testUser.name);
     assert.equal(dbUser.phone, testUser.phone);
-    assert.equal(dbUser._id, 1);
+    assert.equal(dbUser._id, expectedUserId);
     assert.isTrue(dbUser.created_at > 0);
 }
 

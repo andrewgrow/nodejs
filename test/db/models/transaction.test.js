@@ -2,15 +2,15 @@
 
 const mysql = require('../../../db/db_mysql');
 const transactionModel = require('../../../db/models/transaction');
-const userFabric = require("../../factories/UserFabric");
+const userMock = require("../../factories/user_mock");
 
 describe('test ../db/models/transaction.js', function () {
     before('create test user', async function () {
-        return await userFabric.createUserRecord();
+        return await userMock.createUserRecordWithTestData();
     });
     describe('test function addRefill()', function () {
         it('should create new record with refill', function () {
-            const insertId = transactionModel.addRefill(1, 1, 123.45);
+            const insertId = transactionModel.addRefill(userMock.user_id, userMock.user_id, 123.45);
             return assert.eventually.equal(insertId, 1);
         });
         it ('should be -12345', function () {
@@ -23,7 +23,7 @@ describe('test ../db/models/transaction.js', function () {
     });
     describe('test function addDeposit()', function () {
         it('should create new record with deposit', function () {
-            const insertId = transactionModel.addDeposit(1, 1, 123.45);
+            const insertId = transactionModel.addDeposit(userMock.user_id, userMock.user_id, 123.45);
             return assert.eventually.equal(insertId, 2);
         });
         it('should be 12345', function () {
