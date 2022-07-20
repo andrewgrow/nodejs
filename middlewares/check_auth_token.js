@@ -22,8 +22,8 @@ async function authenticateToken(request, response, next) {
     await isAuthTokenValid(request)
         .catch((err) => {
             switch (err) {
-                case '401': return response.status(401).send('Authorization Token does not exist.');
-                case '403': return response.status(403).send('Authorization Token is not valid.');
+                case '401': response.status(401).send('Authorization Token does not exist.'); break;
+                case '403': response.status(403).send('Authorization Token is not valid.'); break;
                 default: break;
             }
         })

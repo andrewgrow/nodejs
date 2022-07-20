@@ -14,8 +14,12 @@ function createResponse() {
     }
 }
 
-function next() {
+function nextWithTrue() {
     return true;
 }
 
-module.exports = { createResponse, next }
+function nextWithError() {
+    throw new Error('This Mocked Object not allowed to call.')
+}
+
+module.exports = { createResponse, nextWithTrue, nextWithError }
