@@ -6,9 +6,18 @@ const { createResponse, nextWithTrue, nextWithError } = require("../factories/ht
 
 describe('test ../middlewares/check_auth_token.js', function () {
     describe('test function authenticateToken()', function () {
-
         it('should call next function when request.url is /', function () {
             const  request = { url: "/" };
+            const response = createResponse();
+            return assert.eventually.equal(checkAuthToken.authenticateToken(request, response, nextWithTrue), true);
+        });
+        it('should call next function when request.url is double //', function () {
+            const  request = { url: "//" };
+            const response = createResponse();
+            return assert.eventually.equal(checkAuthToken.authenticateToken(request, response, nextWithTrue), true);
+        });
+        it('should call next function when request.url is token generate/', function () {
+            const  request = { url: "/token/generate?user=1", headers: { "authorization" : "not_existing_token" } };
             const response = createResponse();
             return assert.eventually.equal(checkAuthToken.authenticateToken(request, response, nextWithTrue), true);
         });
