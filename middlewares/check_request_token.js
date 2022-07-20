@@ -10,7 +10,10 @@ async function requestToken(request, response, next) {
 
     // each page must have the Request token and the Auth Token
     // for the start we will check the Request token
-    await isRequestTokenValid(request).catch((err) => { return response.status(400).send(err) });
+    await isRequestTokenValid(request)
+        .catch((err) => {
+            return response.status(400).send(err)
+        });
     // if after awaiting it has returned status 400 we will return this response
     if (response.statusCode === 400) {
         return response;

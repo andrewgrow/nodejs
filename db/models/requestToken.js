@@ -46,5 +46,10 @@ function getById(id) {
     return mysql.getById(mysql.tables.REQUEST_TOKENS_TABLE, id);
 }
 
-module.exports = { findByValue, forceDeleteToken, createRecord, getById }
+function setExpireData(expireData, id) {
+    const sql = 'UPDATE request_tokens SET expire_at = ? WHERE _id = ?;';
+    return mysql.query(sql, [expireData, id]);
+}
+
+module.exports = { findByValue, forceDeleteToken, createRecord, getById, setExpireData }
 

@@ -22,4 +22,11 @@ function nextWithError() {
     throw new Error('This Mocked Object not allowed to call.')
 }
 
-module.exports = { createResponse, nextWithTrue, nextWithError }
+function createRequest(req = { }) {
+    if (req.url === undefined) { req.url = '/'; }
+    if (req.headers === undefined) { req.headers = {'authorization' : ''}; }
+    if (req.method === undefined) { req.method = 'GET'; }
+    return req;
+}
+
+module.exports = { createRequest, createResponse, nextWithTrue, nextWithError }
