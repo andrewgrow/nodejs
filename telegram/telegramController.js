@@ -75,7 +75,7 @@ async function listenerDepositMessage(msg, match) {
     }
 
     if (await isRestrictedToWrite(chatId)) {
-        return;
+        return 'user not able to write to this chat';
     }
 
     const message = tgUtils.getMessageWithoutCommand(msg, '/deposit');
@@ -107,7 +107,7 @@ async function listenerRefillMessage(msg, match) {
     }
 
     if (await isRestrictedToWrite(chatId)) {
-        return;
+        return 'user not able to write to this chat';
     }
 
     const message = tgUtils.getMessageWithoutCommand(msg, '/refill');
@@ -138,7 +138,7 @@ async function listenerSendToAllMessage(msg, match) {
     }
 
     if (await isRestrictedToWrite(chatId)) {
-        return;
+        return 'user not able to write to this chat';
     }
 
     const messageToAll = tgUtils.getMessageWithoutCommand(msg, '/all');
@@ -192,4 +192,4 @@ async function isRestrictedToWrite(id) {
     return chatInDb === null;
 }
 
-module.exports = { startTelegramBot, listenerStartMessage }
+module.exports = { startTelegramBot, listenerStartMessage, listenerDepositMessage }

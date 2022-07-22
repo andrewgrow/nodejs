@@ -31,7 +31,7 @@ describe('test ../telegram/telegramController.js', function () {
             assert.equal(resultObject.message, 'Received your command, but not recognized it.');
         });
         it('should return error message when user is unknown for system', function () {
-            const msg = { chat: { id : 1 }, text: 'test message', form: null };
+            const msg = { chat: { id : 99999 }, text: 'test message', form: null };
             const methodCall = controller.listenerStartMessage(msg, null);
             return assert.eventually.equal(methodCall, 'user not able to write to this chat');
         });
@@ -45,6 +45,12 @@ describe('test ../telegram/telegramController.js', function () {
             await controller.listenerStartMessage(msg, null);
             assert.equal(resultObject.chat_id, tgChat.chat_id);
             assert.equal(resultObject.message, 'Hi Test Name!  Личный счёт 0.00 грн. Общий счёт 0.00 грн.');
+        });
+    });
+    describe('test function listenerDepositMessage()', function () {
+        it('should be return error message if user is wrong', function () {
+            const msg = { chat: { id : 99999 }, text: 'test message', form: null };
+            return assert.eventually.equal(controller.listenerDepositMessage(msg, null), "user not able to write to this chat");
         });
     });
 });

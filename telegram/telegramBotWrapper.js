@@ -53,7 +53,7 @@ function addSenderListener(listener) {
 }
 
 class LocalStubBot {
-    senderListener;
+    senderListener; // listen to output send messages (emulate an external receiver).
     onText() {};
     onReplyToMessage() {};
     getMe() { return 'Initiated LocalStubBot! Be aware with messaging, sending does not work!' };
