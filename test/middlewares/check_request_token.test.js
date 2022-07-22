@@ -3,9 +3,10 @@
 const checkRequestToken = require('../../middlewares/check_request_token');
 const tokenModel = require('../../db/models/requestToken');
 const userMock = require('../factories/user_mock');
+const dateUtils = require('../../utils/date_utils');
 const { createRequest, createResponse, nextWithTrue, nextWithError } = require("../factories/http_mock");
 
-describe.only('test ../middlewares/check_request_token.js', function () {
+describe('test ../middlewares/check_request_token.js', function () {
     describe('test function requestToken()', function () {
         it('should be call next if url is /', function () {
             const request = createRequest();
@@ -52,6 +53,16 @@ describe.only('test ../middlewares/check_request_token.js', function () {
             const responseResult = await checkRequestToken.requestToken(request, response, nextWithTrue);
             assert.equal(responseResult.statusCode, 400);
             assert.equal(responseResult.message, 'Request Token is expired.');
+        });
+        it('should return true if the token has a date of expire but correct yet', async function () {
+            const request = createRequest({ url: '/testPage' });
+            const response = createResponse();
+            const userId = await userMock.createUserRecordWithTestData().then((result) => { return result.user_id })
+            const requestTokenId = await tokenModel.createRecord(userId);
+            const validRequestToken = await tokenModel.getById(requestTokenId);
+            await tokenModel.setExpireData(dateUtils.currentDateAsUnixTimestamp() + 1000, requestTokenId);
+            request.headers['request-token'] = `${ validRequestToken.value }`;
+            return assert.eventually.equal(checkRequestToken.requestToken(request, response, nextWithTrue), true);
         });
     });
 });
