@@ -151,6 +151,7 @@ async function sendTransaction(contractorUserId, text) {
         await utils.sleep(1000);
         await tgWrapper.sendMessage(chat.chat_id, text);
     }
+    return true;
 }
 
 async function showUserAccountResult(senderChatId) {

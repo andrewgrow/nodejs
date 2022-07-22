@@ -78,10 +78,14 @@ describe('test ../db/models/telegram.js', function () {
        });
         it('should be return new telegramUser._id if chatUid is new', function () {
             const expectCreatedId = 2;
-            const testChatUid = 'testChatUid';
-            return assert.eventually.equal(
-                telegramModel.createTelegramUser(1, testChatUid), expectCreatedId
-            );
+            const testChatUid = '222222';
+            telegramModel.createTelegramUser(1, testChatUid)
+                .then((tgUserId) => {
+                    assert.equal(tgUserId, expectCreatedId);
+                    return tgUserId;
+                }).then((local_id) => {
+                    telegramModel.deleteChatById(local_id);
+                });
         });
     });
 });

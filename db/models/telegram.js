@@ -58,6 +58,11 @@ function createTelegramUser(userId, chatUid) {
     });
 }
 
+function deleteChatById(localId) {
+    const sql = 'DELETE FROM telegram_users WHERE _id = ?;'
+    return mysql.query(sql, [localId]);
+}
+
 module.exports = { getChatBy, getChatsList, getChatsListByUser, isDbDisconnected, createTelegramUser,
-    getChatByLocalId
+    getChatByLocalId, deleteChatById
 }

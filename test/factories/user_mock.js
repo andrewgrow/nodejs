@@ -5,7 +5,7 @@ const telegramModel = require('../../db/models/telegram');
 const { UserDAO } = require('../../db/models/user');
 const defaultPhone = '01234567890';
 const defaultName = 'Test Name';
-const defaultChatUid = '123456789AA';
+const defaultChatUid = '1234567890';
 
 function getSimpleTestUser() {
     return new UserDAO(defaultPhone, defaultName);

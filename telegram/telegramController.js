@@ -1,14 +1,14 @@
 'use strict';
 
 /**
- * Telegram Controller is handle requests from incoming messages and prepare answers.
+ * Telegram Controller is handle requests from incoming messages of bot and prepare answers.
  */
 
 const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
 const tgUtils = require('./telegramUtils');
 
-let isRunning = false;
+let isStarted = false;
 
 const form = {
     reply_markup: {
@@ -17,15 +17,20 @@ const form = {
 };
 
 async function startTelegramBot() {
-    if (isRunning) {
-        return;
+    if (isStarted) {
+        return isStarted;
     }
 
     if (await model.isDbDisconnected()) {
         throw new Error('DB is disconnected. Cannot start working.')
     }
 
-    tgUtils.startTelegramBot().then(addListenersToTelegramBot);
+    return tgUtils.startTelegramBot()
+        .then(addListenersToTelegramBot)
+        .then(() => {
+            isStarted = true;
+            return isStarted;
+        });
 }
 
 function addListenersToTelegramBot() {
@@ -50,7 +55,7 @@ async function listenerStartMessage(msg, match) {
     }
 
     if (await isRestrictedToWrite(chatId)) {
-        return;
+        return 'user not able to write to this chat';
     }
 
     await tgUtils.showUserAccountResult(chatId);
@@ -187,4 +192,4 @@ async function isRestrictedToWrite(id) {
     return chatInDb === null;
 }
 
-module.exports = { startTelegramBot }
+module.exports = { startTelegramBot, listenerStartMessage }

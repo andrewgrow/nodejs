@@ -62,9 +62,12 @@ async function newMigration(filesList) {
 }
 
 for (let i=0; i < process.argv.length; i++) {
-    console.log(`dbmigrate!!! process.argv ${ JSON.stringify(process.argv[i]) }`);
     switch (process.argv[i]) {
-        case 'runMigration': runMigration().then(mysql.end); break;
+        case 'runMigration': {
+            console.log(`dbmigrate!!! process.argv ${ JSON.stringify(process.argv[i]) }`);
+            runMigration().then(mysql.end);
+            break;
+        }
     }
 }
 

@@ -39,24 +39,33 @@ async function startTelegramBot() {
             console.log(`TelegramBot error!: ${JSON.stringify(error.message)}`);
             bot.stopPolling();
             initStubBot();
+            return 'Initiated LocalStubBot!';
         });
 }
 
 function initStubBot() {
     bot = new LocalStubBot();
-    console.error(`=======================================================================`);
-    console.error(`Initiated LocalStubBot! Be aware with messaging, sending does not work!`);
-    console.error(`=======================================================================`);
+}
+
+/* for test purposes only */
+function addSenderListener(listener) {
+    getBot().senderListener = listener;
 }
 
 class LocalStubBot {
+    senderListener;
     onText() {};
     onReplyToMessage() {};
-    getMe() {};
+    getMe() { return 'Initiated LocalStubBot! Be aware with messaging, sending does not work!' };
     on() {};
+    sendMessage(chatId, message, form) {
+        if (this.senderListener !== undefined) {
+            this.senderListener(chatId, message, form);
+        }
+    };
 }
 
 
 module.exports = { getBotInfo, addMessageListener, addTextListener, sendMessage, addReplyListener,
-    startTelegramBot
+    startTelegramBot, addSenderListener
 }
