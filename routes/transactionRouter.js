@@ -8,14 +8,6 @@ const router = express.Router();
 
 router.use(express.json());
 
-router.use((request, response, next) => {
-    console.log(`------------------------------------------------------------------`)
-    console.log(`Request: ${request.method} ${JSON.stringify(request.originalUrl)}`);
-    console.log(`Headers: ${JSON.stringify(request.headers)}`);
-    console.log(`Body: ${JSON.stringify(request.body)}`);
-    next();
-});
-
 router.post('/', async (request, response) => {
     if (request.body === null || request.body === undefined) {
         return response.status(400).send('Bad request. Transaction cannot be created.');
