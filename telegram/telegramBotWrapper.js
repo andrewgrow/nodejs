@@ -55,13 +55,16 @@ function addSenderListener(listener) {
 class LocalStubBot {
     senderListener; // listen to output send messages (emulate an external receiver).
     onText() {};
-    onReplyToMessage() {};
+    onReplyToMessage(chatId, messageId, listener) {
+
+    };
     getMe() { return 'Initiated LocalStubBot! Be aware with messaging, sending does not work!' };
     on() {};
     sendMessage(chatId, message, form) {
         if (this.senderListener !== undefined) {
             this.senderListener(chatId, message, form);
         }
+        return { message_id: 100 }; // return always the same test id number
     };
 }
 
