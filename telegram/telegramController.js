@@ -83,7 +83,7 @@ async function listenerDepositMessage(msg, match) {
     if (utils.isEmpty(message)) {
         const text = 'Введите сумму пополнения в гривнах, например 123,44. Или введите ноль для отмены.';
         const question = await tgUtils.sendMessage(chatId, text, form,);
-        tgUtils.addReplyListener(chatId, question.message_id, async (msg) => {
+        return tgUtils.addReplyListener(chatId, question.message_id, async (msg) => {
             console.log('reply DEPOSIT: ' + JSON.stringify(chatId) + " " + JSON.stringify(msg));
             await tgUtils.addTransaction(chatId, msg.text, 'deposit');
         });

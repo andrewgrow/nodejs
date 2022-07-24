@@ -179,7 +179,7 @@ function sendMessage(chatId, message, form) {
 }
 
 function addReplyListener(chatId, messageId, listener) {
-    tgWrapper.addReplyListener(chatId, messageId, listener);
+    return tgWrapper.addReplyListener(chatId, messageId, listener);
 }
 
 async function startTelegramBot() {

@@ -25,7 +25,7 @@ function sendMessage(chatId, message, form) {
 }
 
 function addReplyListener(chatId, messageId, listener) {
-    getBot().onReplyToMessage(chatId, messageId, listener);
+    return getBot().onReplyToMessage(chatId, messageId, listener);
 }
 
 async function startTelegramBot() {
@@ -56,7 +56,7 @@ class LocalStubBot {
     senderListener; // listen to output send messages (emulate an external receiver).
     onText() {};
     onReplyToMessage(chatId, messageId, listener) {
-
+        return listener;
     };
     getMe() { return 'Initiated LocalStubBot! Be aware with messaging, sending does not work!' };
     on() {};

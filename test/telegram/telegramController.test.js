@@ -92,5 +92,15 @@ describe('test ../telegram/telegramController.js', function () {
             assert.equal(resultObject.chat_id, tgChat.chat_id);
             assert.isTrue(resultObject.message.startsWith('Hi Test Name! В ваш список транзакций добавлен депозит'));
         });
+        it('should add deposit 100 UAH via reply', async function () {
+            let resultObject = prepareResultObject();
+            const msg = { chat: { id : tgChat.chat_id }, text: '/deposit', form: null,
+                entities: [{"type": "bot_command"}]};
+            const replyListener = await controller.listenerDepositMessage(msg, null);
+            msg['text'] = 100;
+            await replyListener(msg);
+            assert.equal(resultObject.chat_id, tgChat.chat_id);
+            assert.isTrue(resultObject.message.startsWith('Hi Test Name! В ваш список транзакций добавлен депозит'));
+        });
     });
 });
