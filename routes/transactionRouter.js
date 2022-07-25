@@ -14,9 +14,9 @@ router.post('/', async (request, response) => {
     }
 
     const transaction = {
-        type: request.bodyString('type'),
-        amount: request.bodyString('amount'),
-        contractorId: request.bodyString('contractorId'),
+        type: request.body['type'],
+        amount: request.body['amount'],
+        contractorId: request.body['contractorId'],
         authorId: request.userIdFromTokenData,
     };
     if (utils.isEmpty(transaction.type)) {

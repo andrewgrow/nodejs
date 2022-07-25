@@ -22,7 +22,7 @@ async function addDeposit(contractorUserId, authorUserId, sum) {
 }
 
 async function createRecord(values = {
-    contractorUserId: null, authorUserId: null, amount: 0, type: null }) {
+    contractorUserId: null, authorUserId: null, amount: 0, currency: 'UAH' ,type: null }) {
     const request = "INSERT INTO " +
         "`account_transactions` (`contractor_id`, `author_id`, `sum`, `currency`, `type`) " +
         "VALUES (?, ?, ?, ?, ?);";
