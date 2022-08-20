@@ -8,6 +8,8 @@ At the current time it works successful and very helped me and my friends during
 
 Production works at Digitalocean image (Ubuntu + NodeJS + MySQL + Nginx + Docker + PM2). 
 
+![Example](example.png)
+
 ```bash
 # Build DOCKER container
 docker build . -t agrow/nodejs-web-app
