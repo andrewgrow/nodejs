@@ -6,7 +6,7 @@ Administrator can handle process via REST requests and access of the Database.
 
 At the current time it works successful and very helped me and my friends during Fuel Crisis exists. 
 
-Production works at Digitalocean image.
+Production works at Digitalocean image (Ubuntu + NodeJS + MySQL + Nginx + Docker + PM2). 
 
 ```bash
 # Build DOCKER container
