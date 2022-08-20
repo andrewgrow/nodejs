@@ -1,7 +1,12 @@
-```bash
-# После создания файла package.json, выполните команду
-npm install
-```
+This project was wrote as learning but has a useful function.
+You can share one balance of fuel account with your friends.  
+For example, you have OKKO Fuel account and 5 friends. Each of them add money and get fuel after that.
+All dialogs will take by Telegram bot.
+Administrator can handle process via REST requests and access of the Database.
+
+At the current time it works successful and very helped me and my friends during Fuel Crisis exists. 
+
+Production works at Digitalocean image.
 
 ```bash
 # Build DOCKER container
@@ -9,23 +14,23 @@ docker build . -t agrow/nodejs-web-app
 ```
 
 ```bash
-# Запуск образа с флагом -d позволяет контейнеру работать в фоновом режиме. 
-# Флаг -p перенаправляет публичный порт на приватный порт внутри контейнера.
+# Run image with -d will create background process. 
+# Flag -p will forward a public port to the private port inside the container. 
 docker run -p 49160:8080 -d agrow/nodejs-web-app
 ```
 
 ```bash
-# Отобразить все контейнеры, чтобы получить id нужного нам
+# Show all containers for getting ID of the container.
 $ docker ps
 ```
 
 ```bash
-# Отобразить логи from container
+# Show logs from the container
 $ docker logs <container_id>
 ```
 
 ```bash
-# Войти в контейнер в интерактивном режиме
+# Entry for interaction mode.
 $ docker exec -it <container id> /bin/bash
 ```
 
