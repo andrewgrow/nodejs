@@ -57,12 +57,13 @@ npm install # rebuild dependencies
 pm2 restart server # run restart
 ```
 
-```bash
-npm run docker # run docker by JS script
-npm run server # run server by JS script
-```
+Run this application via Docker
+- Install [Docker](https://www.docker.com/)
+- Open a folder with this project, and build the app via running a terminal command (with dot at the end) `docker build -t divo/server .`
+- Start the container `docker run --network=host --rm -p 3000:3000 -it divo/server`
+- Start node `npm start` or `npm run dbmigrate` or `npm run test`  
+- For stopping type `exit` on the terminal window
 
 ```bash
 npm run dbmigrate # run migrations
-npm run dbseed # run seeds
 ```
