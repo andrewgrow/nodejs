@@ -21,6 +21,7 @@ async function dropAllTables() {
     // drop all tables if exists
     console.log('Drop all tables if exists');
     try {
+        await mysql.query('USE divotest;');
         const tables = await mysql.getTablesList();
         for (let table of tables) {
             await mysql.query(`DROP TABLE IF EXISTS ${table.TABLE_NAME};`, null);
@@ -31,6 +32,7 @@ async function dropAllTables() {
 }
 
 async function runMigrations() {
+    console.log('runMigrations');
     await mysql.query('USE divotest;');
     await dbMigrate.runMigration();
 }
