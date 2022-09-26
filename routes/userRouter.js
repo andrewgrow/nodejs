@@ -9,7 +9,7 @@ router.get('/:id', async (request, response) => {
         return response.status(400).send('Bad Request');
     }
 
-    const user = await userModel.findUserById(id);
+    let user = await userModel.findUserById(id).catch(e => { console.error(e); user = null;});
     if (user) {
         response.status(200).json(user);
     } else {
@@ -28,7 +28,7 @@ router.post('/', async (request, response) => {
     if (user.phone === null || user.phone === undefined || user.name === null || user.name === undefined) {
         return response.status(400).send('Bad request. User cannot be created.');
     }
-    const userCreatingResult = await userModel.createRecordIfPhoneNotExist(user);
+    let userCreatingResult = await userModel.createRecordIfPhoneNotExist(user).catch(e => { console.error(e); userCreatingResult = null;});
     if (userCreatingResult.isNewUser) {
         response.status(201).send(`USER was CREATED successful with id = ${ userCreatingResult.user_id }`);
     } else {
@@ -41,7 +41,7 @@ router.delete('/:id', async (request, response) => {
     if (id === null || id === undefined || isNaN(id) || id < 1) {
         return response.status(304).send('User with this id does not exist.');
     }
-    const result = await userModel.forceDeleteUser(id);
+    let result = await userModel.forceDeleteUser(id).catch(e => { console.error(e); result = null;});
     if (result == null) {
         response.status(204).send('User with this id does not exist.');
     } else {
