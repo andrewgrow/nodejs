@@ -8,7 +8,7 @@ const router = express.Router();
 router.use(express.json());
 
 router.delete('/:value', async (request, response) => {
-    const value = request.paramString('value');
+    const value = request.params['value'];
     const affectedRows= await tokenModel.forceDeleteToken(value);
     if (affectedRows > 0) {
         response.setHeader('system-message', 'Token deleted successfully.');
@@ -19,7 +19,6 @@ router.delete('/:value', async (request, response) => {
 });
 
 router.get('/generate', async (request, response) => {
-    // const length = parseInt(request.queryInt('length')) || 64;
     const userId = parseInt(request.query['id']) || null;
     const randomToken = await tokenModel.createRecord(userId)
         .then((tokenId) => {

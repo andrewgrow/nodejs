@@ -1,18 +1,7 @@
 'use strict';
 
-const express = require('express');
 const userModel = require("../db/models/user");
-const router = express.Router();
-
-router.use(express.json());
-
-router.use((request, response, next) => {
-    console.log(`------------------------------------------------------------------`)
-    console.log(`Request: ${request.method} ${JSON.stringify(request.originalUrl)}`);
-    console.log(`Headers: ${JSON.stringify(request.headers)}`);
-    console.log(`Body: ${JSON.stringify(request.body)}`);
-    next();
-});
+const router = require('express').Router();
 
 router.get('/:id', async (request, response) => {
     const id = request.params['id'];
