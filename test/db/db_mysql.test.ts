@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const mysql = require('../../src/db/db_mysql');
 const userMock = require('../factories/user_mock');
 const testUser = userMock.getSimpleTestUser();
@@ -48,7 +50,7 @@ describe('test ../db/db_mysql.ts', function () {
         describe('test function getById()', function () {
            it('should return a user record', async function () {
                mysql.getBy('users', 'name', testUser.name)
-                   .then((dbUser) => assertUser(dbUser))
+                   .then((dbUser) => assertUser(dbUser, dbUser._id))
            });
         });
 

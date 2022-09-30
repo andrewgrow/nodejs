@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const wrapper = require('../../src/telegram/telegramBotWrapper');
 
 describe('test ../telegram/telegramBotWrapper.ts', function () {

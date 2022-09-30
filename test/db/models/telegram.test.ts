@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const telegramModel = require('../../../src/db/models/telegram');
 const userMock = require('../../factories/user_mock');
 const chatUid = userMock.defaultChatUid;

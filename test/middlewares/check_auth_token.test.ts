@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const checkAuthToken = require('../../src/middlewares/check_auth_token');
 const jwtUtils = require('../../src/utils/jsonwebtoken_utils');
 const { createRequest, createResponse, nextWithTrue, nextWithError } = require("../factories/http_mock");

@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const checkRequestToken = require('../../src/middlewares/check_request_token');
 const tokenModel = require('../../src/db/models/requestToken');
 const userMock = require('../factories/user_mock');

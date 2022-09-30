@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const wrapper = require('../../src/telegram/telegramBotWrapper');
 const controller = require('../../src/telegram/telegramController');
 const userMock = require('../factories/user_mock');
@@ -37,7 +39,7 @@ describe('test ../telegram/telegramController.ts', function () {
 
     describe('test function listenerStartMessage()', function () {
         it('should send error message when incoming text is empty', function () {
-            const resultObject = prepareResultObject();
+            const resultObject: any = prepareResultObject();
             controller.listenerStartMessage({ chat: { id : 1 }, text: null, form: null }, null);
             assert.equal(resultObject.chat_id, 1);
             assert.equal(resultObject.message, 'Received your command, but not recognized it.');
@@ -48,7 +50,7 @@ describe('test ../telegram/telegramController.ts', function () {
             return assert.eventually.equal(methodCall, 'user not able to write to this chat');
         });
         it('should send correct message to user', async function () {
-            const resultObject = prepareResultObject();
+            const resultObject: any = prepareResultObject();
             const msg = { chat: { id : tgChat.chat_id }, text: 'test message', form: null };
             await controller.listenerStartMessage(msg, null);
             assert.equal(resultObject.chat_id, tgChat.chat_id);
@@ -61,14 +63,14 @@ describe('test ../telegram/telegramController.ts', function () {
             return assert.eventually.equal(controller.listenerDepositMessage(msg, null), "user not able to write to this chat");
         });
         it('should send answer if command is unrecognized', async function () {
-            const resultObject = prepareResultObject();
+            const resultObject: any = prepareResultObject();
             const msg = { chat: { id : tgChat.chat_id }, text: '', form: null };
             await controller.listenerDepositMessage(msg, null);
             assert.equal(resultObject.chat_id, tgChat.chat_id);
             assert.equal(resultObject.message, 'Received your command, but not recognized it.');
         });
         it('should send error if command contains wrong sum', async function () {
-            const resultObject = prepareResultObject();
+            const resultObject: any = prepareResultObject();
             const msg = { chat: { id : tgChat.chat_id }, text: 'test text', form: null,
                 entities: [{"type": "bot_command"}]};
             await controller.listenerDepositMessage(msg, null);
@@ -76,7 +78,7 @@ describe('test ../telegram/telegramController.ts', function () {
             assert.equal(resultObject.message, 'Не удалось понять сумму транзакции. Произошла ошибка при разборе введённого числа.');
         });
         it('should send request to next command when only deposit got', async function () {
-            const resultObject = prepareResultObject();
+            const resultObject: any = prepareResultObject();
             const msg = { chat: { id : tgChat.chat_id }, text: '/deposit', form: null,
                 entities: [{"type": "bot_command"}]};
             await controller.listenerDepositMessage(msg, null);
@@ -85,7 +87,7 @@ describe('test ../telegram/telegramController.ts', function () {
                 'Или введите ноль для отмены.');
         });
         it('should add deposit 100 UAH', async function () {
-            const resultObject = prepareResultObject();
+            const resultObject: any = prepareResultObject();
             const msg = { chat: { id : tgChat.chat_id }, text: '/deposit 100', form: null,
                 entities: [{"type": "bot_command"}]};
             await controller.listenerDepositMessage(msg, null);
@@ -93,11 +95,11 @@ describe('test ../telegram/telegramController.ts', function () {
             assert.isTrue(resultObject.message.startsWith('Hi Test Name! В ваш список транзакций добавлен депозит'));
         });
         it('should add deposit 100 UAH via reply', async function () {
-            let resultObject = prepareResultObject();
+            let resultObject: any = prepareResultObject();
             const msg = { chat: { id : tgChat.chat_id }, text: '/deposit', form: null,
                 entities: [{"type": "bot_command"}]};
             const replyListener = await controller.listenerDepositMessage(msg, null);
-            msg['text'] = 100;
+            msg['text'] = '100';
             await replyListener(msg);
             assert.equal(resultObject.chat_id, tgChat.chat_id);
             assert.isTrue(resultObject.message.startsWith('Hi Test Name! В ваш список транзакций добавлен депозит'));

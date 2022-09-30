@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const mysql = require('../../../src/db/db_mysql');
 const userMock = require('../../factories/user_mock');
 const userModel = require('../../../src/db/models/user');

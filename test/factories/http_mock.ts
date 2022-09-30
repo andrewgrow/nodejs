@@ -22,7 +22,7 @@ function nextWithError() {
     throw new Error('This Mocked Object not allowed to call.')
 }
 
-function createRequest(req = { }) {
+function createRequest(req: any = { }) {
     if (req.url === undefined) { req.url = '/'; }
     if (req.headers === undefined) { req.headers = {'authorization' : ''}; }
     if (req.method === undefined) { req.method = 'GET'; }

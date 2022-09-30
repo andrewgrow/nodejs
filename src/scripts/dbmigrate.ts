@@ -12,8 +12,12 @@ async function runMigration() {
         .query(createMigrationsSQL, null)
         .then(getListWithNewMigrations)
         .then(newMigration)
-        .then(() => { console.log("Migrations was successful!"); })
-        .catch((err) => { console.error(err); });
+        .then(() => {
+            console.log("Migrations was successful!");
+        })
+        .catch((err) => {
+            console.error(err);
+        });
 }
 
 /**
@@ -51,13 +55,15 @@ async function newMigration(filesList) {
     // take each file with new migration and run sql query
     for (position = 0; position < filesList.length; position++) {
         filepath = filesList[position];
-        sqlList = require(`${ path.normalize(migrationsPath + filepath) }`); // take object from file
-        for (sql of sqlList) {
-            console.log(`migration SQL from file ${filepath}: ${ sql }`);
-            await mysql.query(sql, null);
-        }
-        sql = "INSERT INTO `migrations` (filename) value (?);";
-        await mysql.query(sql, [ filepath ]); // store that migration was done!
+        try {
+            sqlList = require(`${ path.normalize(migrationsPath + filepath) }`); // take object from file
+            for (sql of sqlList) {
+                console.log(`migration SQL from file ${filepath}: ${ sql }`);
+                await mysql.query(sql, null);
+            }
+            sql = "INSERT INTO `migrations` (filename) value (?);";
+            await mysql.query(sql, [ filepath ]); // store that migration was done!
+        } catch {}
     }
 }
 
@@ -65,7 +71,11 @@ for (let i=0; i < process.argv.length; i++) {
     switch (process.argv[i]) {
         case 'runMigration': {
             console.log(`dbmigrate!!! process.argv ${ JSON.stringify(process.argv[i]) }`);
-            runMigration().then(mysql.end);
+            runMigration()
+                .then(mysql.end)
+                .catch((err) => {
+                    console.error(`Migration error! ${ err }`)
+                });
             break;
         }
     }

@@ -1,5 +1,7 @@
 'use strict';
 
+import { assert } from "chai";
+
 const mysql = require('../../src/db/db_mysql');
 const config = require('../../src/db/db_config');
 
