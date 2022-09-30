@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm install; rm -rf ./built/;  tsc -p tsconfig.json; node built/server.js;",
     "build:dev": "tsc -p tsconfig.json --watch",
-    "dbmigrate": "node -r dotenv/config src/scripts/dbmigrate.ts dotenv_config_path=./config/.env runMigration",
+    "dbmigrate": "tsc; node -r dotenv/config built/src/scripts/dbmigrate.js dotenv_config_path=./config/.env runMigration",
     "test": "rm -rf ./built/; tsc -p tsconfig.test.json; DOTENV_CONFIG_PATH=./././config/.env.test mocha built/test"
   },
   "mocha": {
