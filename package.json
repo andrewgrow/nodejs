@@ -4,10 +4,10 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "npm install; tsc; node built/server.js;",
-    "build:dev": "tsc --watch",
+    "start": "npm install; rm -rf ./built/;  tsc -p tsconfig.json; node built/server.js;",
+    "build:dev": "tsc -p tsconfig.json --watch",
     "dbmigrate": "node -r dotenv/config src/scripts/dbmigrate.ts dotenv_config_path=./config/.env runMigration",
-    "test": "tsc; DOTENV_CONFIG_PATH=./././config/.env.test mocha built/test"
+    "test": "rm -rf ./built/; tsc -p tsconfig.test.json; DOTENV_CONFIG_PATH=./././config/.env.test mocha built/test"
   },
   "mocha": {
     "recursive": true,
