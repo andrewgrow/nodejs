@@ -4,7 +4,7 @@
  * Telegram Utils do actions with telegram bot. The Bot is represents as wrapper.
  */
 
-const tgWrapper = require('../telegram/telegramBotWrapper');
+const tgWrapper = require('./telegramBotWrapper');
 const utils = require('../utils/utils');
 const model = require('../db/models/telegram');
 const userModel = require('../db/models/user');
@@ -14,11 +14,11 @@ const emoji_ok_hand_sign = "\u{1F44C}";
 const emoji_fuel_pump = "\u{26FD}";
 const emoji_dollar_banknote = "\u{1F4B5}";
 
-function getBotInfo() {
+export function getBotInfo() {
     return tgWrapper.getBotInfo();
 }
 
-async function sendMessageToAll(senderChatId, message) {
+export async function sendMessageToAll(senderChatId, message) {
     if (utils.isEmpty(message) || message.trim() === '0') {
         return sendCancel(senderChatId);
     }
@@ -36,7 +36,7 @@ async function sendMessageToAll(senderChatId, message) {
     }
 }
 
-function isCommand(incoming) {
+export function isCommand(incoming) {
     if (incoming === null || incoming === undefined) {
         return false;
     }
@@ -45,19 +45,11 @@ function isCommand(incoming) {
         incoming.entities[0].type === 'bot_command'
 }
 
-function isNotCommand(incoming) {
+export function isNotCommand(incoming) {
     return !isCommand(incoming);
 }
 
-function isCommandEquals(incoming, commandAsText) {
-    if (isNotCommand(incoming) || utils.isEmpty(commandAsText)) {
-        return false;
-    }
-
-    return incoming.text.includes(commandAsText, 0);
-}
-
-function getMessageWithoutCommand(incoming, commandAsString) {
+export function getMessageWithoutCommand(incoming, commandAsString) {
     if (utils.isEmpty(commandAsString) || isNotCommand(incoming)) {
         return '';
     }
@@ -66,7 +58,7 @@ function getMessageWithoutCommand(incoming, commandAsString) {
     return incoming.text.slice(length).trim();
 }
 
-async function addTransaction(senderChatId, text, type) {
+export async function addTransaction(senderChatId, text, type) {
     const sum = parseSum(text);
     if (await checkIfSumIsWrongAndNotifySender(senderChatId, sum)) {
         return;
@@ -91,13 +83,13 @@ async function addTransaction(senderChatId, text, type) {
     }
 }
 
-function parseSum(text) {
+export function parseSum(text) {
     text = utils.replaceCommaToDot(text);
 
     // parse Int
-    let sum = 0;
+    let sum: number = 0;
     try {
-        sum = Number.parseFloat(text.replace( /^\D|,+/g, '')).toFixed(2);
+        sum = Number.parseFloat(Number.parseFloat(text.replace( /^\D|,+/g, '')).toFixed(2));
     } catch (err) {
         console.error(err);
         return NaN;
@@ -105,7 +97,7 @@ function parseSum(text) {
     return sum;
 }
 
-async function checkIfSumIsWrongAndNotifySender(senderChatId, sum) {
+export async function checkIfSumIsWrongAndNotifySender(senderChatId, sum) {
     // checking sum
     if (utils.isWrongInt(sum)) {
         await tgWrapper.sendMessage(senderChatId, `Не удалось понять сумму транзакции. Произошла ошибка при разборе введённого числа.`);
@@ -121,19 +113,19 @@ async function checkIfSumIsWrongAndNotifySender(senderChatId, sum) {
     return false;
 }
 
-async function sendMessageSuccessRefill(transactionId, sum, contractorUserId) {
+export async function sendMessageSuccessRefill(transactionId, sum, contractorUserId) {
     const text = `В ваш список транзакций добавлена заправка ${ emoji_fuel_pump } ` +
         `c id ${ transactionId } на сумму ${ sum } грн. `;
     return sendTransaction(contractorUserId, text);
 }
 
-function sendMessageSuccessDeposit(transactionId, sum, contractorUserId) {
+export function sendMessageSuccessDeposit(transactionId, sum, contractorUserId) {
     const text = `В ваш список транзакций добавлен депозит ${ emoji_dollar_banknote } ` +
         `c id ${ transactionId } на сумму ${ sum } грн. `;
     return sendTransaction(contractorUserId, text);
 }
 
-async function sendTransaction(contractorUserId, text) {
+export async function sendTransaction(contractorUserId, text) {
     const name = await userModel.getUserName(contractorUserId);
     if (name) {
         text = `Hi ${name}! ${text}`;
@@ -154,7 +146,7 @@ async function sendTransaction(contractorUserId, text) {
     return true;
 }
 
-async function showUserAccountResult(senderChatId) {
+export async function showUserAccountResult(senderChatId) {
     const user = await userModel.findUserByTelegramId(senderChatId);
     if (user == null) {
         return null;
@@ -162,32 +154,26 @@ async function showUserAccountResult(senderChatId) {
     return await sendTransaction(user._id, "");
 }
 
-function sendCancel(senderChatId) {
+export function sendCancel(senderChatId) {
     return tgWrapper.sendMessage(senderChatId, `Охрана, отмена! ${ emoji_ok_hand_sign } `);
 }
 
-function addMessageListener(event, listener) {
+export function addMessageListener(event, listener) {
     tgWrapper.addMessageListener(event, listener);
 }
 
-function addTextListener(regexp, listener) {
+export function addTextListener(regexp, listener) {
     tgWrapper.addTextListener(regexp, listener);
 }
 
-function sendMessage(chatId, message, form) {
+export function sendMessage(chatId, message, form) {
     return tgWrapper.sendMessage(chatId, message, form);
 }
 
-function addReplyListener(chatId, messageId, listener) {
+export function addReplyListener(chatId, messageId, listener) {
     return tgWrapper.addReplyListener(chatId, messageId, listener);
 }
 
-async function startTelegramBot() {
+export async function startTelegramBot() {
     return await tgWrapper.startTelegramBot();
 }
-
-module.exports = { sendMessageToAll, isCommand, addTransaction, getMessageWithoutCommand, addMessageListener,
-    sendMessageSuccessRefill, sendMessageSuccessDeposit, showUserAccountResult, getBotInfo, addTextListener, sendMessage,
-    addReplyListener, startTelegramBot
-}
-

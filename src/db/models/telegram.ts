@@ -65,4 +65,5 @@ function deleteChatById(localId) {
 
 module.exports = { getChatBy, getChatsList, getChatsListByUser, isDbDisconnected, createTelegramUser,
     getChatByLocalId, deleteChatById
-}
+};
+export {};

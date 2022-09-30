@@ -20,4 +20,5 @@ function verify(data) {
     });
 }
 
-module.exports = { generateToken, verify }
+module.exports = { generateToken, verify };
+export {};

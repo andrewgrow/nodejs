@@ -73,4 +73,5 @@ function isAuthTokenValid(request) {
     })
 }
 
-module.exports = { authenticateToken }
+module.exports = { authenticateToken };
+export {};

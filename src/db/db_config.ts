@@ -21,3 +21,4 @@ function isTableExists(table) {
 }
 
 module.exports = { name, user, password, host, port, tables, isTableExists };
+export {};

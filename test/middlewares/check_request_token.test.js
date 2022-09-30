@@ -1,12 +1,12 @@
 'use strict';
 
-const checkRequestToken = require('../../middlewares/check_request_token');
-const tokenModel = require('../../db/models/requestToken');
+const checkRequestToken = require('../../src/middlewares/check_request_token');
+const tokenModel = require('../../src/db/models/requestToken');
 const userMock = require('../factories/user_mock');
-const dateUtils = require('../../utils/date_utils');
+const dateUtils = require('../../src/utils/date_utils');
 const { createRequest, createResponse, nextWithTrue, nextWithError } = require("../factories/http_mock");
 
-describe('test ../middlewares/check_request_token.js', function () {
+describe('test ../middlewares/check_request_token.ts', function () {
     describe('test function requestToken()', function () {
         it('should be call next if url is /', function () {
             const request = createRequest();

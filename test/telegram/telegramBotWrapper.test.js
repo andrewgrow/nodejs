@@ -1,8 +1,8 @@
 'use strict';
 
-const wrapper = require('../../telegram/telegramBotWrapper');
+const wrapper = require('../../src/telegram/telegramBotWrapper');
 
-describe('test ../telegram/telegramBotWrapper.js', function () {
+describe('test ../telegram/telegramBotWrapper.ts', function () {
     describe('test functions startTelegramBot() & getBotInfo()', function () {
         it('should return a mocked bot', function () {
             return assert.eventually.equal(wrapper.startTelegramBot(), 'Initiated LocalStubBot!');

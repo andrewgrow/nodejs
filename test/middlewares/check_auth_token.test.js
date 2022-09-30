@@ -1,10 +1,10 @@
 'use strict';
 
-const checkAuthToken = require('../../middlewares/check_auth_token');
-const jwtUtils = require('../../utils/jsonwebtoken_utils');
+const checkAuthToken = require('../../src/middlewares/check_auth_token');
+const jwtUtils = require('../../src/utils/jsonwebtoken_utils');
 const { createRequest, createResponse, nextWithTrue, nextWithError } = require("../factories/http_mock");
 
-describe('test ../middlewares/check_auth_token.js', function () {
+describe('test ../middlewares/check_auth_token.ts', function () {
     describe('test function authenticateToken()', function () {
         it('should call next function when request.url is /', function () {
             const request = createRequest({ url: '/' });

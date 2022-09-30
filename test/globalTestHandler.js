@@ -1,7 +1,7 @@
 'use strict';
 
-const mysql = require('../db/db_mysql');
-const dbMigrate = require('../scripts/dbmigrate');
+const mysql = require('../src/db/db_mysql');
+const dbMigrate = require('../src/scripts/dbmigrate');
 require("chai").use(require('chai-as-promised'));
 global.assert = require("chai").assert;
 

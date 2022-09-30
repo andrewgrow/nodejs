@@ -36,3 +36,4 @@ router.get('/generate', async (request, response) => {
 })
 
 module.exports = router;
+export {};

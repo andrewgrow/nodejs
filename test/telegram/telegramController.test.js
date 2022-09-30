@@ -1,7 +1,7 @@
 'use strict';
 
-const wrapper = require('../../telegram/telegramBotWrapper');
-const controller = require('../../telegram/telegramController');
+const wrapper = require('../../src/telegram/telegramBotWrapper');
+const controller = require('../../src/telegram/telegramController');
 const userMock = require('../factories/user_mock');
 
 let userResult, tgChat;
@@ -21,7 +21,7 @@ function prepareResultObject() {
     return resultObject; // done
 }
 
-describe('test ../telegram/telegramController.js', function () {
+describe('test ../telegram/telegramController.ts', function () {
     before('create test user and tg chat', async function () {
         userResult = await userMock.createUserRecordWithTestData();
         tgChat = await userMock.createTestTelegramUser(userResult.user_id, userMock.defaultChatUid);

@@ -1,9 +1,9 @@
 'use strict';
 
-const mysql = require('../../db/db_mysql');
-const dbMigrate = require('../../scripts/dbmigrate');
+const mysql = require('../../src/db/db_mysql');
+const dbMigrate = require('../../src/scripts/dbmigrate');
 
-describe('test ../scripts/dbmigrate.js', function () {
+describe('test ../scripts/dbmigrate.ts', function () {
     describe('Test all tables migrations', function () {
         const tables = [
             {

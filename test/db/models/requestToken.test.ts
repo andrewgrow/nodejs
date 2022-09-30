@@ -1,12 +1,14 @@
 'use strict';
 
-const mysql = require('../../../db/db_mysql');
-const tokenModel = require('../../../db/models/requestToken');
-const userModel = require('../../../db/models/user');
+import { assert } from "chai";
+
+const mysql = require('../../../src/db/db_mysql');
+const tokenModel = require('../../../src/db/models/requestToken');
+const userModel = require('../../../src/db/models/user');
 
 const simpleTestUser = require('../../factories/user_mock').getSimpleTestUser();
 
-describe('test ../db/models/requestToken.js', function () {
+describe('test ../db/models/requestToken.ts', function () {
     let testToken = null;
 
     describe('test function findByValue()', function () {

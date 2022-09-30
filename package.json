@@ -2,9 +2,11 @@
   "name": "nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server.ts",
   "scripts": {
-    "dbmigrate": "node -r dotenv/config ./scripts/dbmigrate.js dotenv_config_path=./config/.env runMigration",
+    "start": "npm install; tsc; node built/server.js;",
+    "build:dev": "tsc --watch",
+    "dbmigrate": "node -r dotenv/config src/scripts/dbmigrate.ts dotenv_config_path=./config/.env runMigration",
     "test": "DOTENV_CONFIG_PATH=./././config/.env.test mocha"
   },
   "mocha": {
@@ -25,9 +27,14 @@
     "zlib": "^1.0.5"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.3",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.7.23",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "mocha": "^10.0.0",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "typescript": "^4.8.4"
   }
 }

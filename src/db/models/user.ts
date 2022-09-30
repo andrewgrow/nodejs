@@ -32,7 +32,10 @@ async function createRecord(user) {
 }
 
 async function createRecordIfPhoneNotExist(userDao) {
-    const result = {};
+    const result = {
+        isNewUser: false,
+        user_id: 0,
+    };
     const user = await findByPhone(userDao.phone);
     if (user) {
         result.isNewUser = false;
@@ -46,7 +49,10 @@ async function createRecordIfPhoneNotExist(userDao) {
 
 /* use this function for tests only */
 function createRecordIfNameNotExist(userDao) {
-    const result = {};
+    const result = {
+        isNewUser: false,
+        user_id: 0,
+    };
     return new Promise((resolve, reject) => {
         findByName(userDao.name)
             .then(async (dbUser) => {
@@ -118,4 +124,5 @@ async function getUserName(userId) {
 module.exports = { findUserById, forceDeleteUser, createRecordIfPhoneNotExist, findUserByTelegramId,
     getUserAccountResult, getCommonAccountResult, getUserName, createRecord, findByPhone,
     createRecordIfNameNotExist, UserDAO
-}
+};
+export {};

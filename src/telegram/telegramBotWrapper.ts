@@ -20,7 +20,7 @@ function addTextListener(regexp, listener) {
     getBot().onText(regexp, listener);
 }
 
-function sendMessage(chatId, message, form) {
+function sendMessage(chatId, message, form?) {
     return getBot().sendMessage(chatId, message, form);
 }
 
@@ -71,4 +71,6 @@ class LocalStubBot {
 
 module.exports = { getBotInfo, addMessageListener, addTextListener, sendMessage, addReplyListener,
     startTelegramBot, addSenderListener
-}
+};
+export {};
+

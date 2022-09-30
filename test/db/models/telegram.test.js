@@ -1,11 +1,11 @@
 'use strict';
 
-const telegramModel = require('../../../db/models/telegram');
+const telegramModel = require('../../../src/db/models/telegram');
 const userMock = require('../../factories/user_mock');
 const chatUid = userMock.defaultChatUid;
 let testUser, testTgChat;
 
-describe('test ../db/models/telegram.js', function () {
+describe('test ../db/models/telegram.ts', function () {
     before('create test user', async function () {
         testUser = await userMock.createUserRecordWithTestData();
         testTgChat = await userMock.createTestTelegramUser(testUser.user_id, chatUid);

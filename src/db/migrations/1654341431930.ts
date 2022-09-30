@@ -36,3 +36,4 @@ const sqlList = [
 ];
 
 module.exports = sqlList;
+export {};

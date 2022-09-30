@@ -1,9 +1,9 @@
 'use strict';
 
-const mysql = require('../../db/db_mysql');
-const config = require('../../db/db_config');
+const mysql = require('../../src/db/db_mysql');
+const config = require('../../src/db/db_config');
 
-describe('test ./db/db_config.js', function () {
+describe('test ./db/db_config.ts', function () {
     describe('test variables', function () {
         it('should exists dbName', function () {
             assert.isNotEmpty(config.name);

@@ -58,4 +58,5 @@ function isPageNoNeedAnyToken(request) {
         || request.url === '//'
 }
 
-module.exports = { requestToken }
+module.exports = { requestToken };
+export {};

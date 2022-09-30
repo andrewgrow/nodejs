@@ -1,10 +1,10 @@
 'use strict';
 
-const mysql = require('../../../db/db_mysql');
-const transactionModel = require('../../../db/models/transaction');
+const mysql = require('../../../src/db/db_mysql');
+const transactionModel = require('../../../src/db/models/transaction');
 const userMock = require("../../factories/user_mock");
 
-describe('test ../db/models/transaction.js', function () {
+describe('test ../db/models/transaction.ts', function () {
     before('create test user', async function () {
         return await userMock.createUserRecordWithTestData();
     });

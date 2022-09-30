@@ -39,7 +39,7 @@ function getBy(table, field, value) {
     const request = `SELECT * FROM ${ table } WHERE ${ field } = ?`;
     return new Promise((resolve, _) => {
         query(request, [ value ])
-            .then((resultArray) => {
+            .then((resultArray: any) => {
                 if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
                     resolve(resultArray[0]);
                 } else {
@@ -54,7 +54,7 @@ function getBy(table, field, value) {
 function getTablesList() {
     return new Promise((resolve, reject) => {
         const request = `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`;
-        query(request, [ config.name ]).then((resultArray) => {
+        query(request, [ config.name ]).then((resultArray: any) => {
             if (resultArray != null && resultArray.length > 0 && resultArray[0] != null) {
                 resolve(resultArray);
             } else {
@@ -78,7 +78,7 @@ function getAll(table) {
 function getLastRecord(table) {
     return new Promise((resolve, _) => {
         const sql = `SELECT * FROM ${table} ORDER BY _id DESC LIMIT 1`;
-        query(sql, [table]).then((result) => {
+        query(sql, [table]).then((result: any) => {
             if (result !== null && result.length !== 0) {
                 resolve(result[0]);
             } else {
@@ -115,3 +115,4 @@ async function isDbDisconnected() {
 module.exports = { query, getById, tables, getBy, getTablesList, end, isDbConnected, isDbDisconnected,
     getAll, getLastRecord
 };
+export {};

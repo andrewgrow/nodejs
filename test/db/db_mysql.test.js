@@ -1,10 +1,10 @@
 'use strict';
 
-const mysql = require('../../db/db_mysql');
+const mysql = require('../../src/db/db_mysql');
 const userMock = require('../factories/user_mock');
 const testUser = userMock.getSimpleTestUser();
 
-describe('test ../db/db_mysql.js', function () {
+describe('test ../db/db_mysql.ts', function () {
     describe('test function query())', function () {
         it('should return a normal array when a query is correct', function () {
             const sqlQuery = 'SELECT 1;';

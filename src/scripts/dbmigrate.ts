@@ -71,4 +71,5 @@ for (let i=0; i < process.argv.length; i++) {
     }
 }
 
-module.exports = { runMigration }
+module.exports = { runMigration };
+export {};

@@ -1,6 +1,6 @@
 'use strict';
 
-const mysql = require('../../db/db_mysql');
+const mysql = require('../db_mysql');
 
 const types = {
     refill: `refill`,
@@ -21,7 +21,7 @@ async function addDeposit(contractorUserId, authorUserId, sum) {
     return await createRecord(values);
 }
 
-async function createRecord(values = {
+async function createRecord(values: any = {
     contractorUserId: null, authorUserId: null, amount: 0, currency: 'UAH' ,type: null }) {
     const request = "INSERT INTO " +
         "`account_transactions` (`contractor_id`, `author_id`, `sum`, `currency`, `type`) " +
@@ -34,4 +34,5 @@ async function createRecord(values = {
     return null;
 }
 
-module.exports = { addRefill, addDeposit, types }
+module.exports = { addRefill, addDeposit, types };
+export {};

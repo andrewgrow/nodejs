@@ -10,13 +10,13 @@ const protocol = process.env.APP_PROTOCOL || 'http';
 const express = require('express');
 const app = express();
 app.use(express.json())
-app.use(require('./middlewares/logger'));
-app.use(require('./middlewares/check_auth_token').authenticateToken);
-app.use(require('./middlewares/check_request_token').requestToken);
+app.use(require('./src/middlewares/logger'));
+app.use(require('./src/middlewares/check_auth_token').authenticateToken);
+app.use(require('./src/middlewares/check_request_token').requestToken);
 
-app.use('/user', require('./routes/userRouter'));
-app.use('/token', require('./routes/requestTokenRouter'));
-app.use('/transaction', require('./routes/transactionRouter'));
+app.use('/user', require('./src/routes/userRouter'));
+app.use('/token', require('./src/routes/requestTokenRouter'));
+app.use('/transaction', require('./src/routes/transactionRouter'));
 
 app.get('/', async (request, response) => {
     response.status(200).send('Node.js® test app');
@@ -32,7 +32,8 @@ app.listen(port, host);
  * In normal case we have .env file in the config folder
  */
 function initDotEnvConfigIfExists() {
-    const filePath = `${__dirname}/config/.env`;
+    // const filePath = `${__dirname}/config/.env`;
+    const filePath = require('path').join(__dirname, '..', 'config', '.env');
     if (require('fs').existsSync(filePath)) {
         //file exists
         require('dotenv').config({ path: filePath });
@@ -42,6 +43,7 @@ function initDotEnvConfigIfExists() {
 /**
  * Init Telegram after start this application
  */
-require('./telegram/telegramController').startTelegramBot().then();
+require('./src/telegram/telegramController').startTelegramBot().then();
 
 console.log(`Server successful running on ${protocol}://${host}:${port}`);
+export {};

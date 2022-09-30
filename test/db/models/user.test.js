@@ -1,12 +1,12 @@
 'use strict';
 
-const mysql = require('../../../db/db_mysql');
+const mysql = require('../../../src/db/db_mysql');
 const userMock = require('../../factories/user_mock');
-const userModel = require('../../../db/models/user');
-const utils = require('../../../utils/utils');
+const userModel = require('../../../src/db/models/user');
+const utils = require('../../../src/utils/utils');
 let testUser;
 
-describe('test ../db/models/user.js', function () {
+describe('test ../db/models/user.ts', function () {
     before('create test user', async function () {
         const record = await userMock.createUserRecordWithTestData();
         testUser = await mysql.getById(mysql.tables.USERS_TABLE, record.user_id);

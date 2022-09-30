@@ -2,7 +2,7 @@
 
 const mysql = require("../db_mysql");
 const crypto = require("crypto");
-const userModel = require('../models/user');
+const userModel = require('./user');
 
 function createRecord(userId) {
     return new Promise((resolve, reject) => {
@@ -11,9 +11,10 @@ function createRecord(userId) {
                 if (user === null) {
                     reject(new Error('userId is incorrect'));
                 } else {
-                    const requestToken = {};
-                    requestToken.user_id = user._id;
-                    requestToken.value = crypto.randomBytes(16).toString('hex');
+                    const requestToken = {
+                        user_id: user._id,
+                        value: crypto.randomBytes(16).toString('hex'),
+                    };
                     const sql = "INSERT INTO request_tokens (`user_id`, `value`) VALUES (?, ?);";
                     return mysql.query(sql, [requestToken.user_id, requestToken.value])
                 }
@@ -51,5 +52,6 @@ function setExpireData(expireData, id) {
     return mysql.query(sql, [expireData, id]);
 }
 
-module.exports = { findByValue, forceDeleteToken, createRecord, getById, setExpireData }
+module.exports = { findByValue, forceDeleteToken, createRecord, getById, setExpireData };
+export {};
 
