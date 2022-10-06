@@ -6,4 +6,3 @@ COPY . .
 EXPOSE 3000
 
 CMD [ "/bin/sh" ]
-#CMD [ "npm", "start" ]
