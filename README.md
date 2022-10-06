@@ -11,14 +11,24 @@ Production works at Digitalocean image (Ubuntu + NodeJS + MySQL + Nginx + Docker
 ![Example](example.png)
 
 ```bash
-# Build DOCKER container
-docker build . -t agrow/nodejs-web-app
+# Deploy changes to production
+ssh USER@IP_ADDRESS -p 2202 # connect to production on local desktop
+## next commands run on remote server!
+cd ~/divo-nodejs/ # open a folder with app
+git pull origin master # get updates from git
+npm install # rebuild dependencies
+pm2 restart /home/divo/divo-nodejs/built/server.js # run restart
 ```
 
+Run this application via Docker
+- Install [Docker](https://www.docker.com/)
+- Open a folder with this project, and build the app via running a terminal command (with dot at the end) `docker build -t divo/server .`
+- Start the container `docker run --network=host --rm -p 3000:3000 -it divo/server`
+- Start node `npm start` or `npm run dbmigrate` or `npm run test`  
+- For stopping type `exit` on the terminal window
+
 ```bash
-# Run image with -d will create background process. 
-# Flag -p will forward a public port to the private port inside the container. 
-docker run -p 49160:8080 -d agrow/nodejs-web-app
+npm run dbmigrate # run migrations
 ```
 
 ```bash
@@ -45,25 +55,4 @@ docker-compose up # run container with database
 docker stop $(docker ps -a -q) # Stop all running containers
 docker rm $(docker ps -a -q) # Delete all stopped containers
 docker system prune -a # remove all containers and images
-```
-
-```bash
-# Deploy changes to production
-ssh USER@IP_ADDRESS -p 2202 # connect to production on local desktop
-## next commands run on remote server!
-cd ~/divo-nodejs/ # open a folder with app
-git pull origin master # get updates from git
-npm install # rebuild dependencies
-pm2 restart /home/divo/divo-nodejs/built/server.js # run restart
-```
-
-Run this application via Docker
-- Install [Docker](https://www.docker.com/)
-- Open a folder with this project, and build the app via running a terminal command (with dot at the end) `docker build -t divo/server .`
-- Start the container `docker run --network=host --rm -p 3000:3000 -it divo/server`
-- Start node `npm start` or `npm run dbmigrate` or `npm run test`  
-- For stopping type `exit` on the terminal window
-
-```bash
-npm run dbmigrate # run migrations
 ```
