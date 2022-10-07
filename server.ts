@@ -1,49 +1,77 @@
 'use strict';
 
-initDotEnvConfigIfExists();
+// initDotEnvConfigIfExists();
 
-const port = process.env.APP_PORT || 8090;
-const host = process.env.APP_HOST || '0.0.0.0';
-const protocol = process.env.APP_PROTOCOL || 'http';
+// const port = process.env.APP_PORT || 8090;
+// const host = process.env.APP_HOST || '0.0.0.0';
+// const protocol = process.env.APP_PROTOCOL || 'http';
 
 // Server
-const express = require('express');
-const app = express();
-app.use(express.json())
-app.use(require('./src/middlewares/logger'));
-app.use(require('./src/middlewares/check_auth_token').authenticateToken);
-app.use(require('./src/middlewares/check_request_token').requestToken);
+// const express = require('express');
+// const app = express();
+// app.use(express.json())
+// app.use(require('./src/middlewares/logger'));
+// app.use(require('./src/middlewares/check_auth_token').authenticateToken);
+// app.use(require('./src/middlewares/check_request_token').requestToken);
+//
+// app.use('/user', require('./src/routes/userRouter'));
+// app.use('/token', require('./src/routes/requestTokenRouter'));
+// app.use('/transaction', require('./src/routes/transactionRouter'));
+//
+// app.get('/', async (request, response) => {
+//     response.status(200).send('Node.js® test app');
+// });
+//
+// app.get('*', async (request, response) => {
+//     response.status(404).send('Page not found. Try again.');
+// });
+//
+// app.listen(port, host);
+//
+import {PathLike} from "fs";
 
-app.use('/user', require('./src/routes/userRouter'));
-app.use('/token', require('./src/routes/requestTokenRouter'));
-app.use('/transaction', require('./src/routes/transactionRouter'));
 
-app.get('/', async (request, response) => {
-    response.status(200).send('Node.js® test app');
-});
+//
+// /**
+//  * Init Telegram after start this application
+//  */
+// require('./src/telegram/telegramController').startTelegramBot().then();
+//
+// console.log(`Server successful running on ${protocol}://${host}:${port}`);
+// export {};
 
-app.get('*', async (request, response) => {
-    response.status(404).send('Page not found. Try again.');
-});
 
-app.listen(port, host);
 
 /**
- * In normal case we have .env file in the config folder
+ * Migrate to NestJS.
  */
-function initDotEnvConfigIfExists() {
-    // const filePath = `${__dirname}/config/.env`;
-    const filePath = require('path').join(__dirname, '..', 'config', '.env');
+
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { AppModule } from "./src/app.module";
+
+async function bootstrap() {
+    initDotEnvConfigIfExists();
+
+    const port = process.env.APP_PORT || 8090;
+    const host = process.env.APP_HOST || '0.0.0.0';
+    const protocol = process.env.APP_PROTOCOL || 'http';
+
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
+    await app.listen(port, host);
+
+    console.log(`Server successful running on ${protocol}://${host}:${port}`);
+}
+bootstrap().then();
+
+/**
+ * In normal work we have .env file in the config folder.
+ * But for some cases (e.g. initialization with scripts variables) it can be unreachable, so we have to do checking.
+ */
+function initDotEnvConfigIfExists(): void {
+    const filePath: PathLike = require('path').join(__dirname, '..', 'config', '.env');
     if (require('fs').existsSync(filePath)) {
         //file exists
         require('dotenv').config({ path: filePath });
     }
 }
-
-/**
- * Init Telegram after start this application
- */
-require('./src/telegram/telegramController').startTelegramBot().then();
-
-console.log(`Server successful running on ${protocol}://${host}:${port}`);
-export {};
