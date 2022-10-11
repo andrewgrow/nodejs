@@ -1,5 +1,5 @@
 export interface IDatabaseConfig {
-    name: string;
+    dbname: string;
     user: string;
     password: string;
     host: string;
