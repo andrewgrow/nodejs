@@ -1,5 +1,3 @@
-'use strict';
-
 // initDotEnvConfigIfExists();
 
 // const port = process.env.APP_PORT || 8090;
@@ -28,7 +26,6 @@
 //
 // app.listen(port, host);
 //
-import {PathLike} from "fs";
 
 
 //
@@ -45,14 +42,15 @@ import {PathLike} from "fs";
 /**
  * Migrate to NestJS.
  */
+import { PathLike } from "fs";
+const filePath: PathLike = require('path').join(__dirname, '..', 'config', '.env');
+require('dotenv').config({ path: filePath });
 
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./src/app.module";
 
 async function bootstrap() {
-    initDotEnvConfigIfExists();
-
     const port = process.env.APP_PORT || 8090;
     const host = process.env.APP_HOST || '0.0.0.0';
     const protocol = process.env.APP_PROTOCOL || 'http';
@@ -63,15 +61,3 @@ async function bootstrap() {
     console.log(`Server successful running on ${protocol}://${host}:${port}`);
 }
 bootstrap().then();
-
-/**
- * In normal work we have .env file in the config folder.
- * But for some cases (e.g. initialization with scripts variables) it can be unreachable, so we have to do checking.
- */
-function initDotEnvConfigIfExists(): void {
-    const filePath: PathLike = require('path').join(__dirname, '..', 'config', '.env');
-    if (require('fs').existsSync(filePath)) {
-        //file exists
-        require('dotenv').config({ path: filePath });
-    }
-}
