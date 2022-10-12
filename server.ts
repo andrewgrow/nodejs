@@ -42,20 +42,17 @@
 /**
  * Migrate to NestJS.
  */
-import { PathLike } from "fs";
-const filePath: PathLike = require('path').join(__dirname, '..', 'config', '.env');
-require('dotenv').config({ path: filePath });
-
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { AppModule } from "./src/app.module";
 
 async function bootstrap() {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
     const port = process.env.APP_PORT || 8090;
     const host = process.env.APP_HOST || '0.0.0.0';
     const protocol = process.env.APP_PROTOCOL || 'http';
 
-    const app = await NestFactory.create<NestExpressApplication>(AppModule);
     await app.listen(port, host);
 
     console.log(`Server successful running on ${protocol}://${host}:${port}`);
