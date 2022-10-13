@@ -7,7 +7,9 @@
     "start": "npm install; rm -rf ./built/;  tsc -p tsconfig.json; node built/server.js;",
     "build:dev": "tsc -p tsconfig.json --watch",
     "dbmigrate": "tsc; node -r dotenv/config built/src/scripts/dbmigrate.js dotenv_config_path=./config/.env runMigration",
-    "test": "rm -rf ./built/; tsc -p tsconfig.test.json; DOTENV_CONFIG_PATH=./././config/.env.test mocha built/test"
+    "test": "rm -rf ./built/; tsc -p tsconfig.test.json; DOTENV_CONFIG_PATH=./././config/.env.test mocha built/test",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix"
   },
   "mocha": {
     "recursive": true,
@@ -42,8 +44,11 @@
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.7.23",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^8.25.0",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
     "typescript": "^4.8.4"
