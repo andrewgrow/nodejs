@@ -3,9 +3,9 @@
  */
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from "@nestjs/config";
-import { MongodbConfigService } from "./nest/databases/mongo/config/mongodb.config.service";
-import dbMongoConfig from "./nest/databases/mongo/config/mongodb.config";
+import { ConfigModule } from '@nestjs/config';
+import { MongodbConfigService } from './nest/databases/mongo/config/mongodb.config.service';
+import dbMongoConfig from './nest/databases/mongo/config/mongodb.config';
 
 @Module({
     imports: [
@@ -13,12 +13,11 @@ import dbMongoConfig from "./nest/databases/mongo/config/mongodb.config";
             envFilePath: ['./config/.env'],
             isGlobal: true,
             cache: true,
-            load:[dbMongoConfig]
+            load: [dbMongoConfig],
         }),
         MongooseModule.forRootAsync({
             useClass: MongodbConfigService,
         }),
-
     ],
     controllers: [],
     providers: [],

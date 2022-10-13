@@ -5,7 +5,12 @@ module.exports = {
     },
     extends: ['standard-with-typescript', 'prettier'],
     overrides: [],
-    ignorePatterns: ['built/**/*.ts', 'built/**/*.js', 'test/*', 'src/oldnode/*'],
+    ignorePatterns: [
+        'built/**/*.ts',
+        'built/**/*.js',
+        'test/*',
+        'src/oldnode/*',
+    ],
     plugins: ['prettier'],
     parserOptions: {
         ecmaVersion: 'latest',

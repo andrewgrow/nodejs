@@ -27,7 +27,6 @@
 // app.listen(port, host);
 //
 
-
 //
 // /**
 //  * Init Telegram after start this application
@@ -37,14 +36,12 @@
 // console.log(`Server successful running on ${protocol}://${host}:${port}`);
 // export {};
 
-
-
 /**
  * Migrate to NestJS.
  */
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { AppModule } from "./src/app.module";
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppModule } from './src/app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);

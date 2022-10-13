@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MongooseModuleOptions, MongooseOptionsFactory } from '@nestjs/mongoose';
+import {
+    MongooseModuleOptions,
+    MongooseOptionsFactory,
+} from '@nestjs/mongoose';
 import { DB_CONFIGURATION_TOKEN } from './mongodb.constants';
 
 /**
@@ -9,10 +12,11 @@ import { DB_CONFIGURATION_TOKEN } from './mongodb.constants';
  */
 @Injectable()
 export class MongodbConfigService implements MongooseOptionsFactory {
-
     constructor(private readonly configService: ConfigService) {}
 
     public createMongooseOptions(): MongooseModuleOptions {
-        return this.configService.get<MongooseModuleOptions>(DB_CONFIGURATION_TOKEN) as MongooseModuleOptions;
+        return this.configService.get<MongooseModuleOptions>(
+            DB_CONFIGURATION_TOKEN
+        ) as MongooseModuleOptions;
     }
 }
