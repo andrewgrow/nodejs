@@ -2,7 +2,7 @@
 
 import { assert } from "chai";
 
-const mysql = require('../../src/db/db_mysql');
+const mysql = require('../../src/oldnode/db/db_mysql');
 
 describe('test ../scripts/dbmigrate.ts', function () {
     describe('Test all tables migrations', function () {

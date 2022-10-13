@@ -1,6 +1,6 @@
 'use strict';
 
-const jsonWebTokenUtils = require('../../src/utils/jsonwebtoken_utils');
+const jsonWebTokenUtils = require('../../src/oldnode/utils/jsonwebtoken_utils');
 
 // this token was generated from JWT with environment key:value JWT_SECRET='JWTSecretOrPrivateKey' for `dataDefault`;
 const dataDefault = 'someData';

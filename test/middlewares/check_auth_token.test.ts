@@ -2,8 +2,8 @@
 
 import { assert } from "chai";
 
-const checkAuthToken = require('../../src/middlewares/check_auth_token');
-const jwtUtils = require('../../src/utils/jsonwebtoken_utils');
+const checkAuthToken = require('../../src/oldnode/middlewares/check_auth_token');
+const jwtUtils = require('../../src/oldnode/utils/jsonwebtoken_utils');
 const { createRequest, createResponse, nextWithTrue, nextWithError } = require("../factories/http_mock");
 
 describe('test ../middlewares/check_auth_token.ts', function () {

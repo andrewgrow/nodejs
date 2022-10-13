@@ -1,6 +1,6 @@
 'use strict';
 
-const utils = require('../../src/utils/utils');
+const utils = require('../../src/oldnode/utils/utils');
 
 describe('test ./utils/utils.ts', function () {
     describe('isEmpty() check if the text does not contain any data', function () {

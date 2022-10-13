@@ -2,9 +2,9 @@
 
 import { assert } from "chai";
 
-const mysql = require('../../../src/db/db_mysql');
-const tokenModel = require('../../../src/db/models/requestToken');
-const userModel = require('../../../src/db/models/user');
+const mysql = require('../../../src/oldnode/db/db_mysql');
+const tokenModel = require('../../../src/oldnode/db/models/requestToken');
+const userModel = require('../../../src/oldnode/db/models/user');
 
 const simpleTestUser = require('../../factories/user_mock').getSimpleTestUser();
 

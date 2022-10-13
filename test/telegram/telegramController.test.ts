@@ -2,8 +2,8 @@
 
 import { assert } from "chai";
 
-const wrapper = require('../../src/telegram/telegramBotWrapper');
-const controller = require('../../src/telegram/telegramController');
+const wrapper = require('../../src/oldnode/telegram/telegramBotWrapper');
+const controller = require('../../src/oldnode/telegram/telegramController');
 const userMock = require('../factories/user_mock');
 
 let userResult, tgChat;
