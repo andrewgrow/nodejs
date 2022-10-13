@@ -43,15 +43,15 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './src/app.module';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-    const port = process.env.APP_PORT || 8090;
-    const host = process.env.APP_HOST || '0.0.0.0';
-    const protocol = process.env.APP_PROTOCOL || 'http';
+    const port: string = process.env.APP_PORT ?? '8090';
+    const host: string = process.env.APP_HOST ?? '0.0.0.0';
+    const protocol: string = process.env.APP_PROTOCOL ?? 'http';
 
     await app.listen(port, host);
 
     console.log(`Server successful running on ${protocol}://${host}:${port}`);
 }
-bootstrap().then();
+void bootstrap();

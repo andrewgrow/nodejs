@@ -10,6 +10,7 @@ module.exports = {
         'built/**/*.js',
         'test/*',
         'src/oldnode/*',
+        'config/*',
     ],
     plugins: ['prettier'],
     parserOptions: {
