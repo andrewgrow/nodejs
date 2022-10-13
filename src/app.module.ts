@@ -4,8 +4,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from "@nestjs/config";
-import { MongodbConfigService } from "./nest/config/mongodb.config.service";
-import dbMongoConfig from "./nest/config/db.mongo.config";
+import { MongodbConfigService } from "./nest/databases/mongo/config/mongodb.config.service";
+import dbMongoConfig from "./nest/databases/mongo/config/mongodb.config";
 
 @Module({
     imports: [
@@ -18,6 +18,7 @@ import dbMongoConfig from "./nest/config/db.mongo.config";
         MongooseModule.forRootAsync({
             useClass: MongodbConfigService,
         }),
+
     ],
     controllers: [],
     providers: [],
