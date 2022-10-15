@@ -1,9 +1,3 @@
-// initDotEnvConfigIfExists();
-
-// const port = process.env.APP_PORT || 8090;
-// const host = process.env.APP_HOST || '0.0.0.0';
-// const protocol = process.env.APP_PROTOCOL || 'http';
-
 // Server
 // const express = require('express');
 // const app = express();
@@ -27,31 +21,31 @@
 // app.listen(port, host);
 //
 
-//
-// /**
-//  * Init Telegram after start this application
-//  */
-// require('./src/telegram/telegramController').startTelegramBot().then();
-//
-// console.log(`Server successful running on ${protocol}://${host}:${port}`);
-// export {};
-
 /**
  * Migrate to NestJS.
  */
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './src/app.module';
+import * as TelegramController from './src/oldnode/telegram/telegramController';
+
+let host: string, port: string, protocol: string;
 
 async function bootstrap(): Promise<void> {
-    const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-    const port: string = process.env.APP_PORT ?? '8090';
-    const host: string = process.env.APP_HOST ?? '0.0.0.0';
-    const protocol: string = process.env.APP_PROTOCOL ?? 'http';
-
-    await app.listen(port, host);
-
-    console.log(`Server successful running on ${protocol}://${host}:${port}`);
+    return await NestFactory.create<NestExpressApplication>(AppModule)
+        .then(async (app) => {
+            port = process.env.APP_PORT ?? '8090';
+            host = process.env.APP_HOST ?? '0.0.0.0';
+            protocol = process.env.APP_PROTOCOL ?? 'http';
+            return await app.listen(port, host);
+        })
+        .then(async () => {
+            return await TelegramController.startTelegramBot();
+        })
+        .then(() => {
+            console.log(
+                `Server successful running on ${protocol}://${host}:${port}`
+            );
+        });
 }
 void bootstrap();

@@ -192,5 +192,4 @@ async function isRestrictedToWrite(id) {
     return chatInDb === null;
 }
 
-module.exports = { startTelegramBot, listenerStartMessage, listenerDepositMessage };
-export {};
+export { startTelegramBot, listenerStartMessage, listenerDepositMessage };
