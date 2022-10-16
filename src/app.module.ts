@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { MongodbConfigService } from './nest/databases/mongo/config/mongodb.config.service';
 import dbMongoConfig from './nest/databases/mongo/config/mongodb.config';
+import { UsersModule } from './nest/users/users.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import dbMongoConfig from './nest/databases/mongo/config/mongodb.config';
         MongooseModule.forRootAsync({
             useClass: MongodbConfigService,
         }),
+        UsersModule,
     ],
     controllers: [],
     providers: [],
