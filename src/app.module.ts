@@ -3,9 +3,7 @@
  */
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
-import { MongodbConfigService } from './nest/databases/mongo/config/mongodb.config.service';
-import dbMongoConfig from './nest/databases/mongo/config/mongodb.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './nest/users/users.module';
 
 @Module({
@@ -14,10 +12,12 @@ import { UsersModule } from './nest/users/users.module';
             envFilePath: ['./config/.env'],
             isGlobal: true,
             cache: true,
-            load: [dbMongoConfig],
         }),
         MongooseModule.forRootAsync({
-            useClass: MongodbConfigService,
+            useFactory: (configService: ConfigService) => ({
+                uri: configService.get<string>('MONGO_URI'),
+            }),
+            inject: [ConfigService],
         }),
         UsersModule,
     ],
