@@ -16,6 +16,7 @@ import { UsersModule } from './nest/users/users.module';
         MongooseModule.forRootAsync({
             useFactory: (configService: ConfigService) => ({
                 uri: configService.get<string>('MONGO_URI'),
+                dbName: 'divo'
             }),
             inject: [ConfigService],
         }),
