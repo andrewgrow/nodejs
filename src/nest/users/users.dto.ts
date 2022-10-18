@@ -5,14 +5,14 @@ export class UserDto {
     phone: string;
     id?: string;
 
-    toEntity(dto:UserDto): User {
+    static toEntity(dto: UserDto): User {
         const model = new User();
         model.name = dto.name;
         model.phone = dto.phone;
         return model;
     }
 
-    fromEntity(entity:User): UserDto {
+    static fromEntity(entity: User): UserDto {
         const dto = new UserDto();
         dto.id = entity._id;
         dto.name = entity.name;
