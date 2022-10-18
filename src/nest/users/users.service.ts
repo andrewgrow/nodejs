@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, SchemaTypes } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './users.schema';
@@ -17,5 +17,11 @@ export class UsersService {
 
     async findAll(): Promise<User[]> {
         return await this.UserModel.find().exec();
+    }
+
+    async findById(id: string) {
+        const user: User | null = await this.UserModel.findById(id).exec();
+        if (user) return UserDto.fromEntity(user);
+        throw new Error(`User with id '${id}' does not exist.`);
     }
 }

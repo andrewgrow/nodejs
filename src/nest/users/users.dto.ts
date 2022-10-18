@@ -1,8 +1,14 @@
 import { User } from './users.schema';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserDto {
+
+    @ApiProperty({ description: "User's name", nullable: false })
     name: string;
+
+    @ApiProperty({ description: "User's phone", nullable: false })
     phone: string;
+
     id?: string;
 
     static toEntity(dto: UserDto): User {

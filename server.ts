@@ -28,11 +28,16 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './src/app.module';
 import * as TelegramController from './src/oldnode/telegram/telegramController';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 let host: string, port: string, protocol: string;
 
 async function bootstrap(): Promise<void> {
     return await NestFactory.create<NestExpressApplication>(AppModule)
+        .then((app) => {
+            setupSwagger(app);
+            return app;
+        })
         .then(async (app) => {
             port = process.env.APP_PORT ?? '8090';
             host = process.env.APP_HOST ?? '0.0.0.0';
@@ -48,4 +53,15 @@ async function bootstrap(): Promise<void> {
             );
         });
 }
+
+function setupSwagger(app: NestExpressApplication) {
+    const config = new DocumentBuilder()
+        .setTitle('Divo Swagger Page')
+        .setDescription('The API description')
+        .setVersion('1.0')
+        .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('swagger', app, document);
+}
+
 void bootstrap();
