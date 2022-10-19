@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type UserDocument = User & Document;
 
+/* eslint indent: "off" -- At the current moment parameters with decorators wrongly indented. Known issue. */
 @Schema({ timestamps: true })
 export class User {
     @ApiProperty({ description: "User's identifier." })

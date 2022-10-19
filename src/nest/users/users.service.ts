@@ -1,4 +1,4 @@
-import { Model, SchemaTypes } from 'mongoose';
+import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './users.schema';
@@ -22,12 +22,25 @@ export class UsersService {
 
     async findById(id: string): Promise<User> {
         const user: User | null = await this.UserModel.findById(id).exec();
-        if (user) return user;
-        throw new Error(`User with id '${id}' does not exist.`);
+        if (user != null) return user;
+        throw new Error(
+            `User with id '${id}' does not exist. You cannot find it.`
+        );
     }
 
-    async update(id: string, updateUserDto: UpdateUserDto): Promise<User | null> {
-        return await this.UserModel.findByIdAndUpdate(id, updateUserDto).exec();
+    async update(
+        id: string,
+        updateUserDto: UpdateUserDto
+    ): Promise<User | null> {
+        const user: User | null = await this.UserModel.findByIdAndUpdate(
+            id,
+            updateUserDto,
+            { returnOriginal: false }
+        ).exec();
+        if (user != null) return user;
+        throw new Error(
+            `User with id '${id}' does not exist. You cannot PATCH it.`
+        );
     }
 
     async remove(id: string): Promise<User | null> {

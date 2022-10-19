@@ -54,7 +54,7 @@ async function bootstrap(): Promise<void> {
         });
 }
 
-function setupSwagger(app: NestExpressApplication) {
+function setupSwagger(app: NestExpressApplication): void {
     const config = new DocumentBuilder()
         .setTitle('Divo Swagger Page')
         .setDescription('The API description')
