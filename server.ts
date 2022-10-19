@@ -29,6 +29,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './src/app.module';
 import * as TelegramController from './src/oldnode/telegram/telegramController';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 let host: string, port: string, protocol: string;
 
@@ -36,6 +37,7 @@ async function bootstrap(): Promise<void> {
     return await NestFactory.create<NestExpressApplication>(AppModule)
         .then((app) => {
             setupSwagger(app);
+            setupGlobalPipes(app);
             return app;
         })
         .then(async (app) => {
@@ -62,6 +64,15 @@ function setupSwagger(app: NestExpressApplication): void {
         .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('swagger', app, document);
+}
+
+function setupGlobalPipes(app: NestExpressApplication): void {
+    app.useGlobalPipes(
+        new ValidationPipe({
+            forbidNonWhitelisted: true,
+            whitelist: true,
+        })
+    );
 }
 
 void bootstrap();
