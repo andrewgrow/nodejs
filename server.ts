@@ -69,8 +69,8 @@ function setupSwagger(app: NestExpressApplication): void {
 function setupGlobalPipes(app: NestExpressApplication): void {
     app.useGlobalPipes(
         new ValidationPipe({
-            forbidNonWhitelisted: true,
-            whitelist: true,
+            forbidNonWhitelisted: true, // stop the request from processing when non-whitelisted properties are present
+            whitelist: true, // automatically remove non-whitelisted properties (those without any decorator in the validation class).
         })
     );
 }
