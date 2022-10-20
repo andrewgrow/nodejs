@@ -15,10 +15,12 @@ import { User } from './users.schema';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Roles } from './roles/roles.decorator';
 
 /**
 Processing all requests started from /users
  */
+@Roles('guest')
 @ApiTags('Users') // <---- Separated block USERS on Swagger for all controller's methods.
 @Controller('users')
 export class UsersController {
