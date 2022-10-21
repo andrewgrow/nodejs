@@ -1,4 +1,4 @@
-import {SetMetadata} from "@nestjs/common";
+import { SetMetadata } from '@nestjs/common';
 
 /**
  * Use this decorator as a getter of Metadata class or methods wrapping.
@@ -37,4 +37,6 @@ import {SetMetadata} from "@nestjs/common";
  * @param roles String's array
  *
  */
-export const Roles = (...roles: string[]): any => { SetMetadata('roles', roles) };
+export const Roles = (...roles: string[]): any => {
+    SetMetadata('roles', roles);
+};

@@ -30,6 +30,7 @@ import { AppModule } from './src/app.module';
 import * as TelegramController from './src/oldnode/telegram/telegramController';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 let host: string, port: string, protocol: string;
 
@@ -38,6 +39,7 @@ async function bootstrap(): Promise<void> {
         .then((app) => {
             setupSwagger(app);
             setupGlobalPipes(app);
+            setupGlobalGuards(app);
             return app;
         })
         .then(async (app) => {
@@ -73,6 +75,10 @@ function setupGlobalPipes(app: NestExpressApplication): void {
             whitelist: true, // automatically remove non-whitelisted properties (those without any decorator in the validation class).
         })
     );
+}
+
+function setupGlobalGuards(app: NestExpressApplication) {
+
 }
 
 void bootstrap();
