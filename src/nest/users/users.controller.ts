@@ -16,11 +16,12 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from './roles/roles.decorator';
+import { Role } from './roles/role.enum';
 
 /**
 Processing all requests started from /users
  */
-@Roles('guest')
+@Roles(Role.Guest)
 @ApiTags('Users') // <---- Separated block USERS on Swagger for all controller's methods.
 @Controller('users')
 export class UsersController {
@@ -32,10 +33,6 @@ export class UsersController {
     @Get('all')
     @ApiOperation({ summary: 'Getting all users.' })
     @ApiResponse({ status: HttpStatus.OK, description: 'OK', type: [User] })
-    @ApiResponse({
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Unauthorized',
-    })
     async findAll(): Promise<User[]> {
         return await this.usersService.findAll();
     }
@@ -45,15 +42,12 @@ export class UsersController {
      * @param createUserDto @see CreateUserDto
      */
     @Post('create')
+    @Roles(Role.Admin)
     @ApiOperation({ summary: 'Create new user.' })
     @ApiResponse({
         status: HttpStatus.CREATED,
         description: 'Success',
         type: User,
-    })
-    @ApiResponse({
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Unauthorized',
     })
     async createUser(
         @Body(ValidationPipe) createUserDto: CreateUserDto
@@ -76,10 +70,6 @@ export class UsersController {
     @ApiResponse({
         status: HttpStatus.NOT_FOUND,
         description: "User with 'id' does not exist. You cannot FIND it.",
-    })
-    @ApiResponse({
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Unauthorized',
     })
     async findById(@Param('id') id: string): Promise<User> {
         return await this.usersService.findById(id).catch((err) => {
@@ -105,10 +95,6 @@ export class UsersController {
         description: "User with 'id' does not exist. You cannot PATCH it.",
     })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-    @ApiResponse({
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Unauthorized',
-    })
     async update(
         @Param('id') id: string,
         @Body(ValidationPipe) updateUserDto: UpdateUserDto
@@ -133,10 +119,6 @@ export class UsersController {
     })
     @ApiResponse({ status: HttpStatus.OK, description: 'Success' })
     @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
-    @ApiResponse({
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Unauthorized',
-    })
     async remove(@Param('id') id: string): Promise<User | null> {
         return await this.usersService.remove(id);
     }

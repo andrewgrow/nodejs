@@ -24,13 +24,15 @@
 /**
  * Migrate to NestJS.
  */
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './src/app.module';
 import * as TelegramController from './src/oldnode/telegram/telegramController';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './src/nest/users/roles/roles.guard';
+import { AuthHeaderApiGuard } from './src/nest/authorization/auth-header-api-guard';
 
 let host: string, port: string, protocol: string;
 
@@ -78,7 +80,9 @@ function setupGlobalPipes(app: NestExpressApplication): void {
 }
 
 function setupGlobalGuards(app: NestExpressApplication) {
-
+    const reflector = app.get( Reflector );
+    app.useGlobalGuards(new AuthHeaderApiGuard());
+    app.useGlobalGuards(new RolesGuard(reflector));
 }
 
 void bootstrap();

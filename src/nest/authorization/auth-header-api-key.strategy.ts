@@ -7,16 +7,17 @@ import { ConfigService } from '@nestjs/config';
  * This strategy is responsible for validating the API key sent as the header X-API-KEY as part of requests.
  * For using add the decorator before a controller method.
  * e.g.:
- * @UseGuards(AuthGuard('api-key'))
+ * @UseGuards(AuthGuard('API_KEY_GUARD'))
  * @Post()
  * async create(@Body() createCatDto: CreateCatDto) {
  *   this.catsService.create(createCatDto);
  * }
  */
+export const API_KEY_GUARD = 'API_KEY_GUARD';
 @Injectable()
 export class AuthHeaderApiKeyStrategy extends PassportStrategy(
     Strategy,
-    'api-key'
+    API_KEY_GUARD
 ) {
     /* eslint require-await: "off" */
     constructor(private readonly configService: ConfigService) {
@@ -38,9 +39,12 @@ export class AuthHeaderApiKeyStrategy extends PassportStrategy(
     ): void => {
         // This API_KEY is hardcoded into the .env file.
         if (this.configService.get<string>('API_KEY') === incomingApiKey) {
+            console.log('AuthHeaderApiKeyStrategy will return done');
             done(null, true);
         } else {
-            done(new UnauthorizedException('Your ApiKey is not valid.'), null);
+            console.log('AuthHeaderApiKeyStrategy return UnauthorizedException');
+            done(new UnauthorizedException('Unauthorized Exception.',
+                'Your API_KEY is not valid.'), null);
         }
     };
 }
