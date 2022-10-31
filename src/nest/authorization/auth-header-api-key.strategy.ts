@@ -7,11 +7,13 @@ import { ConfigService } from '@nestjs/config';
  * This strategy is responsible for validating the API key sent as the header X-API-KEY as part of requests.
  * For using add the decorator before a controller method.
  * e.g.:
- * @UseGuards(AuthGuard('API_KEY_GUARD'))
+ * @UseGuards(AuthHeaderApiGuard)
  * @Post()
  * async create(@Body() createCatDto: CreateCatDto) {
  *   this.catsService.create(createCatDto);
  * }
+ * or use global, such as:
+ * app.useGlobalGuards(new AuthHeaderApiGuard());
  */
 export const API_KEY_GUARD = 'API_KEY_GUARD';
 @Injectable()

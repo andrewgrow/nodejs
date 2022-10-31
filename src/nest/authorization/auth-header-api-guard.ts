@@ -1,10 +1,10 @@
-import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { API_KEY_GUARD } from './auth-header-api-key.strategy';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AuthHeaderApiGuard extends AuthGuard(API_KEY_GUARD) {
+export class AuthHeaderApiGuard extends AuthGuard(API_KEY_GUARD) implements CanActivate {
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         return super.canActivate(context);
     }
