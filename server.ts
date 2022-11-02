@@ -67,7 +67,7 @@ function setupSwagger(app: NestExpressApplication): void {
         .setVersion('1.0')
         .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('swagger', app, document);
+    SwaggerModule.setup('swagger', app, document); // see http://localhost:3000/swagger
 }
 
 function setupGlobalPipes(app: NestExpressApplication): void {
