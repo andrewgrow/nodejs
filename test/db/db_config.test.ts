@@ -2,8 +2,8 @@
 
 import { assert } from "chai";
 
-const mysql = require('../../src/oldnode/db/db_mysql');
-const config = require('../../src/oldnode/db/db_config');
+const mysql = require('../../oldnode/db/db_mysql');
+const config = require('../../oldnode/db/db_config');
 
 describe('test ./db/db_config.ts', function () {
     describe('test variables', function () {

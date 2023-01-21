@@ -2,7 +2,7 @@
 
 import { assert } from "chai";
 
-const telegramModel = require('../../../src/oldnode/db/models/telegram');
+const telegramModel = require('../../../oldnode/db/models/telegram');
 const userMock = require('../../factories/user_mock');
 const chatUid = userMock.defaultChatUid;
 let testUser, testTgChat;

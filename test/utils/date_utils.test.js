@@ -1,6 +1,6 @@
 'use strict';
 
-const dateUtils = require('../../src/oldnode/utils/date_utils');
+const dateUtils = require('../../oldnode/utils/date_utils');
 
 describe("test ./utils/date_utils.ts", function () {
     // maybe it looks like folly but if method will change we can get notify about it

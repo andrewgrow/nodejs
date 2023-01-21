@@ -2,10 +2,10 @@
 
 import { assert } from "chai";
 
-const mysql = require('../../../src/oldnode/db/db_mysql');
+const mysql = require('../../../oldnode/db/db_mysql');
 const userMock = require('../../factories/user_mock');
-const userModel = require('../../../src/oldnode/db/models/user');
-const utils = require('../../../src/oldnode/utils/utils');
+const userModel = require('../../../oldnode/db/models/user');
+const utils = require('../../../oldnode/utils/utils');
 let testUser;
 
 describe('test ../db/models/user.ts', function () {

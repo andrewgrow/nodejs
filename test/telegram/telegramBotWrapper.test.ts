@@ -2,7 +2,7 @@
 
 import { assert } from "chai";
 
-const wrapper = require('../../src/oldnode/telegram/telegramBotWrapper');
+const wrapper = require('../../oldnode/telegram/telegramBotWrapper');
 
 describe('test ../telegram/telegramBotWrapper.ts', function () {
     describe('test functions startTelegramBot() & getBotInfo()', function () {

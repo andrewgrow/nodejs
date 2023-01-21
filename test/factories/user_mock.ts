@@ -1,8 +1,8 @@
 'use strict';
 
-const userModel = require('../../src/oldnode/db/models/user');
-const telegramModel = require('../../src/oldnode/db/models/telegram');
-const { UserDAO } = require('../../src/oldnode/db/models/user');
+const userModel = require('../../oldnode/db/models/user');
+const telegramModel = require('../../oldnode/db/models/telegram');
+const { UserDAO } = require('../../oldnode/db/models/user');
 const defaultPhone = '01234567890';
 const defaultName = 'Test Name';
 const defaultChatUid = '1234567890';

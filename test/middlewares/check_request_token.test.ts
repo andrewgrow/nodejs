@@ -2,10 +2,10 @@
 
 import { assert } from "chai";
 
-const checkRequestToken = require('../../src/oldnode/middlewares/check_request_token');
-const tokenModel = require('../../src/oldnode/db/models/requestToken');
+const checkRequestToken = require('../../oldnode/middlewares/check_request_token');
+const tokenModel = require('../../oldnode/db/models/requestToken');
 const userMock = require('../factories/user_mock');
-const dateUtils = require('../../src/oldnode/utils/date_utils');
+const dateUtils = require('../../oldnode/utils/date_utils');
 const { createRequest, createResponse, nextWithTrue, nextWithError } = require("../factories/http_mock");
 
 describe('test ../middlewares/check_request_token.ts', function () {

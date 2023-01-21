@@ -2,7 +2,7 @@
 
 import { assert } from "chai";
 
-const mysql = require('../../src/oldnode/db/db_mysql');
+const mysql = require('../../oldnode/db/db_mysql');
 const userMock = require('../factories/user_mock');
 const testUser = userMock.getSimpleTestUser();
 

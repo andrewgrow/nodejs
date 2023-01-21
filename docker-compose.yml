@@ -8,15 +8,6 @@ services:
     volumes:
       - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     environment:
+      - MONGO_INITDB_DATABASE=divo
       - MONGO_INITDB_ROOT_USERNAME=mongouser
       - MONGO_INITDB_ROOT_PASSWORD=mongopassword
-
-  mysqldb:
-    image: 'mysql:8.0.28'
-    command: --default-authentication-plugin=mysql_native_password
-    ports:
-      - '33060:3306'
-    environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-    volumes:
-      - "./config/dbmysql-init.sql:/docker-entrypoint-initdb.d/dbmysql-init.sql"

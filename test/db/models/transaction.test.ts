@@ -2,8 +2,8 @@
 
 import { assert } from "chai";
 
-const mysql = require('../../../src/oldnode/db/db_mysql');
-const transactionModel = require('../../../src/oldnode/db/models/transaction');
+const mysql = require('../../../oldnode/db/db_mysql');
+const transactionModel = require('../../../oldnode/db/models/transaction');
 const userMock = require("../../factories/user_mock");
 
 describe('test ../db/models/transaction.ts', function () {
