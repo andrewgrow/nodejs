@@ -48,7 +48,9 @@ export const UsersSchema = SchemaFactory.createForClass(User);
  */
 UsersSchema.pre<UserDocument>('save', async function (next) {
   const user = this as UserDocument;
-  user.password = await bcrypt.hash(user.password, 10);
+  if (this.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 10);
+  }
   next();
 });
 
