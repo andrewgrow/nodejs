@@ -1,37 +1,38 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { UserAvatar } from './interfaces/user.avatar';
+import { IUserTelegram } from './interfaces/users.telegram';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
-export class UserAvatarSubDocument implements UserAvatar {
-  @Prop()
-  original: string;
+export class UserTelegram implements IUserTelegram {
+  @Prop({ required: true })
+  chatId: number;
 
   @Prop()
-  thumbnail: string;
+  publicName?: string;
+
+  @Prop({ required: true })
+  userName?: string;
+
 }
 
-const userAvatarSchema = SchemaFactory.createForClass(UserAvatarSubDocument);
+const userTelegramSchema = SchemaFactory.createForClass(UserTelegram);
 
 @Schema()
 export class User {
   @Prop()
-  firstName: string;
-
-  @Prop()
-  lastName: string;
+  name: string;
 
   @Prop({ required: true })
-  email: string;
+  phone: string;
 
   @Prop({ required: true })
   password: string;
 
-  @Prop({ type: userAvatarSchema })
-  avatar: UserAvatar;
+  @Prop({ type: userTelegramSchema })
+  telegram: UserTelegram;
 
   /**
    * Check is decrypted password match to encrypted password at a model.

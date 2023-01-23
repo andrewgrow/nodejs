@@ -11,7 +11,6 @@ import { SignInDto } from './dto/signin.dto';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create.dto';
 import { User } from '../../users/users.schema';
-import { CreateUserValidationPipe } from './pipes/validation.pipe';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -54,11 +53,12 @@ export class AuthController {
   })
   @ApiResponse({
     status: 409,
-    description: 'Email is already taken. Set other email or log in.',
+    description: 'Phone is already taken. Set other phone or log in.',
   })
   @HttpCode(201)
   async create(
-    @Body(new CreateUserValidationPipe()) createUserDto: CreateUserDto,
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+        createUserDto: CreateUserDto,
   ): Promise<User> {
     return this.authService.createUser(createUserDto);
   }

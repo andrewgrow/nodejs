@@ -1,31 +1,18 @@
 import {
-  IsEmail,
-  IsNotEmpty,
+  IsMobilePhone,
+  IsNotEmpty, IsObject,
   IsOptional,
   IsString,
-  Length,
+  Length, ValidateNested,
 } from 'class-validator';
-import { User } from '../../../users/users.schema';
+import { User, UserTelegram } from '../../../users/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import * as Joi from 'joi';
+import { Type } from 'class-transformer';
+import { UserTelegramCreateDto } from '../../../users/dto/telegram.create.dto';
 
 export class CreateUserDto implements Partial<User> {
   @ApiProperty({
-    description: 'The email of a user. Cannot be empty for creating.',
-    minimum: 5,
-    maximum: 100,
-    type: String,
-    required: true,
-    nullable: false,
-    example: 'user@example.com',
-  })
-  @IsNotEmpty()
-  @Length(5, 100)
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
-    description: 'The first name of a user. Can be empty.',
+    description: 'The name of a user. Not required.',
     minimum: 2,
     maximum: 200,
     type: String,
@@ -33,42 +20,49 @@ export class CreateUserDto implements Partial<User> {
     nullable: true,
     example: 'John',
   })
+  @IsNotEmpty()
   @IsOptional()
   @IsString()
   @Length(2, 20)
-  firstName?: string;
+  name?: string;
 
   @ApiProperty({
-    description: 'The last name of a user. Can be empty.',
-    minimum: 2,
-    maximum: 200,
-    type: String,
-    required: false,
-    nullable: true,
-    example: 'Doe',
-  })
-  @IsOptional()
-  @IsString()
-  @Length(2, 20)
-  lastName?: string;
-
-  @ApiProperty({
-    description: 'The password of a user. Cannot be empty for creating.',
+    description: 'The phone of a user. Required.',
     minimum: 8,
-    maximum: 1024,
+    maximum: 21,
     type: String,
     required: true,
     nullable: false,
+    example: '+594 700 XXX XXX XXX',
+  })
+  @Length(8, 21)
+  @IsMobilePhone()
+  phone: string;
+
+  @ApiProperty({
+    description: 'The password of a user. Required.',
+    minimum: 8,
+    maximum: 1024,
+    type: String,
+    required: false,
+    nullable: true,
     example: 'Qwerty78',
   })
   @IsString()
   @Length(8, 1024)
   password: string;
-}
 
-export const CreateUserValidationSchema = Joi.object({
-  email: Joi.string().email().min(5).max(100).lowercase().required(),
-  password: Joi.string().min(8).max(1024).required(),
-  firstName: Joi.string().min(2).max(20).required(),
-  lastName: Joi.string().min(2).max(20).required(),
-});
+  @ApiProperty({
+    description: 'The telegram of a user. Not required.',
+    type: UserTelegramCreateDto,
+    required: false,
+    nullable: true,
+    example: 'Qwerty78',
+  })
+  @IsNotEmpty()
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UserTelegramCreateDto)
+  telegram: UserTelegram;
+}

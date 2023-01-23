@@ -1,32 +1,18 @@
 import {
-  IsEmail,
-  IsNotEmpty,
+  IsMobilePhone,
+  IsNotEmpty, IsObject,
   IsOptional,
   IsString,
-  Length,
+  Length, ValidateNested,
 } from 'class-validator';
-import { User } from '../users.schema';
+import { User, UserTelegram } from '../users.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import * as Joi from 'joi';
+import { UserTelegramUpdateDto } from './telegram.update.dto';
+import { Type } from 'class-transformer';
 
 export class UpdateUserDto implements Partial<User> {
   @ApiProperty({
-    description: 'The email of a user. Not will update when empty.',
-    minimum: 5,
-    maximum: 100,
-    type: String,
-    required: false,
-    nullable: true,
-    example: 'user@example.com',
-  })
-  @IsNotEmpty()
-  @IsOptional()
-  @Length(5, 100)
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
-    description: 'The first name of a user. Not will update when empty.',
+    description: 'The name of a user. Not will update when empty.',
     minimum: 2,
     maximum: 200,
     type: String,
@@ -38,22 +24,22 @@ export class UpdateUserDto implements Partial<User> {
   @IsOptional()
   @IsString()
   @Length(2, 20)
-  firstName?: string;
+  name?: string;
 
   @ApiProperty({
-    description: 'The last name of a user. Not will update when empty.',
-    minimum: 2,
-    maximum: 200,
+    description: 'The phone of a user. Not will update when empty.',
+    minimum: 8,
+    maximum: 21,
     type: String,
     required: false,
     nullable: true,
-    example: 'Doe',
+    example: '+594 700 XXX XXX XXX',
   })
   @IsNotEmpty()
   @IsOptional()
-  @IsString()
-  @Length(2, 20)
-  lastName?: string;
+  @Length(8, 21)
+  @IsMobilePhone()
+  phone: string;
 
   @ApiProperty({
     description: 'The password of a user. Not will update when empty.',
@@ -69,11 +55,18 @@ export class UpdateUserDto implements Partial<User> {
   @IsString()
   @Length(8, 1024)
   password: string;
-}
 
-export const UpdateUserValidationSchema = Joi.object({
-  email: Joi.string().email().min(5).max(100).lowercase(),
-  password: Joi.string().min(8).max(1024),
-  firstName: Joi.string().min(2).max(20),
-  lastName: Joi.string().min(2).max(20),
-});
+  @ApiProperty({
+    description: 'The telegram of a user. Not will update when empty.',
+    type: UserTelegramUpdateDto,
+    required: false,
+    nullable: true,
+    example: 'Qwerty78',
+  })
+  @IsNotEmpty()
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UserTelegramUpdateDto)
+  telegram: UserTelegram;
+}

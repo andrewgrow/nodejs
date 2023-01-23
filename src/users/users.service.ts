@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,24 +7,19 @@ import { User, UserDocument } from './users.schema';
 import { CreateUserDto } from '../security/auth/dto/create.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { FilesService } from '../files/files.service';
-import { UserAvatar } from './interfaces/user.avatar';
 
 @Injectable()
 export class UsersService {
   @InjectModel(User.name)
   private userModel: Model<UserDocument>;
 
-  @Inject(FilesService)
-  private readonly fileService: FilesService;
-
   async getAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    if (await this.isEmailAlreadyExist(createUserDto.email)) {
-      throw new ConflictException('Email already taken');
+    if (await this.isPhoneAlreadyExist(createUserDto.phone)) {
+      throw new ConflictException('Phone is already taken. Set other phone or log in.');
     }
 
     const user = new this.userModel(createUserDto);
@@ -34,8 +28,8 @@ export class UsersService {
     return user.save();
   }
 
-  private async isEmailAlreadyExist(email: string) {
-    const result = await this.userModel.findOne({ email: email });
+  private async isPhoneAlreadyExist(phone: string) {
+    const result = await this.userModel.findOne({ phone: phone });
     return result !== null;
   }
 
@@ -46,14 +40,14 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} not found for patching.`);
     }
 
-    if (updateUserDto.firstName) {
-      userDb.firstName = updateUserDto.firstName;
+    if (updateUserDto.name) {
+      userDb.name = updateUserDto.name;
     }
-    if (updateUserDto.lastName) {
-      userDb.lastName = updateUserDto.lastName;
+    if (updateUserDto.phone) {
+      userDb.phone = updateUserDto.phone;
     }
-    if (updateUserDto.email) {
-      userDb.email = updateUserDto.email;
+    if (updateUserDto.telegram) {
+      userDb.telegram = updateUserDto.telegram;
     }
     if (updateUserDto.password) {
       userDb.password = updateUserDto.password;
@@ -82,19 +76,8 @@ export class UsersService {
     return result;
   }
 
-  async getUserByEmail(email): Promise<User> {
-    const result = await this.userModel.findOne({ email: email }).exec();
+  async getUserByPhone(phone): Promise<User> {
+    const result = await this.userModel.findOne({ phone: phone }).exec();
     return result;
-  }
-
-  async uploadAvatar(
-    fileMulter: Express.Multer.File,
-    userId: string,
-  ): Promise<UserAvatar> {
-    const user: UserDocument = await this.userModel.findById(userId);
-    console.log('uploadAvatar', 'user', user['_id'].toString());
-    user.avatar = await this.fileService.uploadAvatarToClouds(fileMulter, user);
-    await user.save();
-    return user.avatar;
   }
 }

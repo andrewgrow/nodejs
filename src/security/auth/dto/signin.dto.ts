@@ -1,24 +1,23 @@
-import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsEmail, IsMobilePhone, IsNotEmpty, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../../users/users.schema';
 
 export class SignInDto implements Partial<User> {
   @ApiProperty({
-    description: 'The email of a user. Cannot be empty for sign in.',
-    minimum: 5,
-    maximum: 100,
+    description: 'The phone of a user. Required.',
+    minimum: 8,
+    maximum: 21,
     type: String,
     required: true,
     nullable: false,
-    example: 'user@example.com',
+    example: '+594 700 XXX XXX XXX',
   })
-  @IsNotEmpty()
-  @Length(5, 100)
-  @IsEmail()
-  email: string;
+  @Length(8, 21)
+  @IsMobilePhone()
+  phone: string;
 
   @ApiProperty({
-    description: 'The password of a user. Cannot be empty for sign in.',
+    description: 'The password of a user. Required.',
     minimum: 8,
     maximum: 1024,
     type: String,

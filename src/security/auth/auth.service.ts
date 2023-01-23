@@ -14,13 +14,13 @@ export class AuthService {
 
   /**
    * Try to sign in user through validation his password.
-   * In success will return encrypted jwt token.
+   * In success will return encrypted jwt token. Fronted must add this token to all next requests.
    * @param signInDto SignInDto
    */
   async authUser(signInDto: SignInDto): Promise<any> {
-    const error = new BadRequestException('Check email or password');
+    const error = new BadRequestException('Check phone or password');
 
-    const user = await this.userService.getUserByEmail(signInDto.email);
+    const user = await this.userService.getUserByPhone(signInDto.phone);
     if (!user) {
       throw error;
     }
