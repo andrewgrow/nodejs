@@ -12,8 +12,6 @@ import { IUserTelegram } from '../interfaces/users.telegram';
 export class UserTelegramUpdateDto implements Partial<IUserTelegram> {
   @ApiProperty({
     description: 'The chat id of a user. Not will update when empty.',
-    minimum: 6,
-    maximum: 20,
     type: Number,
     required: false,
     nullable: true,
@@ -21,9 +19,8 @@ export class UserTelegramUpdateDto implements Partial<IUserTelegram> {
   })
   @IsNotEmpty()
   @IsOptional()
-  @IsNumber()
-  @Length(6, 20)
-  chat_id?: number;
+  @IsNumber({ allowNaN: false })
+  chatId?: number;
 
   @ApiProperty({
     description: 'The public name of a user. Not will update when empty.',
@@ -37,7 +34,7 @@ export class UserTelegramUpdateDto implements Partial<IUserTelegram> {
   @IsNotEmpty()
   @IsOptional()
   @Length(2, 100)
-  @IsMobilePhone()
+  @IsString()
   publicName?: string;
 
   @ApiProperty({
@@ -49,5 +46,9 @@ export class UserTelegramUpdateDto implements Partial<IUserTelegram> {
     nullable: true,
     example: 'john1980',
   })
+  @IsNotEmpty()
+  @IsOptional()
+  @Length(2, 100)
+  @IsString()
   userName?: string;
 }
