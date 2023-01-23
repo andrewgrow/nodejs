@@ -5,8 +5,8 @@ import { AuthService } from './auth.service';
 import { AppJwtModule } from '../jwt/app.jwt.module';
 
 @Module({
-  imports: [UsersModule, AppJwtModule],
-  controllers: [AuthController],
-  providers: [AuthService],
+    imports: [UsersModule, AppJwtModule],
+    controllers: [AuthController],
+    providers: [AuthService],
 })
 export class AuthModule {}

@@ -4,28 +4,28 @@ import { AppModule } from '../src/app.module';
 import { INestApplication } from '@nestjs/common';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication;
+    let app: INestApplication;
 
-  beforeAll(async () => {
-    const moduleFixture = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    beforeAll(async () => {
+        const moduleFixture = await Test.createTestingModule({
+            imports: [AppModule],
+        }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
-
-  describe('GET / (main page)', () => {
-    it('Should return 404 because not implemented yet', () => {
-      return request(app.getHttpServer()).get('/').expect(404).expect({
-        statusCode: 404,
-        message: 'Cannot GET /',
-        error: 'Not Found',
-      });
+        app = moduleFixture.createNestApplication();
+        await app.init();
     });
-  });
 
-  afterAll(async () => {
-    await app.close();
-  });
+    describe('GET / (main page)', () => {
+        it('Should return 404 because not implemented yet', () => {
+            return request(app.getHttpServer()).get('/').expect(404).expect({
+                statusCode: 404,
+                message: 'Cannot GET /',
+                error: 'Not Found',
+            });
+        });
+    });
+
+    afterAll(async () => {
+        await app.close();
+    });
 });

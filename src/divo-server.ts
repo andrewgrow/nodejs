@@ -4,18 +4,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-  app.use(helmet());
+    app.use(helmet());
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Divo Server')
-    .setDescription('The server API description')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('swagger-docs', app, document);
+    const swaggerConfig = new DocumentBuilder()
+        .setTitle('Divo Server')
+        .setDescription('The server API description')
+        .setVersion('1.0')
+        .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('swagger-docs', app, document);
 
-  await app.listen(3000);
+    await app.listen(3000);
 }
 bootstrap();

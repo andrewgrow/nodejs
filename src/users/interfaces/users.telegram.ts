@@ -1,5 +1,5 @@
 export interface IUserTelegram {
-  chatId: number;
-  publicName?: string;
-  userName?: string;
+    chatId: number;
+    publicName?: string;
+    userName?: string;
 }

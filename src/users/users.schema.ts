@@ -7,38 +7,37 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class UserTelegram implements IUserTelegram {
-  @Prop({ required: true })
-  chatId: number;
+    @Prop({ required: true })
+    chatId: number;
 
-  @Prop()
-  publicName?: string;
+    @Prop()
+    publicName?: string;
 
-  @Prop({ required: true })
-  userName?: string;
-
+    @Prop()
+    userName?: string;
 }
 
 const userTelegramSchema = SchemaFactory.createForClass(UserTelegram);
 
 @Schema()
 export class User {
-  @Prop()
-  name: string;
+    @Prop()
+    name: string;
 
-  @Prop({ required: true })
-  phone: string;
+    @Prop({ required: true })
+    phone: string;
 
-  @Prop({ required: true })
-  password: string;
+    @Prop({ required: true, select: false })
+    password: string;
 
-  @Prop({ type: userTelegramSchema })
-  telegram: UserTelegram;
+    @Prop({ type: userTelegramSchema })
+    telegram: UserTelegram;
 
-  /**
-   * Check is decrypted password match to encrypted password at a model.
-   * See an implementation method below.
-   */
-  isPasswordValid: (decryptedPassword: string) => Promise<boolean>;
+    /**
+     * Check is decrypted password match to encrypted password at a model.
+     * See an implementation method below.
+     */
+    isPasswordValid: (decryptedPassword: string) => Promise<boolean>;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(User);
@@ -47,11 +46,11 @@ export const UsersSchema = SchemaFactory.createForClass(User);
  * Encrypt password during save model.
  */
 UsersSchema.pre<UserDocument>('save', async function (next) {
-  const user = this as UserDocument;
-  if (this.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 10);
-  }
-  next();
+    const user = this as UserDocument;
+    if (this.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 10);
+    }
+    next();
 });
 
 /**
@@ -59,7 +58,7 @@ UsersSchema.pre<UserDocument>('save', async function (next) {
  * Here is an implementation of the method.
  */
 UsersSchema.methods.isPasswordValid = async function (
-  decryptedPassword: string,
+    decryptedPassword: string,
 ): Promise<boolean> {
-  return await bcrypt.compare(decryptedPassword, this.password);
+    return await bcrypt.compare(decryptedPassword, this.password);
 };

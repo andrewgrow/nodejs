@@ -5,18 +5,18 @@ import { AppJwtService } from './app.jwt.service';
 import { AppJwtGuard } from './app.jwt.guard';
 
 const jwtFactory = {
-  useFactory: async (configService: ConfigService) => ({
-    secret: configService.get<string>('jwt.secret'),
-    signOptions: {
-      expiresIn: configService.get<string>('jwt.expiresInSeconds'),
-    },
-  }),
-  inject: [ConfigService],
+    useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.secret'),
+        signOptions: {
+            expiresIn: configService.get<string>('jwt.expiresInSeconds'),
+        },
+    }),
+    inject: [ConfigService],
 };
 
 @Module({
-  imports: [JwtModule.registerAsync(jwtFactory)],
-  providers: [AppJwtService, AppJwtGuard],
-  exports: [AppJwtService, AppJwtGuard],
+    imports: [JwtModule.registerAsync(jwtFactory)],
+    providers: [AppJwtService, AppJwtGuard],
+    exports: [AppJwtService, AppJwtGuard],
 })
 export class AppJwtModule {}
