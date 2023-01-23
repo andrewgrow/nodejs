@@ -44,6 +44,8 @@ export class UsersService {
             );
         }
 
+        // todo: 2023.01.23: need to change updating properties with lodash _get method https://www.geeksforgeeks.org/lodash-_-get-method/
+
         if (updateUserDto.name) {
             userDb.name = updateUserDto.name;
         }
