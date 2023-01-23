@@ -50,11 +50,20 @@ export class UsersService {
         if (updateUserDto.phone) {
             userDb.phone = updateUserDto.phone;
         }
-        if (updateUserDto.telegram) {
-            userDb.telegram = updateUserDto.telegram;
-        }
         if (updateUserDto.password) {
             userDb.password = updateUserDto.password;
+        }
+
+        if (updateUserDto.telegram) {
+            if (updateUserDto.telegram.chatId) {
+                userDb.telegram.chatId = updateUserDto.telegram.chatId;
+            }
+            if (updateUserDto.telegram.userName) {
+                userDb.telegram.userName = updateUserDto.telegram.userName;
+            }
+            if (updateUserDto.telegram.publicName) {
+                userDb.telegram.publicName = updateUserDto.telegram.publicName;
+            }
         }
 
         return userDb.save();
