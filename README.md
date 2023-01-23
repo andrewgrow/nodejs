@@ -15,11 +15,11 @@ Production works at Digitalocean image (Ubuntu + NodeJS + MySQL + Nginx + Docker
 ssh USER@IP_ADDRESS -p 2202 # connect to production on local desktop
 ## next commands run on remote server!
 cd ~/divo-nodejs/ # open a folder with app
-git pull origin master # get updates from git
+git pull origin production # get updates from git
 npm install # rebuild dependencies
-npx tsc
+npx tsc # build TypeScript
 #pm2 restart /home/divo/divo-nodejs/built/server.js # run restart
-pm2 restart /home/divo/divo-nodejs/dist/src/main.js # run restart
+pm2 restart /home/divo/divo-nodejs/dist/src/divo-server.js # run restart
 ```
 
 Run this application via Docker.
