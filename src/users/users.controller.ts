@@ -8,12 +8,12 @@ import {
     UseGuards,
     ValidationPipe,
 } from '@nestjs/common';
-import { User } from './users.schema';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update.dto';
+import { UpdateUserDto } from './dto/users.update.dto';
 import { ApiBody, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { AppJwtGuard } from '../security/jwt/app.jwt.guard';
-import { UserId } from '../security/jwt/app.jwt.decoder';
+import { UserId } from '../security/jwt/app.jwt.decode.user.id';
+import { UserDto } from './dto/users.dto';
 
 @ApiTags('Users')
 @Controller('/users')
@@ -25,9 +25,9 @@ export class UsersController {
     @ApiResponse({
         status: 200,
         description: 'The records have been successfully found.',
-        type: [User],
+        type: [UserDto],
     })
-    async get(): Promise<User[]> {
+    async get(): Promise<UserDto[]> {
         return await this.usersService.getAll();
     }
 
@@ -35,6 +35,7 @@ export class UsersController {
     @ApiResponse({
         status: 200,
         description: 'The record has been successfully found.',
+        type: UserDto,
     })
     @ApiResponse({
         status: 404,
@@ -52,6 +53,7 @@ export class UsersController {
     @ApiResponse({
         status: 200,
         description: 'The record has been successfully patched.',
+        type: UserDto,
     })
     @ApiResponse({
         status: 404,
@@ -84,10 +86,12 @@ export class UsersController {
         status: 404,
         description: `User account not found for deleting.`,
     })
-    delete(@Param('id') deleteId: string, @UserId() commandUserId: string) {
+    async delete(@Param('id') deleteId: string, @UserId() commandUserId: string) {
         if (JSON.stringify(commandUserId) !== JSON.stringify(deleteId)) {
             console.log(`User ${commandUserId} delete next user: ${deleteId}`);
         }
-        return this.usersService.deleteUser(deleteId);
+        return {
+            message: await this.usersService.deleteUser(deleteId),
+        };
     }
 }

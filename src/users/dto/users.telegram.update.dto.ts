@@ -6,7 +6,7 @@ import {
     Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserTelegramCreateDto } from './telegram.create.dto';
+import { UserTelegramCreateDto } from './users.telegram.create.dto';
 
 export class UserTelegramUpdateDto implements Partial<UserTelegramCreateDto> {
     @ApiProperty({

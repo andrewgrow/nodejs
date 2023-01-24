@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { ContextIdFactory } from '@nestjs/core';
 import { User } from '../src/users/users.schema';
-import { CreateUserDto } from '../src/security/auth/dto/create.dto';
+import { CreateUserDto } from '../src/security/auth/dto/auth.user.create.dto';
 import { AppJwtService } from '../src/security/jwt/app.jwt.service';
 import { AppJwtData } from '../src/security/jwt/app.jwt.data';
 import { AuthModule } from '../src/security/auth/auth.module';

@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { User } from '../users.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserTelegramUpdateDto } from './telegram.update.dto';
+import { UserTelegramUpdateDto } from './users.telegram.update.dto';
 import { Type } from 'class-transformer';
 import { UserTelegram } from '../users.telegram.schema';
 
@@ -64,7 +64,7 @@ export class UpdateUserDto implements Partial<User> {
         type: UserTelegramUpdateDto,
         required: false,
         nullable: true,
-        example: 'Qwerty78',
+        example: UserTelegramUpdateDto,
     })
     @IsNotEmpty()
     @IsOptional()

@@ -7,10 +7,10 @@ import {
     Post,
     ValidationPipe,
 } from '@nestjs/common';
-import { SignInDto } from './dto/signin.dto';
+import { SignInDto } from './dto/auth.user.signin.dto';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create.dto';
-import { User } from '../../users/users.schema';
+import { CreateUserDto } from './dto/auth.user.create.dto';
+import { UserDto } from '../../users/dto/users.dto';
 
 @ApiTags('Auth')
 @Controller('/auth')
@@ -63,7 +63,7 @@ export class AuthController {
             new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
         )
         createUserDto: CreateUserDto,
-    ): Promise<User> {
+    ): Promise<UserDto> {
         return this.authService.createUser(createUserDto);
     }
 }

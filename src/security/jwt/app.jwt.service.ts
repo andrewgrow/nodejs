@@ -37,8 +37,8 @@ export class AppJwtService {
             /^Bearer /,
             '',
         );
-        const appJwtData: AppJwtData = this.verifyToken(token);
-        request.user_id = appJwtData.id;
+        const appJwtData: AppJwtData = this.verifyToken(token); // return data or throw an exception
+        request.user_id = appJwtData.id; // save to the request id that got from valid jwt
         return appJwtData;
     }
 }

@@ -6,37 +6,19 @@ import {
     UserTelegram,
     userTelegramSchema,
 } from './users.telegram.schema';
+import { IUser } from './interfaces/IUser';
 
 @Schema()
-export class User {
-    @ApiProperty({
-        description: 'The name of a user.',
-        type: String,
-        example: 'John',
-    })
+export class User implements IUser {
     @Prop()
     name: string;
 
-    @ApiProperty({
-        description: 'The phone of a user.',
-        type: String,
-        example: '+594 700 XXX XXX XXX (without spaces)',
-    })
     @Prop({ required: true })
     phone: string;
 
-    @ApiProperty({
-        description: 'The password of a user.',
-        type: String,
-        example: 'Qwerty78',
-    })
     @Prop({ required: true, select: false })
     password: string;
 
-    @ApiProperty({
-        description: 'The telegram data of a user.',
-        type: UserTelegram,
-    })
     @Prop({ type: userTelegramSchema })
     telegram: UserTelegram;
 

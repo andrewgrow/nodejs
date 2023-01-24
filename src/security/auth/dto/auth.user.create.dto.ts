@@ -10,7 +10,7 @@ import {
 import { User } from '../../../users/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { UserTelegramCreateDto } from '../../../users/dto/telegram.create.dto';
+import { UserTelegramCreateDto } from '../../../users/dto/users.telegram.create.dto';
 import { UserTelegram } from '../../../users/users.telegram.schema';
 
 export class CreateUserDto implements Partial<User> {

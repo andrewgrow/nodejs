@@ -4,40 +4,45 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { User } from './users.schema';
-import { CreateUserDto } from '../security/auth/dto/create.dto';
+import { CreateUserDto } from '../security/auth/dto/auth.user.create.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument, UserTelegram } from './users.telegram.schema';
+import { UserDto } from './dto/users.dto';
 
 @Injectable()
 export class UsersService {
     @InjectModel(User.name)
     private userModel: Model<UserDocument>;
 
-    async getAll(): Promise<User[]> {
-        return this.userModel.find().exec();
+    async getAll(): Promise<UserDto[]> {
+        const users: User[] = await this.userModel.find().exec();
+        return users.map((raw) => {
+            return new UserDto(raw);
+        });
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
+    async createUser(createUserDto: CreateUserDto): Promise<UserDto> {
         if (await this.isPhoneAlreadyExist(createUserDto.phone)) {
             throw new ConflictException(
                 'Phone is already taken. Set other phone or log in.',
             );
         }
 
-        const user = new this.userModel(createUserDto);
+        let user = new this.userModel(createUserDto);
         await user.validate();
 
-        return user.save();
+        user = await user.save();
+        return new UserDto(user);
     }
 
-    private async isPhoneAlreadyExist(phone: string) {
-        const result = await this.userModel.findOne({ phone: phone });
+    private async isPhoneAlreadyExist(phone: string): Promise<boolean> {
+        const result = await this.userModel.findOne({ phone: phone }).exec();
         return result !== null;
     }
 
-    async updateUser(id, updateUserDto): Promise<User> {
-        const userDb = await this.userModel.findById(id);
+    async updateUser(id, updateUserDto): Promise<UserDto> {
+        const userDb = await this.userModel.findById(id).exec();
 
         if (userDb === null) {
             throw new NotFoundException(
@@ -72,39 +77,37 @@ export class UsersService {
             }
         }
 
-        return userDb.save();
+        const user: User = await userDb.save();
+        return new UserDto(user);
     }
 
-    async deleteUser(id) {
-        const result = await this.userModel.findByIdAndDelete(id);
+    async deleteUser(id): Promise<string> {
+        const result = await this.userModel.findByIdAndDelete(id).exec();
 
         if (result === null) {
             throw new NotFoundException('User account not found for deleting!');
         }
 
-        return {
-            message: 'Your account has been deleted. Good bye!',
-        };
+        return 'Your account has been deleted. Good bye!';
     }
 
-    async getUserById(id): Promise<User> {
-        const result: User = await this.userModel.findById(id);
+    async getUserById(id): Promise<UserDto> {
+        const result: User = await this.userModel.findById(id).exec();
         if (result === null) {
             throw new NotFoundException(`User with id ${id} not found.`);
         }
-        return result;
+        return new UserDto(result);
     }
 
-    async getUserByPhone(phone): Promise<User> {
-        const result = await this.userModel.findOne({ phone: phone }).exec();
-        return result;
+    async getUserByPhone(phone): Promise<UserDto> {
+        const user = await this.userModel.findOne({ phone: phone }).exec();
+        return new UserDto(user);
     }
 
-    async getUserByPhoneWithPassword(phone): Promise<User> {
-        const result = await this.userModel
+    getUserByPhoneWithPassword(phone): Promise<User> {
+        return this.userModel
             .findOne({ phone: phone })
             .select('+password')
             .exec();
-        return result;
     }
 }
