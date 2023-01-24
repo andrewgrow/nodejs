@@ -7,10 +7,11 @@ import {
     Length,
     ValidateNested,
 } from 'class-validator';
-import { User, UserTelegram } from '../users.schema';
+import { User } from '../users.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserTelegramUpdateDto } from './telegram.update.dto';
 import { Type } from 'class-transformer';
+import { UserTelegram } from '../users.telegram.schema';
 
 export class UpdateUserDto implements Partial<User> {
     @ApiProperty({

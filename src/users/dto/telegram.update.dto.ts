@@ -22,7 +22,7 @@ export class UserTelegramUpdateDto implements Partial<UserTelegramCreateDto> {
     chatId?: number;
 
     @ApiProperty({
-        description: 'The public name of a user.',
+        description: 'The public name of a user. Not will update when empty.',
         minimum: 2,
         maximum: 100,
         type: String,
@@ -37,7 +37,8 @@ export class UserTelegramUpdateDto implements Partial<UserTelegramCreateDto> {
     publicName?: string;
 
     @ApiProperty({
-        description: 'Username in Telegram used as @john1980.',
+        description:
+            'Username in Telegram used as @john1980. Not will update when empty.',
         minimum: 2,
         maximum: 100,
         type: String,

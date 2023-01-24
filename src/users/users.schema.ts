@@ -1,35 +1,42 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { IUserTelegram } from './interfaces/users.telegram';
-
-export type UserDocument = HydratedDocument<User>;
-
-@Schema()
-export class UserTelegram implements IUserTelegram {
-    @Prop({ required: true })
-    chatId: number;
-
-    @Prop()
-    publicName?: string;
-
-    @Prop()
-    userName?: string;
-}
-
-const userTelegramSchema = SchemaFactory.createForClass(UserTelegram);
+import { ApiProperty } from '@nestjs/swagger';
+import {
+    UserDocument,
+    UserTelegram,
+    userTelegramSchema,
+} from './users.telegram.schema';
 
 @Schema()
 export class User {
+    @ApiProperty({
+        description: 'The name of a user.',
+        type: String,
+        example: 'John',
+    })
     @Prop()
     name: string;
 
+    @ApiProperty({
+        description: 'The phone of a user.',
+        type: String,
+        example: '+594 700 XXX XXX XXX (without spaces)',
+    })
     @Prop({ required: true })
     phone: string;
 
+    @ApiProperty({
+        description: 'The password of a user.',
+        type: String,
+        example: 'Qwerty78',
+    })
     @Prop({ required: true, select: false })
     password: string;
 
+    @ApiProperty({
+        description: 'The telegram data of a user.',
+        type: UserTelegram,
+    })
     @Prop({ type: userTelegramSchema })
     telegram: UserTelegram;
 
@@ -46,9 +53,9 @@ export const UsersSchema = SchemaFactory.createForClass(User);
  * Encrypt password during save model.
  */
 UsersSchema.pre<UserDocument>('save', async function (next) {
-    const user = this as UserDocument;
+    // this is an UserDocument
     if (this.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 10);
+        this.password = await bcrypt.hash(this.password, 10);
     }
     next();
 });

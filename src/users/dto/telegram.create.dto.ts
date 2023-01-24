@@ -11,8 +11,6 @@ import { IUserTelegram } from '../interfaces/users.telegram';
 export class UserTelegramCreateDto implements Partial<IUserTelegram> {
     @ApiProperty({
         description: 'The chat id of a user. Required.',
-        minimum: 6,
-        maximum: 20,
         type: Number,
         required: true,
         nullable: false,
@@ -22,7 +20,7 @@ export class UserTelegramCreateDto implements Partial<IUserTelegram> {
     chatId: number;
 
     @ApiProperty({
-        description: 'The public name of a user.',
+        description: 'The public name of a user. Optional.',
         minimum: 2,
         maximum: 100,
         type: String,
@@ -37,7 +35,7 @@ export class UserTelegramCreateDto implements Partial<IUserTelegram> {
     publicName?: string;
 
     @ApiProperty({
-        description: 'Username in Telegram used as @john1980.',
+        description: 'Username in Telegram used as @john1980. Optional.',
         minimum: 2,
         maximum: 100,
         type: String,

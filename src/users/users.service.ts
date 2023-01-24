@@ -3,10 +3,11 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import { User, UserDocument } from './users.schema';
+import { User } from './users.schema';
 import { CreateUserDto } from '../security/auth/dto/create.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UserDocument, UserTelegram } from './users.telegram.schema';
 
 @Injectable()
 export class UsersService {
@@ -57,6 +58,9 @@ export class UsersService {
         }
 
         if (updateUserDto.telegram) {
+            if (!userDb.telegram) {
+                userDb.telegram = new UserTelegram();
+            }
             if (updateUserDto.telegram.chatId) {
                 userDb.telegram.chatId = updateUserDto.telegram.chatId;
             }

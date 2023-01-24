@@ -25,6 +25,7 @@ export class UsersController {
     @ApiResponse({
         status: 200,
         description: 'The records have been successfully found.',
+        type: [User],
     })
     async get(): Promise<User[]> {
         return await this.usersService.getAll();

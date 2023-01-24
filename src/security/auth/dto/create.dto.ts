@@ -7,10 +7,11 @@ import {
     Length,
     ValidateNested,
 } from 'class-validator';
-import { User, UserTelegram } from '../../../users/users.schema';
+import { User } from '../../../users/users.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { UserTelegramCreateDto } from '../../../users/dto/telegram.create.dto';
+import { UserTelegram } from '../../../users/users.telegram.schema';
 
 export class CreateUserDto implements Partial<User> {
     @ApiProperty({
@@ -35,7 +36,7 @@ export class CreateUserDto implements Partial<User> {
         type: String,
         required: true,
         nullable: false,
-        example: '+594 700 XXX XXX XXX',
+        example: '+594 700 XXX XXX XXX (without spaces)',
     })
     @Length(8, 21)
     @IsMobilePhone()
@@ -59,7 +60,7 @@ export class CreateUserDto implements Partial<User> {
         type: UserTelegramCreateDto,
         required: false,
         nullable: true,
-        example: 'Qwerty78',
+        example: UserTelegramCreateDto,
     })
     @IsNotEmpty()
     @IsOptional()

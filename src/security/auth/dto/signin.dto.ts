@@ -10,7 +10,7 @@ export class SignInDto implements Partial<User> {
         type: String,
         required: true,
         nullable: false,
-        example: '+594 700 XXX XXX XXX',
+        example: '+594 700 XXX XXX XXX (without spaces)',
     })
     @Length(8, 21)
     @IsMobilePhone()
