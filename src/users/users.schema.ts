@@ -1,12 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { ApiProperty } from '@nestjs/swagger';
-import {
-    UserDocument,
-    UserTelegram,
-    userTelegramSchema,
-} from './users.telegram.schema';
+import { UserTelegram, userTelegramSchema } from './users.telegram.schema';
 import { IUser } from './interfaces/IUser';
+import { Role } from '../security/roles/roles.enum';
+import { HydratedDocument } from 'mongoose';
+
+export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User implements IUser {
@@ -21,6 +20,9 @@ export class User implements IUser {
 
     @Prop({ type: userTelegramSchema })
     telegram: UserTelegram;
+
+    @Prop({ type: String, enum: Role, default: Role.USER })
+    role: Role;
 
     /**
      * Check is decrypted password match to encrypted password at a model.

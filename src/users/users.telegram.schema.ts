@@ -1,10 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IUserTelegram } from './interfaces/users.telegram';
-import { HydratedDocument } from 'mongoose';
-import { User } from './users.schema';
 import { ApiProperty } from '@nestjs/swagger';
-
-export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class UserTelegram implements IUserTelegram {

@@ -3,12 +3,13 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import { User } from './users.schema';
+import { User, UserDocument } from './users.schema';
 import { CreateUserDto } from '../security/auth/dto/auth.user.create.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserDocument, UserTelegram } from './users.telegram.schema';
+import { UserTelegram } from './users.telegram.schema';
 import { UserDto } from './dto/users.dto';
+import { Role } from '../security/roles/roles.enum';
 
 @Injectable()
 export class UsersService {
@@ -108,6 +109,23 @@ export class UsersService {
         return this.userModel
             .findOne({ phone: phone })
             .select('+password')
+            .exec();
+    }
+
+    async getUserRole(userId: string): Promise<Role> {
+        const result = await this.userModel
+            .findById(userId)
+            .select('role')
+            .exec();
+        if (result.role) {
+            return result.role;
+        }
+        return Role.USER;
+    }
+
+    async setUserRole(userId: string, role: Role) {
+        return this.userModel
+            .findOneAndUpdate({ _id: userId }, { role: role })
             .exec();
     }
 }

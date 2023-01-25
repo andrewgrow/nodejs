@@ -1,27 +1,23 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    UseGuards,
-    ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards, ValidationPipe, } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/users.update.dto';
-import { ApiBody, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppJwtGuard } from '../security/jwt/app.jwt.guard';
 import { UserId } from '../security/jwt/app.jwt.decode.user.id';
 import { UserDto } from './dto/users.dto';
+import { Roles } from '../security/roles/roles.decorator';
+import { Role } from '../security/roles/roles.enum';
+import { RolesGuard } from '../security/roles/roles.guard';
 
 @ApiTags('Users')
 @Controller('/users')
-@UseGuards(AppJwtGuard)
+@Roles(Role.USER)
+@UseGuards(AppJwtGuard, RolesGuard)
 export class UsersController {
     constructor(private usersService: UsersService) {}
 
     @Get()
+    @Roles(Role.ADMIN)
     @ApiResponse({
         status: 200,
         description: 'The records have been successfully found.',
@@ -86,7 +82,10 @@ export class UsersController {
         status: 404,
         description: `User account not found for deleting.`,
     })
-    async delete(@Param('id') deleteId: string, @UserId() commandUserId: string) {
+    async delete(
+        @Param('id') deleteId: string,
+        @UserId() commandUserId: string,
+    ) {
         if (JSON.stringify(commandUserId) !== JSON.stringify(deleteId)) {
             console.log(`User ${commandUserId} delete next user: ${deleteId}`);
         }

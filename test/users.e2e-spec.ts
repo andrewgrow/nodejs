@@ -9,6 +9,7 @@ import { CreateUserDto } from '../src/security/auth/dto/auth.user.create.dto';
 import { AppJwtService } from '../src/security/jwt/app.jwt.service';
 import { AppJwtData } from '../src/security/jwt/app.jwt.data';
 import { UserDto } from '../src/users/dto/users.dto';
+import { Role } from '../src/security/roles/roles.enum';
 
 describe('Users Routes', () => {
     let app: INestApplication;
@@ -91,8 +92,26 @@ describe('Users Routes', () => {
         });
     });
 
+    describe('Check role protection', () => {
+        it('GET /users should be protected from simple users', async () => {
+            const response = await request(app.getHttpServer())
+                .get('/users')
+                .set('Authorization', `Bearer ${jwtToken}`)
+                .expect(403);
+
+            const error = response.body;
+
+            expect(error).toEqual({
+                statusCode: 403,
+                message: 'Your role is restricted for this access point.',
+                error: 'Forbidden',
+            });
+        });
+    });
+
     describe('check correct responses', () => {
         it('GET /users should return a list of users with one value', async () => {
+            await usersService.setUserRole(userId, Role.ADMIN);
             const response = await request(app.getHttpServer())
                 .get('/users')
                 .set('Authorization', `Bearer ${jwtToken}`)
