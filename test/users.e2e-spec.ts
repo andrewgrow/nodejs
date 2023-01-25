@@ -35,7 +35,7 @@ describe('Users Routes', () => {
         appJwtService = await moduleRef.resolve(AppJwtService, contextId);
 
         const userDto: CreateUserDto = {
-            phone: '+380001234567',
+            phone: '+380631234567',
             name: 'UserName',
             password: 'Qwerty123',
             telegram: {
@@ -118,26 +118,28 @@ describe('Users Routes', () => {
         });
 
         it('PATCH /users/{id} should update user', async () => {
+            const newName = 'New Name Test';
             const response = await request(app.getHttpServer())
                 .patch(`/users/${user['_id']}`)
                 .set('Authorization', `Bearer ${jwtToken}`)
                 .send({
-                    firstName: 'New Name',
-                    password: 'password',
+                    name: newName,
+                    telegram: { publicName: newName },
                 })
                 .expect(200);
 
             const responseUser = response.body as User;
-            const responseUserName = responseUser['firstName'];
-            const responseUserPassword = responseUser['password'];
+            const responseUserName = responseUser.name;
+            const responseTelegramName = responseUser.telegram.publicName;
 
             const userName = user.name;
-            // const userPassword = user.password;
+            const tgName = user.telegram.publicName;
 
             expect(responseUserName).not.toEqual(userName);
-            expect(responseUserName).toEqual('New Name');
-            // expect(responseUserPassword).not.toEqual(userPassword);
-            expect(responseUserPassword).not.toEqual('password');
+            expect(responseUserName).toEqual(newName);
+
+            expect(responseTelegramName).not.toEqual(tgName);
+            expect(responseTelegramName).toEqual(newName);
         });
 
         it('DELETE /users/{id} should return OK and clear user', async () => {

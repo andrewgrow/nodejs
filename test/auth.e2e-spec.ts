@@ -13,11 +13,11 @@ describe('Users Routes', () => {
     let appJwtService: AppJwtService;
 
     const userDto: CreateUserDto = {
-        phone: '+380001234567',
-        name: 'UserName',
+        phone: '+380501234567',
+        name: 'UserName1',
         password: 'Qwerty123',
         telegram: {
-            chatId: 123456789,
+            chatId: 1234567890,
             userName: 'testName',
             publicName: 'Test Telegram Name',
         },
