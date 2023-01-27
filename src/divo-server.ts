@@ -1,12 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
 import helmet from 'helmet';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     app.use(helmet());
+
+    app.useStaticAssets(join(__dirname, '../..', 'static'));
+    app.setBaseViewsDir(join(__dirname, '../..', 'views'));
+    app.setViewEngine('hbs');
 
     const swaggerConfig = new DocumentBuilder()
         .setTitle('Divo Server')
