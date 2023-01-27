@@ -9,7 +9,9 @@ import * as process from 'process';
 async function startApplication(): Promise<void> {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-    enableView(app);
+    app.use(helmet());
+
+    enableView(app, join(__dirname, '../..', 'views'));
     enableSwagger(app);
 
     await app.listen(3000);
@@ -19,11 +21,10 @@ async function startApplication(): Promise<void> {
 startApplication().then();
 
 /**
- * Enable view engine and some setting for public and static folders.
+ * Enable view engine for the application.
  */
-function enableView(app: NestExpressApplication) {
-    app.use(helmet());
-    app.setBaseViewsDir(join(__dirname, '../..', 'views'));
+export function enableView(app: NestExpressApplication, viewPath: string) {
+    app.setBaseViewsDir(viewPath);
     app.setViewEngine('hbs');
 }
 

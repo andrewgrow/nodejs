@@ -5,6 +5,6 @@ export class PagesController {
     @Get()
     @Render('mainPage')
     mainPage() {
-        return { message: 'Hello world!' };
+        return { message: 'This is students demo app.' };
     }
 }
