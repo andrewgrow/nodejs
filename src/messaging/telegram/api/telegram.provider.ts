@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { TelegramModuleOptions } from './interfaces/telegram-module-options.interface';
+import { TelegramModuleOptions } from './interfaces';
 import { TELEGRAM_MODULE_OPTIONS } from './telegram.constants';
 
 export function createTelegramProvider(

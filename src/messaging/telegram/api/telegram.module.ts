@@ -4,7 +4,7 @@ import {
     TelegramModuleAsyncOptions,
     TelegramModuleOptions,
     TelegramOptionsFactory,
-} from './interfaces/telegram-module-options.interface';
+} from './interfaces';
 import { TELEGRAM_MODULE_OPTIONS } from './telegram.constants';
 import { createTelegramProvider } from './telegram.provider';
 import { TelegramService } from './telegram.service';

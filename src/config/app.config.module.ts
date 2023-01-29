@@ -4,7 +4,7 @@ import { configuration, validationSchema } from './configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { TelegramModule } from '../telegram';
+import { TelegramModule } from '../messaging/telegram/api';
 
 @Module({
     imports: [

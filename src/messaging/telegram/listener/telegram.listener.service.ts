@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TelegramService } from './telegram.service';
+import { TelegramService } from '../api/telegram.service';
 
 @Injectable()
 export class TelegramListenerService {
