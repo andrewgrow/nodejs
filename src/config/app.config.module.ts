@@ -4,6 +4,7 @@ import { configuration, validationSchema } from './configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { TelegramModule } from '../telegram';
 
 @Module({
     imports: [
@@ -25,6 +26,12 @@ import { APP_GUARD } from '@nestjs/core';
             ttl: 60, // the number of seconds that each request will last in storage
             limit: 10, // the maximum number of requests within the TTL limit
         }),
+        TelegramModule.forRootAsync({
+            useFactory: async (configService: ConfigService) => ({
+                botKey: configService.get<string>('telegramBotKey'),
+            }),
+            inject: [ConfigService],
+        }),
     ],
     providers: [
         {
@@ -32,6 +39,6 @@ import { APP_GUARD } from '@nestjs/core';
             useClass: ThrottlerGuard,
         },
     ],
-    exports: [ConfigModule, MongooseModule, ThrottlerModule],
+    exports: [ConfigModule, MongooseModule, ThrottlerModule, TelegramModule],
 })
 export class AppConfigModule {}

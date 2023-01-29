@@ -25,6 +25,7 @@ export const configuration = () => ({
         secret: process.env.JWT_SECRET_KEY,
         expiresInSeconds: 60 * 60 * 24 * 365, // Seconds. 3600 is 1 hour.
     },
+    telegramBotKey: process.env.TELEGRAM_TOKEN || 'YOU HAVE TO DEFINE BOT KEY',
 });
 
 /**
