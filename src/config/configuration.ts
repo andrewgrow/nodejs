@@ -15,17 +15,18 @@ import { ENVIRONMENT } from './enums/app.env';
  */
 export const configuration = () => ({
     database: {
-        name:
-            process.env.NODE_ENV === ENVIRONMENT.TEST
-                ? `${process.env.MONGO_DB_DATABASE_NAME}-test`
-                : process.env.MONGO_DB_DATABASE_NAME,
+        name: isTestEnv()
+            ? `${process.env.MONGO_DB_DATABASE_NAME}-test`
+            : process.env.MONGO_DB_DATABASE_NAME,
         uri: `mongodb://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_HOST}:${process.env.MONGO_DB_PORT}`,
     },
     jwt: {
         secret: process.env.JWT_SECRET_KEY,
         expiresInSeconds: 60 * 60 * 24 * 365, // Seconds. 3600 is 1 hour.
     },
-    telegramBotKey: process.env.TELEGRAM_TOKEN || 'YOU HAVE TO DEFINE BOT KEY',
+    telegramBotKey: isTestEnv()
+        ? 'TEST'
+        : process.env.TELEGRAM_TOKEN || 'YOU HAVE TO DEFINE BOT KEY',
 });
 
 /**
@@ -38,3 +39,7 @@ export const validationSchema = Joi.object({
         .default(ENVIRONMENT.DEV),
     PORT: Joi.number().default(3000),
 });
+
+function isTestEnv(): boolean {
+    return process.env.NODE_ENV === ENVIRONMENT.TEST;
+}
