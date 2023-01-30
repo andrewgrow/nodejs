@@ -4,9 +4,9 @@ import { AppConfigModule } from '../../../config/app.config.module';
 import { TelegramService } from '../api';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import {
-    TelegramModelUpdate,
-    TelegramModelUpdateDocument,
-    TelegramModelUpdateSchema,
+    TelegramUpdate,
+    TelegramUpdateDocument,
+    TelegramUpdateSchema,
 } from '../models/telegram.model.update';
 import { Model } from 'mongoose';
 
@@ -15,18 +15,18 @@ import { Model } from 'mongoose';
         AppConfigModule,
         MongooseModule.forFeature([
             {
-                name: TelegramModelUpdate.name,
-                schema: TelegramModelUpdateSchema,
+                name: TelegramUpdate.name,
+                schema: TelegramUpdateSchema,
             },
         ]),
     ],
     providers: [
         {
             provide: TelegramListenerService,
-            inject: [TelegramService, getModelToken(TelegramModelUpdate.name)],
+            inject: [TelegramService, getModelToken(TelegramUpdate.name)],
             useFactory: (
                 tgService: TelegramService,
-                model: Model<TelegramModelUpdateDocument>,
+                model: Model<TelegramUpdateDocument>,
             ) => {
                 return new TelegramListenerService(tgService, model);
             },
