@@ -18,26 +18,40 @@ export class TelegramListenerService implements OnModuleInit {
 
     private readonly modelUpdate: Model<TelegramModelUpdate>;
 
-    onModuleInit(): any {
-        this.startObserveTelegram();
+    storeNewRecord(
+        newDbRecord: TelegramModelUpdate,
+    ): Promise<TelegramModelUpdate> {
+        const instance = new this.modelUpdate(newDbRecord);
+        return instance.save();
     }
 
-    startObserveTelegram() {
-        console.log(TAG, 'has been started to observe updates.');
+    onModuleInit(): any {
+        this.startObserveTelegram(0);
+    }
 
-        this.findLastUpdateIdFromDb().then((lastUpdateId) => {
-            if (this.telegramService) {
-                const observer = this.getNewObserver(this);
+    startObserveTelegram(lastUpdateId: number) {
+        let promiseGetLastUpdateId: Promise<number>;
+        if (lastUpdateId == 0) {
+            promiseGetLastUpdateId = this.findLastUpdateIdFromDb();
+        } else {
+            promiseGetLastUpdateId = Promise.resolve(lastUpdateId);
+        }
+
+        if (this.telegramService) {
+            promiseGetLastUpdateId.then((lastUpdateId) => {
+                console.log(TAG, 'startObserveTelegram', lastUpdateId);
+                const observer = new UpdateObserver(this);
+
                 const offset = lastUpdateId + 1;
-                console.log('getUpdates', 'offset', offset);
+
                 this.telegramService
                     .getUpdates({ offset: offset, timeout: 60 })
                     .subscribe(observer);
-            }
-        });
+            });
+        }
     }
 
-    private async findLastUpdateIdFromDb(): Promise<number> {
+    async findLastUpdateIdFromDb(): Promise<number> {
         const documents: TelegramModelUpdate[] = await this.modelUpdate
             .find()
             .sort({ _id: -1 }) // get latest
@@ -51,33 +65,36 @@ export class TelegramListenerService implements OnModuleInit {
             lastUpdateId = documents[0].update_id;
         }
 
-        console.log(TAG, 'findLastUpdateIdFromDb()', lastUpdateId);
-
         return lastUpdateId;
     }
+}
 
-    getNewObserver(
-        service: TelegramListenerService,
-    ): Observer<Telegram.Update[]> {
-        return {
-            complete(): void {
-                console.log(TAG, 'complete() call!');
-                service.startObserveTelegram(); // reload observing when complete was reached
-            },
+class UpdateObserver implements Observer<Telegram.Update[]> {
+    constructor(private readonly service: TelegramListenerService) {}
 
-            error(err: any): void {
-                console.error(TAG, 'error() call!', err);
-            },
+    complete(): void {
+        console.log(TAG, 'complete() call!');
+    }
 
-            next(data: Telegram.Update[]): void {
-                console.error(TAG, 'next() call!', JSON.stringify(data));
-                data.forEach(async (dataRecord) => {
-                    const dbRecordUpdate = new service.modelUpdate();
-                    dbRecordUpdate.update_id = dataRecord.update_id;
-                    dbRecordUpdate.data = JSON.stringify(dataRecord);
-                    await dbRecordUpdate.save();
-                });
-            },
-        };
+    error(err: any): void {
+        console.error(TAG, 'error() call!', err);
+    }
+
+    next(data: Telegram.Update[]): void {
+        console.log(TAG, 'next() call!', JSON.stringify(data));
+
+        let lastUpdateId = 0;
+
+        data.forEach((dataRecord) => {
+            const newDbRecord = {
+                update_id: dataRecord.update_id,
+                data: JSON.stringify(dataRecord),
+            };
+            this.service.storeNewRecord(newDbRecord).then();
+
+            lastUpdateId = dataRecord.update_id;
+        });
+
+        this.service.startObserveTelegram(lastUpdateId); // reload observing when complete was reached
     }
 }
