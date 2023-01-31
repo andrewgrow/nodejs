@@ -22,38 +22,39 @@ export class TelegramListenerService implements OnModuleInit {
 
     private readonly telegramService: TelegramService;
 
-    private readonly modelUpdate: Model<TelegramUpdateDocument>;
+    public readonly modelUpdate: Model<TelegramUpdateDocument>;
+
+    public isEndlessListening = true;
 
     storeNewRecord(newDbRecord: { update_id: number; data: string }): void {
-        console.log(TAG, 'new updateRecord!', newDbRecord.data);
+        console.log(TAG, 'new record:', newDbRecord.data);
         const instance = new this.modelUpdate(newDbRecord);
         instance.save().then();
     }
 
     onModuleInit(): any {
-        this.startObserveTelegram(0);
+        this.startObserveTelegram(0).then();
     }
 
-    startObserveTelegram(lastUpdateId: number) {
+    async startObserveTelegram(updateId: number) {
         let promiseGetLastUpdateId: Promise<number>;
-        if (lastUpdateId == 0) {
+        if (updateId == 0) {
             promiseGetLastUpdateId = this.findLastUpdateIdFromDb();
         } else {
-            promiseGetLastUpdateId = Promise.resolve(lastUpdateId);
+            promiseGetLastUpdateId = Promise.resolve(updateId);
         }
 
-        promiseGetLastUpdateId.then((lastUpdateId) => {
-            const observer = new UpdateObserver(this);
+        const lastUpdateId = await promiseGetLastUpdateId;
+        const observer = new UpdateObserver(this, updateId);
 
-            const offset = lastUpdateId + 1;
+        const offset = lastUpdateId + 1;
 
-            this.telegramService
-                .getUpdates({
-                    offset: offset,
-                    timeout: 60,
-                })
-                .subscribe(observer);
-        });
+        this.telegramService
+            .getUpdates({
+                offset: offset,
+                timeout: 60,
+            })
+            .subscribe(observer);
     }
 
     async findLastUpdateIdFromDb(): Promise<number> {
@@ -74,14 +75,20 @@ export class TelegramListenerService implements OnModuleInit {
     }
 }
 
-class UpdateObserver implements Observer<Telegram.Update[]> {
+export class UpdateObserver implements Observer<Telegram.Update[]> {
     constructor(
         private readonly service: TelegramListenerService,
         private lastUpdateId: number = 0,
-    ) {}
+    ) {
+        this.isEndlessListening = service.isEndlessListening;
+    }
+
+    private readonly isEndlessListening;
 
     complete(): void {
-        this.service.startObserveTelegram(this.lastUpdateId); // reload observing
+        if (this.isEndlessListening) {
+            this.service.startObserveTelegram(this.lastUpdateId).then(); // reload observing
+        }
     }
 
     error(err: any): void {

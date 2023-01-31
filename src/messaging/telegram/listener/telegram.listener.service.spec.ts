@@ -4,50 +4,65 @@ import { TelegramService } from '../api';
 import * as Telegram from '../api';
 import { createMock } from '@golevelup/ts-jest';
 import { Observable } from 'rxjs';
-import { TelegramUpdateDocument } from '../models/telegram.model.update';
+import {
+    TelegramUpdate,
+    TelegramUpdateDocument,
+    TelegramUpdateSchema,
+} from '../models/telegram.model.update';
 import { Model } from 'mongoose';
+import { getModelToken, MongooseModule } from '@nestjs/mongoose';
+import { AppConfigModule } from '../../../config/app.config.module';
 
 describe('TelegramListenerService', () => {
     let module: TestingModule;
     let service: TelegramListenerService;
+    let mockStoreNewRecord;
+    let modelUpdate;
 
-    const testUpdatesArray: Telegram.Update[] = [
-        {
-            update_id: 1,
-            message: {
-                message_id: 2,
-                text: 'Test message',
-                date: 0,
-                chat: { id: 3, type: 'private' },
-            },
+    // test instance of Update
+    const testUpdateRecord: Telegram.Update = {
+        update_id: 1,
+        message: {
+            message_id: 2,
+            text: 'Test message',
+            date: 0,
+            chat: { id: 3, type: 'private' },
         },
-    ];
+    };
+
+    // the test array to return as new Update
+    const testUpdatesArray: Telegram.Update[] = [ testUpdateRecord ];
+
+    // will return a test array to subscriber
+    function getNewTestObservable() {
+        return new Observable<Telegram.Update[]>((subscriber) => {
+            subscriber.next(testUpdatesArray);
+            subscriber.complete();
+        });
+    }
 
     const mockTelegramService = createMock<TelegramService>();
-    mockTelegramService.getUpdates
-        .mockReturnValueOnce(
-            new Observable<Telegram.Update[]>((subscriber) => {
-                subscriber.next(testUpdatesArray);
-                subscriber.complete();
-            }),
-        )
-        .mockReturnValueOnce(
-            new Observable<Telegram.Update[]>((subscriber) => {
-                subscriber.next([]);
-            }),
-        );
-
-    const mockModel = createMock<Model<TelegramUpdateDocument>>();
+    mockTelegramService.getUpdates.mockReturnValue(getNewTestObservable());
 
     beforeEach(async () => {
         module = await Test.createTestingModule({
+            imports: [
+                AppConfigModule,
+                MongooseModule.forFeature([
+                    {
+                        name: TelegramUpdate.name,
+                        schema: TelegramUpdateSchema,
+                    },
+                ]),
+            ],
             providers: [
                 {
+                    inject: [getModelToken(TelegramUpdate.name)],
                     provide: TelegramListenerService,
-                    useFactory: () => {
+                    useFactory: (model: Model<TelegramUpdateDocument>) => {
                         return new TelegramListenerService(
                             mockTelegramService,
-                            mockModel,
+                            model,
                         );
                     },
                 },
@@ -55,30 +70,33 @@ describe('TelegramListenerService', () => {
         }).compile();
 
         service = module.get<TelegramListenerService>(TelegramListenerService);
+        service.isEndlessListening = false;
 
-        jest.spyOn(service, 'findLastUpdateIdFromDb').mockImplementation(() => {
-            return Promise.resolve(testUpdatesArray[0].update_id);
-        });
-        jest.spyOn(service, 'storeNewRecord').mockImplementation(() => {
-            return true;
-        });
+        modelUpdate = service.modelUpdate;
+
+        mockStoreNewRecord = jest.spyOn(service, 'storeNewRecord');
     });
 
-    afterEach(() => {
+    afterEach(async () => {
+        await modelUpdate.deleteMany({ update_id: testUpdateRecord.update_id });
         jest.clearAllMocks();
-    });
-
-    describe('TelegramListenerModule initialization', () => {
-        beforeEach(() => {
-            module.init();
-        });
-
-        it('should still be defined', () => {
-            expect(service).toBeDefined();
-        });
     });
 
     it('should be defined', () => {
         expect(service).toBeDefined();
+    });
+
+    describe('TelegramListenerModule initialization', () => {
+        it('should still be defined after init', () => {
+            module.init();
+            expect(service).toBeDefined();
+        });
+
+        it('should store new updateMessage', async () => {
+            await service.startObserveTelegram(0);
+            expect(mockStoreNewRecord).toBeCalledTimes(1);
+            const lastStoredId = await service.findLastUpdateIdFromDb();
+            expect(lastStoredId).toEqual(testUpdateRecord.update_id);
+        });
     });
 });
