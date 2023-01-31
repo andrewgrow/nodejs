@@ -9,7 +9,7 @@ import {
     TelegramUpdateDocument,
     TelegramUpdateSchema,
 } from '../models/telegram.model.update';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { AppConfigModule } from '../../../config/app.config.module';
 
@@ -31,7 +31,7 @@ describe('TelegramListenerService', () => {
     };
 
     // the test array to return as new Update
-    const testUpdatesArray: Telegram.Update[] = [ testUpdateRecord ];
+    const testUpdatesArray: Telegram.Update[] = [testUpdateRecord];
 
     // will return a test array to subscriber
     function getNewTestObservable() {
@@ -41,10 +41,10 @@ describe('TelegramListenerService', () => {
         });
     }
 
-    const mockTelegramService = createMock<TelegramService>();
-    mockTelegramService.getUpdates.mockReturnValue(getNewTestObservable());
-
     beforeEach(async () => {
+        const mockTelegramService = createMock<TelegramService>();
+        mockTelegramService.getUpdates.mockReturnValue(getNewTestObservable());
+
         module = await Test.createTestingModule({
             imports: [
                 AppConfigModule,
@@ -78,12 +78,13 @@ describe('TelegramListenerService', () => {
     });
 
     afterEach(async () => {
-        await modelUpdate.deleteMany({ update_id: testUpdateRecord.update_id });
+        service.stopListening();
         jest.clearAllMocks();
     });
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
+    afterAll(async () => {
+        await modelUpdate.deleteMany({ update_id: testUpdateRecord.update_id });
+        await mongoose.disconnect();
     });
 
     describe('TelegramListenerModule initialization', () => {

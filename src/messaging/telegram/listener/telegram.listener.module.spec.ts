@@ -1,19 +1,37 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { TelegramListenerModule } from './telegram.listener.module';
 import { TelegramListenerService } from './telegram.listener.service';
 
 describe('telegramModule', () => {
+    let service: TelegramListenerService; // real service
+    let module: TestingModule; // wrap real module
+
+    afterEach(async () => {
+        // close opened connections
+        await service.stopListening();
+        await module.close();
+        jest.clearAllMocks();
+    });
+
     it('should be defined module and service', async () => {
-        const module = await Test.createTestingModule({
+        // prepare module
+        module = await Test.createTestingModule({
             imports: [TelegramListenerModule],
         }).compile();
 
-        const service = module.get<TelegramListenerService>(
-            TelegramListenerService,
-        );
+        // prepare service
+        service = module.get<TelegramListenerService>(TelegramListenerService);
+        service.isEndlessListening = false;
 
-        await module.init();
+        // mock db request
+        service.findLastUpdateIdFromDb = jest.fn(() => {
+            return Promise.resolve(0);
+        });
 
+        // start testing
+        service.onModuleInit();
+
+        // check results
         expect(module).toBeDefined();
         expect(service).toBeDefined();
     });

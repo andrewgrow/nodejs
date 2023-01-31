@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { TelegramService } from '../api';
-import { Observer } from 'rxjs';
+import { Observer, Subscription } from 'rxjs';
 import * as Telegram from '../api';
 import {
     TelegramUpdate,
@@ -12,6 +12,10 @@ const TAG = 'TelegramListenerService: ';
 
 @Injectable()
 export class TelegramListenerService implements OnModuleInit {
+    private readonly telegramService: TelegramService;
+    public readonly modelUpdate: Model<TelegramUpdateDocument>;
+    public isEndlessListening = true;
+    private subscription: Subscription;
     constructor(
         tgService: TelegramService,
         model: Model<TelegramUpdateDocument>,
@@ -19,12 +23,6 @@ export class TelegramListenerService implements OnModuleInit {
         this.telegramService = tgService;
         this.modelUpdate = model;
     }
-
-    private readonly telegramService: TelegramService;
-
-    public readonly modelUpdate: Model<TelegramUpdateDocument>;
-
-    public isEndlessListening = true;
 
     storeNewRecord(newDbRecord: { update_id: number; data: string }): void {
         console.log(TAG, 'new record:', newDbRecord.data);
@@ -49,7 +47,7 @@ export class TelegramListenerService implements OnModuleInit {
 
         const offset = lastUpdateId + 1;
 
-        this.telegramService
+        this.subscription = this.telegramService
             .getUpdates({
                 offset: offset,
                 timeout: 60,
@@ -73,6 +71,13 @@ export class TelegramListenerService implements OnModuleInit {
 
         return lastUpdateId;
     }
+
+    stopListening() {
+        if (this.subscription && !this.subscription.closed) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+        }
+    }
 }
 
 export class UpdateObserver implements Observer<Telegram.Update[]> {
@@ -92,6 +97,9 @@ export class UpdateObserver implements Observer<Telegram.Update[]> {
     }
 
     error(err: any): void {
+        if (process.env.NODE_ENV === 'test') {
+            return; // test protection
+        }
         console.error(TAG, 'error() call!', err);
     }
 
