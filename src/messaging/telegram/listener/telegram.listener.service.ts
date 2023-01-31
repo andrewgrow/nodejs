@@ -2,23 +2,30 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { TelegramService } from '../api';
 import { Observer } from 'rxjs';
 import * as Telegram from '../api';
-import { TelegramUpdate } from '../models/telegram.model.update';
+import {
+    TelegramUpdate,
+    TelegramUpdateDocument,
+} from '../models/telegram.model.update';
 import { Model } from 'mongoose';
 
 const TAG = 'TelegramListenerService: ';
 
 @Injectable()
 export class TelegramListenerService implements OnModuleInit {
-    constructor(tgService: TelegramService, model: Model<TelegramUpdate>) {
+    constructor(
+        tgService: TelegramService,
+        model: Model<TelegramUpdateDocument>,
+    ) {
         this.telegramService = tgService;
         this.modelUpdate = model;
     }
 
     private readonly telegramService: TelegramService;
 
-    private readonly modelUpdate: Model<TelegramUpdate>;
+    private readonly modelUpdate: Model<TelegramUpdateDocument>;
 
-    storeNewRecord(newDbRecord: TelegramUpdate): void {
+    storeNewRecord(newDbRecord: { update_id: number; data: string }): void {
+        console.log(TAG, 'new updateRecord!', newDbRecord.data);
         const instance = new this.modelUpdate(newDbRecord);
         instance.save().then();
     }
@@ -35,18 +42,18 @@ export class TelegramListenerService implements OnModuleInit {
             promiseGetLastUpdateId = Promise.resolve(lastUpdateId);
         }
 
-        if (this.telegramService) {
-            promiseGetLastUpdateId.then((lastUpdateId) => {
-                console.log(TAG, 'startObserveTelegram', lastUpdateId);
-                const observer = new UpdateObserver(this);
+        promiseGetLastUpdateId.then((lastUpdateId) => {
+            const observer = new UpdateObserver(this);
 
-                const offset = lastUpdateId + 1;
+            const offset = lastUpdateId + 1;
 
-                this.telegramService
-                    .getUpdates({ offset: offset, timeout: 60 })
-                    .subscribe(observer);
-            });
-        }
+            this.telegramService
+                .getUpdates({
+                    offset: offset,
+                    timeout: 60,
+                })
+                .subscribe(observer);
+        });
     }
 
     async findLastUpdateIdFromDb(): Promise<number> {
@@ -74,7 +81,6 @@ class UpdateObserver implements Observer<Telegram.Update[]> {
     ) {}
 
     complete(): void {
-        console.log(TAG, 'complete() call!');
         this.service.startObserveTelegram(this.lastUpdateId); // reload observing
     }
 
@@ -83,8 +89,6 @@ class UpdateObserver implements Observer<Telegram.Update[]> {
     }
 
     next(data: Telegram.Update[]): void {
-        console.log(TAG, 'next() call!', JSON.stringify(data));
-
         data.forEach((dataRecord) => {
             this.service.storeNewRecord({
                 update_id: dataRecord.update_id,
