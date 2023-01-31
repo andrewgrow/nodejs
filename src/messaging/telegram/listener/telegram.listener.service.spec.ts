@@ -2,20 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TelegramListenerService } from './telegram.listener.service';
 import { TelegramService } from '../api';
 import * as Telegram from '../api';
-import { createMock } from '@golevelup/ts-jest';
 import { Observable } from 'rxjs';
-import {
-    TelegramUpdate,
-    TelegramUpdateDocument,
-    TelegramUpdateSchema,
-} from '../models/telegram.model.update';
-import mongoose, { Model } from 'mongoose';
-import { getModelToken, MongooseModule } from '@nestjs/mongoose';
-import { AppConfigModule } from '../../../config/app.config.module';
+import mongoose from 'mongoose';
+import { TelegramListenerModule } from './telegram.listener.module';
 
 describe('TelegramListenerService', () => {
     let module: TestingModule;
     let service: TelegramListenerService;
+    let telegramService;
     let mockStoreNewRecord;
     let modelUpdate;
 
@@ -42,58 +36,45 @@ describe('TelegramListenerService', () => {
     }
 
     beforeEach(async () => {
-        const mockTelegramService = createMock<TelegramService>();
-        mockTelegramService.getUpdates.mockReturnValue(getNewTestObservable());
-
+        // Prepare full working module except TelegramService.
         module = await Test.createTestingModule({
-            imports: [
-                AppConfigModule,
-                MongooseModule.forFeature([
-                    {
-                        name: TelegramUpdate.name,
-                        schema: TelegramUpdateSchema,
-                    },
-                ]),
-            ],
-            providers: [
-                {
-                    inject: [getModelToken(TelegramUpdate.name)],
-                    provide: TelegramListenerService,
-                    useFactory: (model: Model<TelegramUpdateDocument>) => {
-                        return new TelegramListenerService(
-                            mockTelegramService,
-                            model,
-                        );
-                    },
-                },
-            ],
+            imports: [TelegramListenerModule],
         }).compile();
 
+        // watch on storing new records
         service = module.get<TelegramListenerService>(TelegramListenerService);
         service.isEndlessListening = false;
+        mockStoreNewRecord = jest.spyOn(service, 'storeNewRecord');
 
+        // real model for db working
         modelUpdate = service.modelUpdate;
 
-        mockStoreNewRecord = jest.spyOn(service, 'storeNewRecord');
+        // TelegramService will mock.
+        telegramService = module.get<TelegramService>(TelegramService);
+        jest.spyOn(telegramService, 'getUpdates').mockReturnValue(
+            getNewTestObservable(),
+        );
     });
 
     afterEach(async () => {
+        // clear mocks
         service.stopListening();
         jest.clearAllMocks();
     });
 
     afterAll(async () => {
+        // close opened connections and delete test data
         await modelUpdate.deleteMany({ update_id: testUpdateRecord.update_id });
         await mongoose.disconnect();
     });
 
-    describe('TelegramListenerModule initialization', () => {
-        it('should still be defined after init', () => {
+    describe('TelegramListenerModule get Updates and store their', () => {
+        it('service should be defined after init', () => {
             module.init();
             expect(service).toBeDefined();
         });
 
-        it('should store new updateMessage', async () => {
+        it('service should save new updateMessage', async () => {
             await service.startObserveTelegram(0);
             expect(mockStoreNewRecord).toBeCalledTimes(1);
             const lastStoredId = await service.findLastUpdateIdFromDb();
