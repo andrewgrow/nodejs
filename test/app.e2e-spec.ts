@@ -25,12 +25,20 @@ describe('AppController (e2e)', () => {
     });
 
     describe('GET / (main page)', () => {
-        it('Should return 200 and have hello text', async () => {
+        it('Should return 200 and have demo app text', async () => {
             const response = await request(app.getHttpServer())
                 .get('/')
                 .expect(200);
 
             expect(response.text).toContain('demo app');
+        });
+    });
+
+    describe('GET /random_page', () => {
+        it('Should return 404 because this page does not exist', async () => {
+            await request(app.getHttpServer())
+                .get('/random_page')
+                .expect(404);
         });
     });
 
