@@ -91,9 +91,8 @@ export class UpdateObserver implements Observer<Telegram.Update[]> {
     private readonly isEndlessListening;
 
     complete(): void {
-        if (this.isEndlessListening) {
-            this.service.startObserveTelegram(this.lastUpdateId).then(); // reload observing
-        }
+        // restart after complete
+        this.reloadObserver();
     }
 
     error(err: any): void {
@@ -101,6 +100,9 @@ export class UpdateObserver implements Observer<Telegram.Update[]> {
             return; // test protection
         }
         console.error(TAG, 'error() call!', err);
+
+        // restart after error
+        this.reloadObserver();
     }
 
     next(data: Telegram.Update[]): void {
@@ -111,5 +113,11 @@ export class UpdateObserver implements Observer<Telegram.Update[]> {
             });
             this.lastUpdateId = dataRecord.update_id;
         });
+    }
+
+    private reloadObserver() {
+        if (this.isEndlessListening) {
+            this.service.startObserveTelegram(this.lastUpdateId).then();
+        }
     }
 }
