@@ -112,6 +112,9 @@ export class UsersService {
             .exec();
     }
 
+    /**
+     * @deprecated The method can be used, but at the current moment is not actions with it.
+     */
     async getUserRole(userId: string): Promise<Role> {
         const result = await this.userModel
             .findById(userId)
