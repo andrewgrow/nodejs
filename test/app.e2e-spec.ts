@@ -36,9 +36,7 @@ describe('AppController (e2e)', () => {
 
     describe('GET /random_page', () => {
         it('Should return 404 because this page does not exist', async () => {
-            await request(app.getHttpServer())
-                .get('/random_page')
-                .expect(404);
+            await request(app.getHttpServer()).get('/random_page').expect(404);
         });
     });
 

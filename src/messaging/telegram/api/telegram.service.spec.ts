@@ -127,7 +127,7 @@ describe('TelegramService', () => {
                 ),
             );
             service.getMe().subscribe({
-                next(_) {
+                next() {
                     throw new Error('Test should have gone to fail observer');
                 },
                 error(error: Error) {

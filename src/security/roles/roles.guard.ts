@@ -2,13 +2,11 @@ import {
     CanActivate,
     ExecutionContext,
     ForbiddenException,
-    Inject,
     Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from './roles.enum';
 import { ROLES_KEY } from './roles.decorator';
-import { UsersService } from '../../users/users.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../../users/users.schema';
 import { Model } from 'mongoose';
@@ -16,9 +14,6 @@ import { Model } from 'mongoose';
 @Injectable()
 export class RolesGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
-
-    // @Inject()
-    // private userService: UsersService;
 
     @InjectModel(User.name)
     private userModel: Model<UserDocument>;
